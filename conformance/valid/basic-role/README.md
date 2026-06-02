@@ -1,6 +1,6 @@
 # Valid Fixture: Basic Role
 
-This fixture represents a minimal valid RolePack shape:
+This fixture represents a minimal valid Role shape:
 
 - role metadata
 - role memory

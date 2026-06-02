@@ -1,9 +1,9 @@
 # CCB Adapter Contract Preview
 
-This adapter contract describes how CCB may consume RolePacks.
+This adapter contract describes how CCB may consume Roles.
 
 CCB-specific behavior belongs in the CCB adapter and CCB runtime, not in the
-core RolePack specification.
+core role specification.
 
 Examples of CCB-owned behavior include:
 

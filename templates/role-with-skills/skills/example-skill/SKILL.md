@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Demonstrate a reusable capability carried by a RolePack.
+Demonstrate a reusable capability carried by a Role.
 
 ## Workflow
 

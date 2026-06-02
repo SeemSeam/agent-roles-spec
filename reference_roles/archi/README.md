@@ -1,6 +1,6 @@
 # Architecture Reviewer
 
-`archi` is a reference RolePack for architecture review.
+`archi` is a reference Role for architecture review.
 
 It demonstrates how a role can carry identity, memory, a reusable skill, tool
 documentation, plugin content, adapter notes, and validation notes without

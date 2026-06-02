@@ -1,6 +1,6 @@
 # Codex Adapter Contract Preview
 
-This adapter contract describes how Codex may consume RolePacks.
+This adapter contract describes how Codex may consume Roles.
 
 Potential host-native surfaces include:
 

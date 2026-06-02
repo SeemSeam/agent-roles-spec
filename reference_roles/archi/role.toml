@@ -24,9 +24,3 @@ skills = ["skills/architecture-review"]
 prompts = ["prompts/architecture-review.md"]
 tools = ["tools/README.md"]
 plugins = ["plugins/archi-workbench"]
-adapters = [
-  "adapters/claude-code/README.md",
-  "adapters/codex/README.md",
-  "adapters/ccb/README.md",
-  "adapters/hive/README.md"
-]

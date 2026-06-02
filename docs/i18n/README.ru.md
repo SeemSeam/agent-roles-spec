@@ -1,27 +1,102 @@
 # Agent Roles
 
-From skills to roles.
+> Agent Roles — это host-нейтральная спецификация для упаковки специализированных AI-агентов в виде портативных и подключаемых Role.
 
-Agent Roles is a host-neutral specification for packaging specialist AI agents
-as portable, mountable RolePacks.
+Role объединяет всё необходимое специализированному агенту — skills, memory, зависимости инструментов, plugin content и host adapter metadata — в единую портативную единицу. Её можно подключить к агенту целевого проекта, а после использования чисто отключить, не затрагивая основную среду, глобальные настройки пользователя и другие агенты.
 
-For developers: move from skill development to role development.  
-For users: move from scattered skills and plugins to managed roles.
+Спецификация направлена на то, чтобы сделать взаимодействие мульти-агентов более структурированным:
 
-A RolePack can carry memory, skills, prompts, tools, plugin content, and host
-adapter metadata, then be mounted into a compatible host as an isolated
-specialist agent.
+| Аудитория | Изменение |
+|-----------|-----------|
+| **Разработчики** | От разработки отдельных skills к разработке полноценных Roles |
+| **Пользователи** | От разрозненного управления skills/plugins к единому управлению roles |
 
-The specification comes first. The CLI, role manager, and mount runtime follow.
+> Этот перевод следует `README.md`. В случае расхождений английская версия является авторитетной.
 
-> This translation follows `README.md`. If the two versions differ, the English
-> version is authoritative.
+---
 
-## Scope
+## Зачем нужен Agent Roles
 
-The v0.1 release is a spec preview. It defines the RolePack package shape,
-metadata conventions, forbidden secret/runtime-state rules, templates,
-reference roles, host adapter contracts, and conformance fixtures.
+Содержимое специализированного агента обычно разбросано по множеству директорий, файлов конфигурации и рантаймов:
 
-It does not ship a registry, sandbox, scheduler, provider session manager, CCB
-runtime extraction, or host-specific plugin manager.
+- Системные промпты
+- Skills, загружаемые по требованию
+- Память проекта и долгосрочная память
+- Зависимости инструментов
+- Конфигурации адаптеров для разных host-сред
+
+Миграция требует ручного копирования, установки и отладки. При отключении сложно определить, какой контент принадлежит агенту, а какой — основной среде или другим агентам.
+
+Agent Roles организует всё это в стандартизированном формате Role, чтобы специализированные агенты можно было определять, распространять, подключать и отключать как независимые единицы.
+
+---
+
+## Основные концепции
+
+### Role
+
+Role — центральный объект Agent Roles, представляющий полноценного специализированного агента. Это не просто промпт и не просто набор skills, а инкапсуляционная единица, несущая собственные возможности, контекст и адаптерную информацию.
+
+### Role Definition
+
+Role Definition — файл-манифест Role. Описывает обязанности Role, необходимые skills, зависимости инструментов, plugin content, конфигурацию host-адаптеров и правила подключения/отключения.
+
+### Host Adapter
+
+Host Adapter описывает, как Role входит в конкретную host-среду. Одна и та же Role может читаться и подключаться несколькими hosts. Host Adapter фиксирует различия в структуре директорий, формате конфигурации, точках входа инструментов и проекции плагинов.
+
+### Mount / Unmount
+
+| Операция | Описание |
+|----------|----------|
+| **Mount** | Подключить Role к целевому проекту, динамически загружая содержимое через индекс и устанавливая связи между Role, целевым проектом и host-средой |
+| **Unmount** | Отключить Role от целевого проекта; session-файлы сохраняются при необходимости, остальное содержимое немедленно удаляется, не влияя на основную среду, глобальные настройки и другие агенты |
+
+---
+
+## Что может содержать Role
+
+| Содержимое | Описание |
+|------------|----------|
+| `role instructions` | Обязанности роли, поведенческие границы и стиль работы |
+| `skills` | Модули способностей, используемые role |
+| `memory` | Память или контекст проекта role |
+| `tools` | Команды, скрипты или внешние инструменты, от которых зависит role |
+| `plugins` | Plugin content, который role проецирует в host-среду |
+| `host adapters` | Метаданные адаптеров для разных host-сред |
+| `lifecycle rules` | Правила обработки для mount, обновления и unmount |
+
+---
+
+## Цели дизайна
+
+- Роли специализированных агентов можно чётко определять и независимо распространять
+- Roles могут переноситься между проектами, подключаться по требованию и чисто отключаться
+- Границы содержимого Roles явные и не мешают основной среде и другим агентам
+- Обеспечить единую спецификацию для CLI, role manager и mount runtime
+
+---
+
+## Текущее состояние
+
+> Спецификация находится на начальном этапе разработки.
+
+Текущий фокус:
+
+- Концептуальные границы Role и структура Role Definition
+- Организация skills, memory, tools и plugins
+- Выражение Host Adapters
+- Минимальные поведенческие ограничения для mount / unmount
+
+Предстоит: schema, examples, прототип CLI, role manager и mount runtime.
+
+---
+
+## Дорожная карта адаптеров
+
+Разработка Host Adapters начнётся в первую очередь со следующих мульти-агентных проектов:
+
+- [CCB (claude_codex_bridge)](https://github.com/SeemSeam/claude_codex_bridge)
+- [HIVE](https://github.com/tt-a1i/hive)
+
+Также планируются адаптеры для Claude Code, Codex и других основных hosts. Мы будем активно работать над продвижением нативной поддержки формата Role на всех платформах.

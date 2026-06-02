@@ -2,7 +2,7 @@
 
 ## v0.1 Spec Preview
 
-- RolePack package spec
+- role source spec
 - role metadata conventions
 - forbidden-state rules
 - starter templates
@@ -12,8 +12,8 @@
 
 - contribution guide
 - role quality checklist
+- `roles/` directory for production-ready, mountable roles
 - more reference roles
-- role gallery
 
 ## v0.3 Host Adapter Contracts
 
@@ -30,6 +30,6 @@
 
 ## v0.5 CLI Preview
 
-- validate RolePacks
+- validate roles
 - render host-specific assets where useful
 - prototype mount and unmount for selected hosts

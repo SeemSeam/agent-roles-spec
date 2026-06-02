@@ -1,30 +1,102 @@
 # Agent Roles
 
-Des skills aux roles.
+> Agent Roles est une spécification host-neutre pour empaqueter des agents IA spécialisés sous forme de Roles portables et montables.
 
-Agent Roles est une specification host-neutral pour empaqueter des agents IA
-specialistes sous forme de RolePacks portables et montables.
+Un Role regroupe tout ce dont un agent spécialisé a besoin — skills, memory, dépendances d'outils, plugin content et host adapter metadata — en une seule unité portable. Il peut être monté dans un agent d'un projet cible et démonté proprement après utilisation, sans affecter l'environnement principal, la configuration utilisateur globale ou les autres agents.
 
-Pour les developpeurs : passer du developpement de skills au developpement de
-roles.  
-Pour les utilisateurs : passer de la gestion de skills/plugins disperses a la
-gestion de roles.
+Cette spécification vise à faire évoluer la collaboration multi-agent vers une structure plus claire :
 
-Un RolePack peut transporter memory, skills, prompts, tools, plugin content et
-host adapter metadata, puis etre monte dans un host compatible comme agent
-specialiste isole.
+| Public | Évolution |
+|--------|-----------|
+| **Développeurs** | Du développement de skills isolés au développement de Roles complets |
+| **Utilisateurs** | De la gestion dispersée des skills/plugins à la gestion unifiée des roles |
 
-La specification vient d'abord. Le CLI, le role manager et le mount runtime
-viennent ensuite.
+> Cette traduction suit `README.md`. En cas de divergence, la version anglaise fait foi.
 
-> This translation follows `README.md`. If the two versions differ, the English
-> version is authoritative.
+---
 
-## Scope
+## Pourquoi Agent Roles
 
-The v0.1 release is a spec preview. It defines the RolePack package shape,
-metadata conventions, forbidden secret/runtime-state rules, templates,
-reference roles, host adapter contracts, and conformance fixtures.
+Le contenu d'un agent spécialisé est généralement dispersé dans plusieurs répertoires, fichiers de configuration et runtimes :
 
-It does not ship a registry, sandbox, scheduler, provider session manager, CCB
-runtime extraction, or host-specific plugin manager.
+- Prompts système
+- Skills récupérés à la demande
+- Memory de projet et mémoire à long terme
+- Dépendances d'outils
+- Configurations d'adaptateurs pour différents environnements host
+
+La migration nécessite une copie, une installation et un débogage manuels. Lors du démontage, il est difficile de distinguer les contenus appartenant à l'agent de ceux appartenant à l'environnement principal ou aux autres agents.
+
+Agent Roles organise tout cela dans un format Role standardisé, permettant aux agents spécialisés d'être définis, distribués, montés et démontés comme des unités indépendantes.
+
+---
+
+## Concepts fondamentaux
+
+### Role
+
+Un Role est l'objet central d'Agent Roles — un agent spécialisé complet. Ce n'est ni un simple prompt ni une collection de skills, mais une unité d'encapsulation qui porte ses propres capacités, contexte et informations d'adaptation.
+
+### Role Definition
+
+Une Role Definition est le fichier manifeste d'un Role. Elle décrit les responsabilités du Role, les skills requis, les dépendances d'outils, le plugin content, la configuration des adaptateurs host, ainsi que les règles de montage et démontage.
+
+### Host Adapter
+
+Un Host Adapter décrit comment un Role entre dans un environnement host spécifique. Le même Role peut être lu et monté par plusieurs hosts. Le Host Adapter capture les différences de structure de répertoires, de format de configuration, de points d'entrée des outils et de projection des plugins.
+
+### Mount / Unmount
+
+| Opération | Description |
+|-----------|-------------|
+| **Mount** | Monter un Role dans le projet cible en chargeant dynamiquement les contenus via un index, établissant les connexions entre le Role, le projet cible et l'environnement host |
+| **Unmount** | Démonter un Role du projet cible ; les fichiers de session sont conservés si nécessaire, les autres contenus sont effacés immédiatement, sans affecter l'environnement principal, la configuration globale ou les autres agents |
+
+---
+
+## Ce qu'un Role peut contenir
+
+| Contenu | Description |
+|---------|-------------|
+| `role instructions` | Responsabilités du rôle, limites comportementales et style de travail |
+| `skills` | Modules de capacités utilisés par le role |
+| `memory` | Memory ou contexte de projet du role |
+| `tools` | Commandes, scripts ou outils externes dont dépend le role |
+| `plugins` | Contenu plugin que le role projette dans l'environnement host |
+| `host adapters` | Métadonnées d'adaptateur pour différents environnements host |
+| `lifecycle rules` | Règles de traitement pour mount, mise à jour et unmount |
+
+---
+
+## Objectifs de conception
+
+- Les roles d'agents spécialisés peuvent être clairement définis et distribués indépendamment
+- Les Roles peuvent migrer entre projets, être montés à la demande et démontés proprement
+- Les frontières de contenu des Roles sont explicites et n'interfèrent pas avec l'environnement principal ou les autres agents
+- Fournir une spécification unifiée pour CLI, role manager et mount runtime
+
+---
+
+## État actuel
+
+> La spécification est encore en phase de conception initiale.
+
+Axes de travail actuels :
+
+- Limites conceptuelles des Roles et structure de Role Definition
+- Organisation des skills, memory, tools et plugins
+- Expression des Host Adapters
+- Contraintes comportementales minimales pour mount / unmount
+
+À venir : schema, exemples, prototype CLI, role manager et mount runtime.
+
+---
+
+## Feuille de route des adaptateurs
+
+Le développement des Host Adapters commencera en priorité avec ces projets multi-agents :
+
+- [CCB (claude_codex_bridge)](https://github.com/SeemSeam/claude_codex_bridge)
+- [HIVE](https://github.com/tt-a1i/hive)
+
+Des adaptateurs pour Claude Code, Codex et d'autres hosts majeurs sont également prévus. Nous travaillerons activement à promouvoir le support natif du format Role sur toutes les plateformes.

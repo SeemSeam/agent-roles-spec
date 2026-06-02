@@ -1,6 +1,6 @@
 # Templates
 
-This directory will contain starter RolePack templates.
+This directory will contain starter role templates.
 
 Current templates:
 

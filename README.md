@@ -1,198 +1,102 @@
 # Agent Roles
 
-From skills to roles.
+> Agent Roles is a host-neutral specification for packaging specialist AI agents as portable, mountable Roles.
 
-Agent Roles is a host-neutral specification for packaging specialist AI agents
-as portable, mountable RolePacks.
+A Role bundles everything a specialist agent needs — skills, memory, tool dependencies, plugin content, and host adapter metadata — into a single portable unit. It can be mounted into a target project's agent, then cleanly unmounted when no longer needed, without affecting the main environment, user global config, or other agents.
 
-For developers: move from skill development to role development.  
-For users: move from scattered skills and plugins to managed roles.
+The specification is designed to push multi-agent collaboration toward clearer structure:
 
-A RolePack can carry its own memory, skills, prompts, tools, plugin content,
-and host adapter metadata, then enter a compatible project as an isolated
-specialist agent.
+| Audience | Shift |
+|----------|-------|
+| **Developers** | From building isolated skills to shipping complete Roles |
+| **Users** | From managing scattered skills/plugins to managing roles |
 
-The specification comes first. The CLI, role manager, and mount runtime follow.
+Languages: [简体中文](docs/i18n/README.zh-CN.md) | [日本語](docs/i18n/README.ja.md) | [繁體中文](docs/i18n/README.zh-TW.md) | [한국어](docs/i18n/README.ko.md) | [More](docs/i18n/)
 
-Languages: [English](README.md) | [简体中文](README.zh-CN.md) |
-[繁體中文](README.zh-TW.md) | [More translations](docs/i18n/)
-
-> If the two versions differ, the English version is authoritative.
+---
 
 ## Why Agent Roles
 
-Skills are capabilities. Roles are deployable specialist agents.
+A specialist agent's content is typically scattered across multiple directories, config files, and runtimes:
 
-A skill teaches an agent how to do one thing. A role defines who the agent is,
-what it is responsible for, what memory it carries, which skills and tools it
-owns, and how a host can mount and unmount it safely.
+- System prompts
+- Skills pulled on demand
+- Project memory and long-term memory
+- Tool dependencies
+- Host-specific adapter configuration
 
-Agent Roles does not replace skills or plugins. It organizes them into
-complete, portable roles.
+Migrating means manually copying, installing, and debugging. Unmounting means guessing which files belong to the agent versus the main environment or other agents.
 
-## What Is A RolePack
+Agent Roles organizes all of this into a standardized Role format, so a specialist agent can be defined, distributed, mounted, and unmounted as a single independent unit.
 
-A RolePack is a portable package for one specialist agent role.
+---
 
-A RolePack may contain:
+## Core Concepts
 
-- role identity and responsibilities
-- role memory
-- skills
-- prompts and templates
-- tool scripts and tool documentation
-- plugin content bundled with the role
-- MCP configuration or examples
-- host adapter metadata
-- validation and conformance tests
+### Role
 
-The goal is simple: one role directory should describe and carry everything
-needed to understand, validate, and mount that role.
+A Role is the core object in Agent Roles — a complete specialist agent definition. It is not just a prompt and not just a skill collection; it is an encapsulation unit that carries its own capabilities, context, and adapter information.
 
-Plugin content means host-native plugin files carried inside the role package,
-not a requirement to install a global plugin or use an external plugin manager.
+### Role Definition
 
-## From Skill Development To Role Development
+A Role Definition is the manifest file for a Role. It describes the Role's responsibilities, required skills, tool dependencies, plugin content, host adapter configuration, and the rules for mounting and unmounting.
 
-Skill development usually ships isolated capabilities.
+### Host Adapter
 
-Role development ships complete specialist agents.
+A Host Adapter describes how a Role enters a specific host environment. The same Role can be read and mounted by multiple hosts. The Host Adapter captures the differences in directory layout, config format, tool entry points, and plugin projection for each host.
 
-Instead of publishing a single skill and asking users to manually combine it
-with memory, tools, plugins, and host configuration, a developer can package the
-whole role as a RolePack.
+### Mount / Unmount
 
-Build skills. Ship roles.
+| Operation | Description |
+|-----------|-------------|
+| **Mount** | Attach a Role to a target project by dynamically loading its contents via an index, establishing connections between the Role, the target project, and the host environment |
+| **Unmount** | Detach a Role from the target project; session files are retained as needed, all other content is cleared immediately, without affecting the main environment, user global config, or other agents |
 
-## From Skills Management To Roles Management
+---
 
-Managing scattered skills and plugins is fragile.
+## What a Role Can Carry
 
-Users need to know what to install, how to combine it, which tools it needs,
-where it writes files, and how to clean it up.
+| Content | Description |
+|---------|-------------|
+| `role instructions` | Role responsibilities, behavior boundaries, and working style |
+| `skills` | Capability modules the role uses |
+| `memory` | Memory or project context carried by the role |
+| `tools` | Commands, scripts, or external tools the role depends on |
+| `plugins` | Plugin content the role projects into the host environment |
+| `host adapters` | Adapter metadata for different host environments |
+| `lifecycle rules` | Rules for handling mount, update, and unmount |
 
-Role management is simpler: mount one RolePack, get one specialist agent.
-Unmount it, and generated role assets should go away with it.
+---
 
-## Project Scope
+## Design Goals
 
-Agent Roles starts as a specification project.
+- Specialist agent roles can be clearly defined and independently distributed
+- Roles can migrate across projects, be mounted on demand, and be cleanly unmounted
+- Role content boundaries are explicit and do not interfere with the main environment or other agents
+- Provide a unified specification for CLI, role manager, and mount runtime
 
-The first releases focus on:
+---
 
-- RolePack package layout
-- role metadata conventions
-- validation rules
-- forbidden secret and runtime-state rules
-- reference roles
-- templates
-- host adapter contracts
-- conformance tests
+## Current Status
 
-The specification leads. The CLI, role manager, and mount runtime follow.
+> The specification is in early design stage.
 
-## Hosts And Adapters
+Current focus:
 
-Agent Roles is host-neutral.
+- Role concept boundaries and Role Definition structure
+- How skills, memory, tools, and plugins are organized
+- How Host Adapters are expressed
+- Minimum behavioral constraints for mount / unmount
 
-A host adapter describes how a specific host would consume a RolePack and
-project its contents into a running agent environment.
+Upcoming: schema, examples, CLI prototype, role manager, and mount runtime.
 
-Planned adapter contracts include:
+---
 
-- Claude Code
-- Codex
-- CCB
-- Hive
+## Adapter Roadmap
 
-Adapters may map RolePack contents into host-native concepts such as subagents,
-skills, plugins, commands, MCP servers, memory files, or managed provider
-state.
+Host Adapter development will begin with these multi-agent projects:
 
-## Repository Structure
+- [CCB (claude_codex_bridge)](https://github.com/SeemSeam/claude_codex_bridge)
+- [HIVE](https://github.com/tt-a1i/hive)
 
-```text
-agent-roles/
-  specs/              # RolePack specification
-  schemas/            # Validation schemas
-  templates/          # Starter RolePack templates
-  reference_roles/    # Official example roles
-  adapters/           # Host adapter contracts
-  conformance/        # Compatibility tests and fixtures
-  cli/                # Future CLI implementation
-```
-
-A concrete role may look like:
-
-```text
-reference_roles/
-  archi/
-    README.md
-    role.toml
-    memory.md
-    skills/
-    prompts/
-    tools/
-    plugins/
-    adapters/
-    tests/
-```
-
-## Roadmap
-
-### v0.1 Spec Preview
-
-- RolePack package spec
-- role metadata conventions
-- forbidden-state rules
-- starter templates
-- first reference roles
-
-### v0.2 Community Roles
-
-- contribution guide
-- role quality checklist
-- more reference roles
-- role gallery
-
-### v0.3 Host Adapter Contracts
-
-- Claude Code adapter contract
-- Codex adapter contract
-- CCB adapter contract
-- Hive adapter contract
-
-### v0.4 Conformance Harnesses
-
-- adapter output validation
-- generated asset ownership checks
-- mount/unmount compatibility tests
-
-### v0.5 CLI Preview
-
-- validate RolePacks
-- render host-specific assets where useful
-- prototype mount and unmount for selected hosts
-
-## Non-Goals
-
-Agent Roles is not, in the first release:
-
-- a registry
-- a security sandbox
-- a multi-agent scheduler
-- a provider session manager
-- a CCB runtime extraction
-- a host-specific plugin manager
-
-Runtime management comes after the RolePack specification stabilizes.
-
-## Contributing
-
-We welcome RolePack contributions.
-
-A good role should have a clear purpose, explicit responsibilities, useful
-skills or tools, documented boundaries, and no secrets, credentials, provider
-sessions, or runtime state.
-
-Detailed contribution rules will live in `CONTRIBUTING.md`.
+Adapters for Claude Code, Codex, and other major hosts are also planned. We will actively work toward native Role format support across platforms.

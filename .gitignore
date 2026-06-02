@@ -1,3 +1,6 @@
+# CCB internal config and runtime
+.ccb/
+
 # OS/editor
 .DS_Store
 Thumbs.db

@@ -1,0 +1,102 @@
+# Agent Roles
+
+> Agent Roles adalah spesifikasi yang netral terhadap host untuk mengemas AI agent spesialis sebagai Role yang portable dan dapat di-mount.
+
+Sebuah Role menggabungkan semua yang dibutuhkan agent spesialis — skills, memory, dependensi tool, plugin content, dan host adapter metadata — ke dalam satu unit portable. Role dapat di-mount ke agent pada proyek target, lalu di-unmount dengan bersih saat tidak lagi dibutuhkan, tanpa memengaruhi lingkungan utama, konfigurasi global pengguna, atau agent lain.
+
+Spesifikasi ini dirancang untuk mendorong kolaborasi multi-agent menuju struktur yang lebih jelas:
+
+| Audiens | Pergeseran |
+|---------|------------|
+| **Developer** | Dari membangun skill terpisah menjadi mengirimkan Role lengkap |
+| **Pengguna** | Dari mengelola skills/plugins yang tersebar menjadi mengelola roles |
+
+> Terjemahan ini mengikuti `README.md`. Jika ada perbedaan, versi bahasa Inggris menjadi acuan.
+
+---
+
+## Mengapa Agent Roles
+
+Konten agent spesialis biasanya tersebar di beberapa direktori, file konfigurasi, dan runtime:
+
+- System prompts
+- Skills yang diambil sesuai kebutuhan
+- Project memory dan long-term memory
+- Dependensi tool
+- Konfigurasi adapter khusus host
+
+Migrasi berarti menyalin, memasang, dan melakukan debugging secara manual. Saat unmount, sulit menebak file mana yang milik agent dan mana yang milik lingkungan utama atau agent lain.
+
+Agent Roles mengatur semua ini ke dalam format Role yang terstandardisasi, sehingga agent spesialis dapat didefinisikan, didistribusikan, di-mount, dan di-unmount sebagai satu unit independen.
+
+---
+
+## Konsep Inti
+
+### Role
+
+Role adalah objek inti dalam Agent Roles — definisi agent spesialis yang lengkap. Role bukan sekadar prompt dan bukan sekadar kumpulan skill; Role adalah unit enkapsulasi yang membawa capability, context, dan informasi adapter miliknya sendiri.
+
+### Role Definition
+
+Role Definition adalah file manifest untuk sebuah Role. File ini menjelaskan tanggung jawab Role, skills yang dibutuhkan, dependensi tool, plugin content, konfigurasi Host Adapter, serta aturan untuk mount dan unmount.
+
+### Host Adapter
+
+Host Adapter menjelaskan bagaimana sebuah Role masuk ke lingkungan host tertentu. Role yang sama dapat dibaca dan di-mount oleh beberapa host. Host Adapter menangkap perbedaan layout direktori, format konfigurasi, entry point tool, dan proyeksi plugin untuk setiap host.
+
+### Mount / Unmount
+
+| Operasi | Deskripsi |
+|---------|-----------|
+| **Mount** | Melampirkan Role ke proyek target dengan memuat kontennya secara dinamis melalui index, membangun koneksi antara Role, proyek target, dan lingkungan host |
+| **Unmount** | Melepas Role dari proyek target; session files dipertahankan sesuai kebutuhan, semua konten lain segera dibersihkan, tanpa memengaruhi lingkungan utama, konfigurasi global pengguna, atau agent lain |
+
+---
+
+## Apa yang Bisa Dibawa Role
+
+| Konten | Deskripsi |
+|--------|-----------|
+| `role instructions` | Tanggung jawab role, batas perilaku, dan gaya kerja |
+| `skills` | Modul capability yang digunakan role |
+| `memory` | Memory atau project context yang dibawa role |
+| `tools` | Command, script, atau tool eksternal yang menjadi dependensi role |
+| `plugins` | Plugin content yang diproyeksikan role ke lingkungan host |
+| `host adapters` | Adapter metadata untuk berbagai lingkungan host |
+| `lifecycle rules` | Aturan untuk menangani mount, update, dan unmount |
+
+---
+
+## Tujuan Desain
+
+- Specialist agent roles dapat didefinisikan dengan jelas dan didistribusikan secara independen
+- Roles dapat berpindah antar proyek, di-mount sesuai kebutuhan, dan di-unmount dengan bersih
+- Batas konten Role eksplisit dan tidak mengganggu lingkungan utama atau agent lain
+- Menyediakan spesifikasi terpadu untuk CLI, role manager, dan mount runtime
+
+---
+
+## Status Saat Ini
+
+> Spesifikasi masih berada pada tahap desain awal.
+
+Fokus saat ini:
+
+- Batas konsep Role dan struktur Role Definition
+- Cara mengatur skills, memory, tools, dan plugins
+- Cara mengekspresikan Host Adapters
+- Batasan perilaku minimum untuk mount / unmount
+
+Berikutnya: schema, examples, CLI prototype, role manager, dan mount runtime.
+
+---
+
+## Roadmap Adapter
+
+Pengembangan Host Adapter akan dimulai dari proyek multi-agent berikut:
+
+- [CCB (claude_codex_bridge)](https://github.com/SeemSeam/claude_codex_bridge)
+- [HIVE](https://github.com/tt-a1i/hive)
+
+Adapter untuk Claude Code, Codex, dan host besar lainnya juga direncanakan. Kami akan aktif mendorong dukungan native untuk format Role di berbagai platform.

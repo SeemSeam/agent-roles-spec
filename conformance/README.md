@@ -1,7 +1,7 @@
 # Conformance
 
 This directory will contain compatibility fixtures and validation expectations
-for RolePacks and host adapters.
+for Roles and host adapters.
 
 Current preview fixtures:
 

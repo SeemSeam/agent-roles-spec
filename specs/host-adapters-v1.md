@@ -4,25 +4,25 @@ Status: draft preview
 
 ## Purpose
 
-A host adapter describes how a specific host would consume a RolePack.
+A host adapter describes how a specific host would consume a Role.
 
 The core specification stays host-neutral. Host adapters define mapping rules
 for Claude Code, Codex, CCB, Hive, and future hosts without changing the source
-RolePack format.
+role source format.
 
 ## Terms
 
 - `Host`: a consumer environment such as Claude Code, Codex, CCB, or Hive.
-- `Adapter`: host-specific rules for consuming a RolePack.
+- `Adapter`: host-specific rules for consuming a Role.
 - `Harness`: compatibility or conformance test environment for an adapter.
-- `Mount`: activate a RolePack as a specialist agent.
+- `Mount`: activate a Role as a specialist agent.
 - `Unmount`: remove generated assets and deactivate the role.
 
 ## Adapter Contract
 
 An adapter document should describe:
 
-- supported RolePack content types
+- supported Role content types
 - unsupported content behavior
 - host-native surfaces used by the adapter
 - whether role-scoped isolation is possible
@@ -48,13 +48,13 @@ Hot reload is not required by this preview contract.
 
 ### CCB
 
-May consume RolePacks through a CCB adapter. CCB's internal role store,
+May consume Roles through a CCB adapter. CCB's internal role store,
 projection, reload, ask, sidebar, and provider-state implementation remain
-CCB-owned implementation details, not RolePack specification requirements.
+CCB-owned implementation details, not role specification requirements.
 
 ### Hive
 
-May consume RolePacks through a Hive adapter. Hive should publish a capability
+May consume Roles through a Hive adapter. Hive should publish a capability
 profile rather than pushing Hive runtime details into the core spec.
 
 ## Capability Profile

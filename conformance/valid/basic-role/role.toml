@@ -2,7 +2,7 @@ schema = "agent-role/preview-0.1"
 id = "fixture.basic"
 name = "Valid Basic Fixture"
 version = "0.1.0"
-description = "A minimal valid RolePack fixture."
+description = "A minimal valid Role fixture."
 license = "Apache-2.0"
 
 [identity]

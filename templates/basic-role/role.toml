@@ -2,7 +2,7 @@ schema = "agent-role/preview-0.1"
 id = "example.basic"
 name = "Basic Role"
 version = "0.1.0"
-description = "A minimal RolePack template."
+description = "a minimal role template."
 license = "Apache-2.0"
 
 [identity]

@@ -4,7 +4,7 @@ Target: `v0.1.0-spec-preview`
 
 ## Required
 
-- [x] README explains Agent Roles as a host-neutral RolePack specification.
+- [x] README explains Agent Roles as a host-neutral role specification.
 - [x] README explains developer value: from skill development to role
   development.
 - [x] README explains user value: from scattered skills/plugins to managed
@@ -14,7 +14,7 @@ Target: `v0.1.0-spec-preview`
 - [x] Apache-2.0 license is present.
 - [x] Contribution rules forbid secrets, credentials, provider sessions, and
   runtime state.
-- [x] RolePack preview specs are present under `specs/`.
+- [x] Role preview specs are present under `specs/`.
 - [x] Starter templates are present under `templates/`.
 - [x] A publisher-neutral reference role is present under `reference_roles/`.
 - [x] Host adapter contract previews are present for Claude Code, Codex, CCB,
@@ -25,7 +25,7 @@ Target: `v0.1.0-spec-preview`
 
 - [ ] Create the public GitHub repository.
 - [ ] Confirm repository description:
-  `From skills to roles: a host-neutral RolePack specification for portable specialist AI agents.`
+  `From skills to roles: a host-neutral role specification for portable specialist AI agents.`
 - [ ] Confirm default branch.
 - [ ] Confirm issue templates are enabled.
 - [ ] Confirm secret scanning is enabled if available.

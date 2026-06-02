@@ -1,6 +1,6 @@
 # Claude Code Adapter Contract Preview
 
-This adapter contract describes how Claude Code may consume RolePacks.
+This adapter contract describes how Claude Code may consume Roles.
 
 Potential host-native surfaces include:
 

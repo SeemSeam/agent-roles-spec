@@ -1,11 +1,19 @@
 # Contributing
 
-Agent Roles welcomes RolePack contributions, templates, adapter contract
+Agent Roles welcomes role contributions, templates, adapter contract
 feedback, and specification improvements.
+
+## Where to Contribute
+
+| Target | Use when |
+|--------|----------|
+| `roles/` | Role is complete, tested, and ready for mounting |
+| `reference_roles/` | Role is a spec demonstration or teaching example |
+| `templates/` | Providing a new starter scaffold |
 
 ## Role Contributions
 
-A contributed role should include:
+A contributed role in `roles/` should include:
 
 - clear purpose
 - explicit responsibilities
@@ -34,7 +42,7 @@ documented under the role's `tools/` directory.
 
 Spec changes should preserve the project boundary:
 
-- core RolePack semantics stay host-neutral
+- core Role semantics stay host-neutral
 - CLI and runtime behavior follows the spec
 - host-specific behavior belongs in adapter docs
 - CCB, Claude Code, Codex, Hive, and future hosts should not redefine the core
