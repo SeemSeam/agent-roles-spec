@@ -1,0 +1,35 @@
+# OS/editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Node/tooling
+node_modules/
+dist/
+build/
+
+# Runtime/state that must not enter RolePacks
+*.pid
+*.sock
+sessions/
+conversation-logs/
+provider-state/
+provider-runtime/
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx

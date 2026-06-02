@@ -1,0 +1,18 @@
+schema = "agent-role/preview-0.1"
+id = "example.with-skills"
+name = "Role With Skills"
+version = "0.1.0"
+description = "A RolePack template that carries skills."
+license = "Apache-2.0"
+
+[identity]
+purpose = "Package reusable skills into a complete role."
+responsibilities = [
+  "Use the bundled skills for the role's specialist work"
+]
+non_goals = [
+  "Act outside the role's documented boundaries"
+]
+
+[contents]
+skills = ["skills/example-skill"]

@@ -1,0 +1,15 @@
+schema = "agent-role/preview-0.1"
+id = "example.basic"
+name = "Basic Role"
+version = "0.1.0"
+description = "A minimal RolePack template."
+license = "Apache-2.0"
+
+[identity]
+purpose = "Describe why this role exists."
+responsibilities = [
+  "Describe the main work this role owns"
+]
+non_goals = [
+  "Describe what this role should not do"
+]

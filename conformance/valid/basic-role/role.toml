@@ -1,0 +1,11 @@
+schema = "agent-role/preview-0.1"
+id = "fixture.basic"
+name = "Valid Basic Fixture"
+version = "0.1.0"
+description = "A minimal valid RolePack fixture."
+license = "Apache-2.0"
+
+[identity]
+purpose = "Demonstrate a valid minimal role."
+responsibilities = ["Provide a valid conformance fixture"]
+non_goals = ["Demonstrate runtime behavior"]

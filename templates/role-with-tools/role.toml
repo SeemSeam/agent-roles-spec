@@ -1,0 +1,18 @@
+schema = "agent-role/preview-0.1"
+id = "example.with-tools"
+name = "Role With Tools"
+version = "0.1.0"
+description = "A RolePack template that declares tool documentation."
+license = "Apache-2.0"
+
+[identity]
+purpose = "Package tool-aware role behavior without hiding installer actions."
+responsibilities = [
+  "Use declared tools only when appropriate"
+]
+non_goals = [
+  "Run hidden installers or undocumented commands"
+]
+
+[contents]
+tools = ["tools/README.md"]

@@ -1,0 +1,18 @@
+schema = "agent-role/preview-0.1"
+id = "example.with-plugin-content"
+name = "Role With Plugin Content"
+version = "0.1.0"
+description = "A RolePack template that carries plugin content."
+license = "Apache-2.0"
+
+[identity]
+purpose = "Show how plugin content can live inside a concrete role package."
+responsibilities = [
+  "Document role-contained plugin content"
+]
+non_goals = [
+  "Install global plugins automatically"
+]
+
+[contents]
+plugins = ["plugins/example-plugin"]
