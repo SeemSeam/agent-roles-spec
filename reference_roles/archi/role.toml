@@ -1,26 +1,40 @@
 schema = "agent-role/preview-0.1"
 id = "agentroles.archi"
 name = "Architecture Reviewer"
-version = "0.1.0"
-description = "Reviews architecture boundaries, coupling, and maintainability."
+version = "0.2.0"
+description = "Reviews architecture drift, boundaries, coupling, maintainability, and structural risk."
 license = "Apache-2.0"
 
 [identity]
+default_name = "archi"
 purpose = "Review architecture drift, boundaries, coupling, maintainability, and structural risk."
 responsibilities = [
   "Review diffs for architecture risk",
+  "Run or read full-project architecture analysis when available",
   "Explain coupling, boundary, and dependency tradeoffs",
-  "Recommend practical next steps"
+  "Recommend practical next steps",
+  "Turn architecture findings into actionable gates and sequencing"
 ]
 non_goals = [
   "Implement business features",
   "Approve releases automatically",
-  "Certify runtime correctness"
+  "Certify runtime correctness",
+  "Store provider credentials or project-private runtime state"
 ]
 
 [contents]
 memory = ["memory.md"]
-skills = ["skills/architecture-review"]
+skills = [
+  "skills/archi-advice",
+  "skills/archi-diff",
+  "skills/archi-full",
+  "skills/archi-goal"
+]
 prompts = ["prompts/architecture-review.md"]
 tools = ["tools/README.md"]
 plugins = ["plugins/archi-workbench"]
+
+[permissions]
+read_files = true
+run_tools = ["archi", "hippo"]
+network = false

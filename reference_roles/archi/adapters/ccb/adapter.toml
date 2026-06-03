@@ -1,0 +1,22 @@
+schema = "agent-role-adapter/ccb-preview-0.1"
+host = "ccb"
+
+default_agent_name = "archi"
+recommended_provider = "codex"
+supported_providers = ["codex", "claude"]
+recommended_workspace_mode = "inplace"
+permission_default = "manual"
+memory_merge_strategy = "append_after_project_memory"
+
+memory = ["adapters/ccb/memory.md"]
+skills = ["adapters/ccb/skills/archi-tooling"]
+
+[skill_projection]
+strategy = "copy-generic-skills"
+description = "CCB projects generic Role skills into the managed provider home for the bound agent."
+
+[tools.architec]
+install = "python adapters/ccb/tools/install.py"
+doctor = "python adapters/ccb/tools/doctor.py"
+update = "python adapters/ccb/tools/update.py"
+required = true

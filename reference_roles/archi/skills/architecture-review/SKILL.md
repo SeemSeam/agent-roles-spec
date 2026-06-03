@@ -1,9 +1,12 @@
 # Architecture Review
 
+This umbrella skill is retained for hosts that only consume one generic skill
+directory. Hosts with richer projection support should prefer the focused
+`archi-advice`, `archi-diff`, `archi-full`, and `archi-goal` skills.
+
 ## Purpose
 
-Use this skill to review structural risk, coupling, boundaries, and
-maintainability.
+Review structural risk, coupling, boundaries, and maintainability.
 
 ## Workflow
 
