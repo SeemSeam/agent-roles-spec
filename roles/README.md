@@ -20,4 +20,5 @@ are intended for direct mounting, not just spec demonstration.
 
 ## Current Roles
 
-_No roles yet. Contributions welcome — see `CONTRIBUTING.md`._
+- [archi](archi/) (`agentroles.archi`): architecture review role with memory,
+  skills, prompts, plugin content, and CCB adapter metadata.
