@@ -77,6 +77,30 @@ A Host Adapter describes how a Role enters a specific host environment. The same
 
 ---
 
+## Package Manager Preview
+
+This repository now includes a preview `agent-roles` package-management CLI. It
+is intentionally narrower than the future mount/unmount runtime: it focuses on
+role discovery, local installation, updates, sync, diagnostics, and
+machine-readable resolution.
+
+Preview commands:
+
+```bash
+python -m agent_roles list --json
+python -m agent_roles install agentroles.archi --json
+python -m agent_roles update agentroles.archi --json
+python -m agent_roles sync . --json
+python -m agent_roles doctor agentroles.archi --json
+python -m agent_roles resolve agentroles.archi --json
+```
+
+The repo-local `cli/agent-roles` wrapper runs the same Python module. Host
+adapters should consume the JSON output; live `mount` and `unmount` commands
+remain deferred until the Host Adapter contracts stabilize.
+
+---
+
 ## Current Status
 
 > The specification is in early design stage.
@@ -86,9 +110,11 @@ Current focus:
 - Role concept boundaries and Role Definition structure
 - How skills, memory, tools, and plugins are organized
 - How Host Adapters are expressed
+- Preview package-management CLI and `.roles` store behavior
 - Minimum behavioral constraints for mount / unmount
 
-Upcoming: schema, examples, CLI prototype, role manager, and mount runtime.
+Upcoming: schema expansion, examples, role manager integration, and live
+mount/unmount runtime.
 
 ---
 
