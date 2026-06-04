@@ -74,3 +74,7 @@ references should be treated as historical planning language until migrated.
   `role.toml` files include `version`, `created_at`, and `updated_at`; tests,
   compileall, wheel/sdist build, `twine check`, and installed-wheel CLI startup
   passed with timestamp fields present in JSON output.
+- `agentroles.archi` CCB adapter tool repair verification passed on 2026-06-04:
+  tests cover managed venv pip repair/rebuild failure paths, llmgateway-missing
+  doctor degraded semantics, role/reference sync, and package-manager
+  install/update/doctor store-current behavior.

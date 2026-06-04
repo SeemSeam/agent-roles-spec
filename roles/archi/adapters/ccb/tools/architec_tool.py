@@ -25,7 +25,7 @@ def install_or_update(action: str) -> int:
             {
                 'architec_status': 'failed',
                 'action': action,
-                'reason': 'venv creation failed',
+                'reason': 'managed venv is not installable',
                 'venv': str(paths['venv']),
                 'stderr': f'{type(exc).__name__}: {exc}',
             }
@@ -122,13 +122,15 @@ def doctor() -> int:
             'help_status': help_status,
             'llmgateway_config': 'present' if llmgateway else 'missing',
             'llmgateway_config_path': str(llmgateway or ''),
+            'llmgateway_hint': _llmgateway_hint() if not llmgateway else '',
+            'llm_readiness': 'ok' if llmgateway else 'degraded',
             'route_check': 'not_run',
             'route_check_command': 'ccb-archi --check . || archi --check .',
             'venv': str(paths['venv']),
             'manifest': str(paths['manifest']),
         }
     )
-    return 0 if status == 'ok' else 1
+    return 0 if status in {'ok', 'degraded'} else 1
 
 
 def _paths() -> dict[str, Path]:
@@ -152,11 +154,35 @@ def _paths() -> dict[str, Path]:
 
 
 def _ensure_venv(paths: dict[str, Path]) -> None:
-    if _is_executable(paths['venv_python']):
+    if not _is_executable(paths['venv_python']):
+        _create_venv(paths, clear=False)
+    if _pip_available(paths):
         return
-    result = _run([sys.executable, '-m', 'venv', str(paths['venv'])], timeout_s=120)
+    _run([str(paths['venv_python']), '-m', 'ensurepip', '--upgrade'], timeout_s=120)
+    if _pip_available(paths):
+        return
+    _create_venv(paths, clear=True)
+    if _pip_available(paths):
+        return
+    raise RuntimeError('pip unavailable in managed Architec venv after ensurepip/rebuild')
+
+
+def _create_venv(paths: dict[str, Path], *, clear: bool) -> None:
+    args = [sys.executable, '-m', 'venv']
+    if clear:
+        args.append('--clear')
+    args.append(str(paths['venv']))
+    result = _run(args, timeout_s=120)
     if result.returncode != 0:
-        raise RuntimeError(f'failed to create Architec venv: {_one_line(result.stderr)}')
+        action = 'rebuild' if clear else 'create'
+        raise RuntimeError(f'failed to {action} managed Architec venv: {_one_line(result.stderr)}')
+
+
+def _pip_available(paths: dict[str, Path]) -> bool:
+    if not _is_executable(paths['venv_python']):
+        return False
+    result = _run([str(paths['venv_python']), '-m', 'pip', '--version'], timeout_s=60)
+    return result.returncode == 0
 
 
 def _write_wrapper(paths: dict[str, Path]) -> None:
@@ -216,6 +242,14 @@ def _llmgateway_config() -> Path | None:
     return None
 
 
+def _llmgateway_hint() -> str:
+    return (
+        'Set LLMGATEWAY_CONFIG or LLM_GATEWAY_CONFIG, or create one of: '
+        '~/.llmgateway/config.yaml, ~/.llmgateway/config.toml, '
+        '~/.config/llmgateway/config.yaml, ~/.config/llmgateway/config.toml'
+    )
+
+
 def _selected_kind(
     selected: str | None,
     *,
@@ -249,9 +283,9 @@ def _doctor_status(
     if not selected:
         return ('missing', 'neither ccb-archi nor archi is available')
     if help_status != 'ok':
-        return ('degraded', 'selected Architec binary does not pass --help')
+        return ('failed', 'selected Architec binary does not pass --help')
     if not llmgateway:
-        return ('degraded', 'llmgateway config is missing')
+        return ('degraded', 'llmgateway config is missing; Architec LLM analysis is not ready')
     if not wrapper_ok or not managed_binary_ok:
         return ('degraded', 'CCB-managed ccb-archi wrapper is missing; using fallback Architec binary')
     return ('ok', 'managed Architec wrapper and llmgateway config are present')

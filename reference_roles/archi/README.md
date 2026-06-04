@@ -1,10 +1,10 @@
 # Architecture Reviewer
 
-`archi` is a reference Role for architecture review.
+`archi` is a production-ready Role for architecture review.
 
-It demonstrates how a role can carry identity, memory, a reusable skill, tool
-documentation, plugin content, adapter notes, and validation notes without
-depending on one host's runtime internals.
+It carries identity, memory, reusable skills, tool documentation, plugin
+content, adapter notes, and validation notes without depending on one host's
+runtime internals.
 
 ## Purpose
 
@@ -43,3 +43,8 @@ responsible for converting or projecting the generic skills into provider-native
 surfaces. For example, the CCB adapter may project generic skills into managed
 Codex or Claude homes and add CCB-specific tooling instructions without changing
 the core role.
+
+The core role declares runtime `network = false`. The CCB adapter's Architec
+install and update hooks may need network access to fetch the configured Python
+package source; that install/update requirement is declared in
+`adapters/ccb/adapter.toml`.
