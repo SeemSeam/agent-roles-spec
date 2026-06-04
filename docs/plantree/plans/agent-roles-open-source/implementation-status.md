@@ -4,7 +4,7 @@ Date: 2026-06-02
 
 ## Current Phase
 
-Repository source migration and terminology handoff.
+Preview package-manager implementation and CCB compatibility bridge.
 
 ## Active Context
 
@@ -48,9 +48,12 @@ references should be treated as historical planning language until migrated.
 3. Review whether filenames such as `rolepack-v1.md` should remain historical
    references or be renamed to `role-v1.md`.
 4. Align release checklist and roadmap with the new GitHub repository name.
-5. Run a repository-wide link and terminology check before the first push.
+5. Harden the preview `agent-roles` CLI JSON contract and `.roles` store
+   metadata before hosts rely on it by default.
+6. Run a repository-wide link and terminology check before the first push.
 
 ## Last Verification
 
-- Directory rename and remote setup were performed locally on 2026-06-02.
-- No test or link checker has been run after migrating this plan tree.
+- `python -m pytest -q` passed for the initial package-manager CLI tests on
+  2026-06-04.
+- `python -m compileall -q agent_roles` passed on 2026-06-04.

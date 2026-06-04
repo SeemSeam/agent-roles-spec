@@ -1,0 +1,4 @@
+schema = "agent-roles-aliases/v1"
+
+[aliases]
+"ccb.archi" = "agentroles.archi"

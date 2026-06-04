@@ -17,11 +17,14 @@ Date: 2026-06-02
   remains host-neutral.
 - Decided the new project should publish the specification first, then build
   role management, CLI, mount/unmount, and host compatibility work later.
+- Started the first executable `agent-roles` package-management slice for
+  `.roles` list/install/update/sync/doctor/resolve with JSON output. See
+  [topics/package-manager-and-roles-store.md](topics/package-manager-and-roles-store.md).
 
 ## In Progress
 
-- Shape the public README, repository structure, and v0.1 release requirements
-  for a GitHub spec-preview launch.
+- Harden the preview package-management CLI while continuing the public README,
+  repository structure, and v0.1 release requirement cleanup.
 
 ## Next
 
@@ -39,7 +42,9 @@ Date: 2026-06-02
 5. Create at least one reference role that demonstrates memory, skills, tools,
    and host adapter metadata without depending on CCB internals.
 6. Add a lightweight validator or validation checklist for the v0.1 preview.
-7. Publish `v0.1.0-spec-preview` only when the first-release checklist passes.
+7. Add CCB compatibility tests for reading `.roles/installed` and resolving
+   legacy aliases through the preview package manager.
+8. Publish `v0.1.0-spec-preview` only when the first-release checklist passes.
 
 ## Deferred
 

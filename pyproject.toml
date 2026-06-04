@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-roles"
+version = "0.1.0"
+description = "Host-neutral role package management preview for Agent Roles."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "SeemSeam" }
+]
+
+[project.scripts]
+agent-roles = "agent_roles.cli:main"
+
+[tool.setuptools]
+packages = ["agent_roles"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

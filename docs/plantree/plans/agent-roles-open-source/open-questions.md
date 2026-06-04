@@ -26,3 +26,19 @@ Date: 2026-06-02
    - `mount` is the stable technical verb.
    - "descend" can appear in marketing copy, but should not replace `mount` in
      specs or CLI naming.
+
+6. Should hosts call `agent-roles` through subprocess JSON, a Python library,
+   or both?
+
+7. Should tool dependency state live under `.roles/tools`, or remain host-owned
+   because execution policy is host-specific?
+
+8. Should the default store path stay `~/.roles`, or should XDG data paths be
+   the default with `~/.roles` as a user-facing alias?
+
+## Resolved
+
+- The first reference role uses `agentroles.archi` as its public role id;
+  `ccb.archi` is a legacy alias, not the primary public identity.
+- The v0.1 repository now includes a small package-management CLI, not the full
+  future mount/unmount runtime.
