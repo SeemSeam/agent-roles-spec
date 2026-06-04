@@ -7,10 +7,11 @@ Date: 2026-06-02
 Plan the first public GitHub release of `agent-roles` as a host-neutral
 RolePack specification project.
 
-This plan is intentionally separate from CCB's internal
-[`rolepack-system`](../rolepack-system/README.md) plan. CCB may later consume
-the specification through an adapter, but this plan does not move CCB role
-store, projection, reload, ask, or sidebar behavior into the new repository.
+This plan is intentionally separate from CCB's internal Role Pack planning.
+`agent-roles-spec` owns the Role specification, role catalog content, and the
+long-term `.roles` package-management layer. CCB consumes that layer through an
+adapter, while CCB project locks, projection, reload, ask, and sidebar behavior
+remain CCB-owned runtime concerns.
 
 ## File Map
 
@@ -31,6 +32,9 @@ store, projection, reload, ask, or sidebar behavior into the new repository.
 - [topics/rolepack-content-boundary.md](topics/rolepack-content-boundary.md):
   what a role can carry, including skills, memory, tools, plugin content, and
   forbidden runtime state.
+- [topics/package-manager-and-roles-store.md](topics/package-manager-and-roles-store.md):
+  preview `agent-roles` package manager, `.roles` store, and host integration
+  boundary.
 - [decisions/001-spec-first-project.md](decisions/001-spec-first-project.md):
   Agent Roles starts as a specification project; CLI and runtime work follows.
 - [decisions/002-rolepack-contains-plugin-content.md](decisions/002-rolepack-contains-plugin-content.md):
@@ -46,6 +50,8 @@ In scope:
 - A RolePack package layout and metadata convention.
 - A v0.1 spec preview release with templates, reference roles, validation
   expectations, and contribution rules.
+- A preview `agent-roles` package-management contract for `.roles` sync, list,
+  install, update, doctor, resolve, digest, provenance, and alias migration.
 - Host adapter contracts for Claude Code, Codex, CCB, Hive, and future hosts.
 - Conformance and harness planning for later releases.
 
