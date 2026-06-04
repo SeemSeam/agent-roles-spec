@@ -33,12 +33,34 @@ Target: `v0.1.0-spec-preview`
 - [ ] Open follow-up issues for schema stabilization, validator CLI, community
   roles, adapter contracts, and conformance harnesses.
 
+## PyPI Preview Release
+
+Target package: `agent-roles` `0.1.0`
+
+- [x] Add Python package metadata in `pyproject.toml`.
+- [x] Add `agent-roles` console script entrypoint.
+- [x] Add `upgrade`, strict `update`, and `--version` CLI behavior.
+- [x] Add GitHub Actions PyPI Trusted Publishing workflow at
+  `.github/workflows/pypi.yml`.
+- [x] Verify wheel/sdist build, `twine check`, wheel install, and CLI startup in
+  a temporary environment.
+- [ ] In PyPI, create a pending trusted publisher for:
+  - PyPI project name: `agent-roles`
+  - Owner: `SeemSeam`
+  - Repository: `agent-roles-spec`
+  - Workflow: `pypi.yml`
+  - Environment: `pypi`
+- [ ] In GitHub, confirm the `pypi` environment exists and requires maintainer
+  approval before publish.
+- [ ] Publish a GitHub Release for tag `v0.1.0` or manually dispatch
+  `Publish Python package`.
+- [ ] Confirm `pipx install agent-roles` installs the uploaded package.
+
 ## Explicitly Deferred
 
 - registry or marketplace
 - security sandbox
 - complete permissions runtime
-- full CLI implementation
 - live mount/unmount runtime
 - automatic hot reload across hosts
 - CCB runtime extraction
