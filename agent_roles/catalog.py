@@ -73,7 +73,6 @@ def catalog_source_paths(*, refresh: bool = False) -> tuple[Path, ...]:
     cwd = Path.cwd()
     if _looks_like_catalog(cwd):
         candidates.append(cwd)
-    candidates.append(Path.home() / "yunwei" / "agent-roles-spec")
     remote = ensure_default_catalog(refresh=refresh)
     if remote is not None:
         candidates.append(remote)
@@ -289,8 +288,6 @@ def _looks_like_catalog(path: Path) -> bool:
 def _source_name(path: Path) -> str:
     resolved = Path(path).resolve()
     if resolved.name == "agent-roles-spec":
-        return "agentroles"
-    if resolved == (Path.home() / "yunwei" / "agent-roles-spec").resolve():
         return "agentroles"
     if resolved == (catalogs_root() / "agent-roles-spec").resolve():
         return "agentroles"

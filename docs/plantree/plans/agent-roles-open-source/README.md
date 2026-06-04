@@ -51,7 +51,8 @@ In scope:
 - A v0.1 spec preview release with templates, reference roles, validation
   expectations, and contribution rules.
 - A preview `agent-roles` package-management contract for `.roles` sync, list,
-  install, update, doctor, resolve, digest, provenance, and alias migration.
+  install, update, upgrade, doctor, resolve, digest, provenance, and alias
+  migration.
 - Host adapter contracts for Claude Code, Codex, CCB, Hive, and future hosts.
 - Conformance and harness planning for later releases.
 

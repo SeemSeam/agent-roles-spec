@@ -45,10 +45,13 @@ A Role Definition is the manifest file for a Role. It describes the Role's respo
 
 A Host Adapter describes how a Role enters a specific host environment. The same Role can be read and mounted by multiple hosts. The Host Adapter captures the differences in directory layout, config format, tool entry points, and plugin projection for each host.
 
-### Mount / Unmount
+### Package And Runtime Operations
 
 | Operation | Description |
 |-----------|-------------|
+| **Install** | Copy, validate, and record a Role in the local `.roles/installed` store without changing any project or host runtime |
+| **Update** | Refresh one already installed Role from its original source; it fails if the Role is not installed yet |
+| **Upgrade** | User-facing alias for update; `upgrade --all` refreshes all installed Roles |
 | **Mount** | Attach a Role to a target project by dynamically loading its contents via an index, establishing connections between the Role, the target project, and the host environment |
 | **Unmount** | Detach a Role from the target project; session files are retained as needed, all other content is cleared immediately, without affecting the main environment, user global config, or other agents |
 
@@ -84,20 +87,43 @@ is intentionally narrower than the future mount/unmount runtime: it focuses on
 role discovery, local installation, updates, sync, diagnostics, and
 machine-readable resolution.
 
+After the first PyPI preview release is published, install the CLI with:
+
+```bash
+pipx install agent-roles
+agent-roles --version
+```
+
+`pip install agent-roles` will also work in a managed Python environment. The
+package provides the `agent-roles` command and the `agent_roles` Python module.
+
 Preview commands:
 
 ```bash
-python -m agent_roles list --json
-python -m agent_roles install agentroles.archi --json
-python -m agent_roles update agentroles.archi --json
-python -m agent_roles sync . --json
-python -m agent_roles doctor agentroles.archi --json
-python -m agent_roles resolve agentroles.archi --json
+agent-roles list --json
+agent-roles install agentroles.archi --json
+agent-roles update agentroles.archi --json
+agent-roles upgrade agentroles.archi --json
+agent-roles upgrade --all --json
+agent-roles sync . --json
+agent-roles doctor agentroles.archi --json
+agent-roles resolve agentroles.archi --json
 ```
 
-The repo-local `cli/agent-roles` wrapper runs the same Python module. Host
-adapters should consume the JSON output; live `mount` and `unmount` commands
-remain deferred until the Host Adapter contracts stabilize.
+`install` is a package-store operation, not a runtime mount. `update` refreshes
+one already installed Role and will not silently install a missing Role.
+`upgrade` is the user-facing update alias, with `upgrade --all` for every
+installed Role.
+
+By default, the CLI discovers Roles from the current catalog-like directory and
+from the public `agent-roles-spec` catalog cloned into `~/.roles/catalogs`.
+Set `AGENT_ROLES_STORE` to choose a different store root, `AGENT_ROLES_SPEC_HOME`
+or `AGENT_ROLES_CATALOG` to point at local catalogs, and `AGENT_ROLES_NO_REMOTE=1`
+to disable the default Git catalog.
+
+The repo-local `cli/agent-roles` wrapper and `python -m agent_roles` run the
+same CLI module. Host adapters should consume the JSON output; live `mount` and
+`unmount` commands remain deferred until the Host Adapter contracts stabilize.
 
 ---
 

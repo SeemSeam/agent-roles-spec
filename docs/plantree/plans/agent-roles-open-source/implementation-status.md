@@ -1,10 +1,10 @@
 # Agent Roles Open Source Implementation Status
 
-Date: 2026-06-02
+Date: 2026-06-04
 
 ## Current Phase
 
-Preview package-manager implementation and CCB compatibility bridge.
+Preview package-manager hardening and PyPI release preparation.
 
 ## Active Context
 
@@ -24,6 +24,7 @@ Preview package-manager implementation and CCB compatibility bridge.
 - Host integration: `Host Adapter`
 - Mount action: `mount Role`
 - Repository name: `agent-roles-spec`
+- CLI/package command: `agent-roles`
 
 Avoid introducing `Pack` as the main artifact term. Earlier `RolePack`
 references should be treated as historical planning language until migrated.
@@ -48,12 +49,21 @@ references should be treated as historical planning language until migrated.
 3. Review whether filenames such as `rolepack-v1.md` should remain historical
    references or be renamed to `role-v1.md`.
 4. Align release checklist and roadmap with the new GitHub repository name.
-5. Harden the preview `agent-roles` CLI JSON contract and `.roles` store
-   metadata before hosts rely on it by default.
-6. Run a repository-wide link and terminology check before the first push.
+5. Configure PyPI Trusted Publishing for project `agent-roles` using
+   `.github/workflows/pypi.yml`, repository `SeemSeam/agent-roles-spec`, and
+   GitHub environment `pypi`.
+6. Publish the first PyPI preview only after the release workflow succeeds from
+   a GitHub Release or approved manual workflow dispatch.
+7. Continue hardening host adapter consumption of the preview CLI JSON contract.
 
 ## Last Verification
 
 - `python -m pytest -q` passed for the initial package-manager CLI tests on
   2026-06-04.
 - `python -m compileall -q agent_roles` passed on 2026-06-04.
+- `python -m pytest` passed after adding `upgrade`, strict `update`, and
+  `--version` behavior on 2026-06-04.
+- Temporary release build verification passed on 2026-06-04: copied the working
+  tree to a temp source directory, ran tests, built wheel/sdist, ran
+  `twine check`, installed the wheel in a temp venv, and verified
+  `agent-roles --version` plus `agent-roles list --json`.

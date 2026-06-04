@@ -12,6 +12,23 @@ license = { text = "Apache-2.0" }
 authors = [
   { name = "SeemSeam" }
 ]
+keywords = ["ai-agents", "agent-roles", "roles", "cli", "package-management"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Software Development",
+  "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/SeemSeam/agent-roles-spec"
+Repository = "https://github.com/SeemSeam/agent-roles-spec"
+Issues = "https://github.com/SeemSeam/agent-roles-spec/issues"
+Documentation = "https://github.com/SeemSeam/agent-roles-spec#readme"
 
 [project.scripts]
 agent-roles = "agent_roles.cli:main"

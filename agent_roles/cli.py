@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 from typing import Any, Sequence, TextIO
 
+from . import __version__
 from .catalog import (
     canonical_role_id,
     discover_roles_from_paths,
@@ -16,6 +17,7 @@ from .manifest import AgentRolesError, load_role, normalize_role_id
 from .store import (
     install_role_assets,
     installed_root,
+    installed_role_ids,
     load_installed,
     load_installed_metadata,
     load_installed_role,
@@ -32,7 +34,7 @@ def run(argv: Sequence[str], *, stdout: TextIO, stderr: TextIO) -> int:
     try:
         args = parser.parse_args(list(argv))
     except SystemExit as exc:
-        return int(exc.code or 2)
+        return int(exc.code if exc.code is not None else 0)
     try:
         payload = dispatch(args)
     except AgentRolesError as exc:
@@ -45,6 +47,7 @@ def run(argv: Sequence[str], *, stdout: TextIO, stderr: TextIO) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="agent-roles")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     list_parser = sub.add_parser("list")
@@ -59,6 +62,11 @@ def build_parser() -> argparse.ArgumentParser:
     update = sub.add_parser("update")
     update.add_argument("role_id")
     update.add_argument("--json", action="store_true", default=False)
+
+    upgrade = sub.add_parser("upgrade")
+    upgrade.add_argument("role_id", nargs="?")
+    upgrade.add_argument("--all", action="store_true", default=False)
+    upgrade.add_argument("--json", action="store_true", default=False)
 
     sync = sub.add_parser("sync")
     sync.add_argument("path", nargs="?", default=".")
@@ -81,6 +89,8 @@ def dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return cmd_install(args.role_id, source_path=Path(args.path) if args.path else None)
     if args.command == "update":
         return cmd_update(args.role_id)
+    if args.command == "upgrade":
+        return cmd_upgrade(args.role_id, all_roles=bool(args.all))
     if args.command == "sync":
         return cmd_sync(Path(args.path))
     if args.command == "doctor":
@@ -124,23 +134,49 @@ def cmd_install(role_id: str | None, *, source_path: Path | None = None) -> dict
 
 def cmd_update(role_id: str) -> dict[str, Any]:
     canonical = canonical_role_id(role_id)
-    metadata = load_installed_metadata(canonical)
-    source_path = str(metadata.get("source_path") or "").strip()
-    if source_path and Path(source_path).expanduser().is_dir():
-        source = Path(source_path).expanduser().resolve()
-        role = load_role(source)
-        if role.id != canonical:
-            raise AgentRolesError(f"role source id mismatch: requested {canonical}, found {role.id}")
-        payload = install_role_assets(role, source=source, source_kind=str(metadata.get("source") or "path"), status="updated")
-    else:
-        source_role = find_source_role(canonical, refresh=True)
-        if source_role is None:
-            raise AgentRolesError(f"role source not found: {canonical}")
-        role = load_role(source_role.path)
-        payload = install_role_assets(role, source=source_role.path, source_kind=source_role.source, status="updated")
+    payload = _update_installed_role(canonical, role_status="updated")
     payload["schema"] = "agent-roles/update/v1"
     payload["status"] = "ok"
+    payload["requested_role_id"] = normalize_role_id(role_id)
     return payload
+
+
+def cmd_upgrade(role_id: str | None, *, all_roles: bool = False) -> dict[str, Any]:
+    if role_id and all_roles:
+        raise AgentRolesError("use either a role id or --all, not both")
+    if role_id:
+        payload = _update_installed_role(canonical_role_id(role_id), role_status="upgraded")
+        payload["schema"] = "agent-roles/update/v1"
+        payload["status"] = "ok"
+        payload["command"] = "upgrade"
+        payload["requested_role_id"] = normalize_role_id(role_id)
+        return payload
+    rows: list[dict[str, Any]] = []
+    failed = 0
+    for installed_id in installed_role_ids():
+        try:
+            payload = _update_installed_role(installed_id, role_status="upgraded")
+        except AgentRolesError as exc:
+            failed += 1
+            rows.append({"role_id": installed_id, "status": "failed", "error": str(exc)})
+            continue
+        rows.append(
+            {
+                "role_id": payload["role_id"],
+                "status": payload["role_status"],
+                "version": payload["version"],
+                "digest": payload["digest"],
+                "path": payload["path"],
+                "source": payload["source"],
+            }
+        )
+    return {
+        "schema": "agent-roles/upgrade/v1",
+        "status": "partial" if failed else "ok",
+        "store_root": str(store_root()),
+        "roles": rows,
+        "error_count": failed,
+    }
 
 
 def cmd_sync(path: Path) -> dict[str, Any]:
@@ -233,6 +269,34 @@ def cmd_resolve(role_id: str) -> dict[str, Any]:
         "source_path": str(source_role.path) if source_role is not None else "",
         "store_root": str(store_root()),
     }
+
+
+def _update_installed_role(role_id: str, *, role_status: str) -> dict[str, object]:
+    metadata = load_installed_metadata(role_id)
+    if not metadata:
+        raise AgentRolesError(f"role is not installed: {role_id}; run agent-roles install {role_id} first")
+    source_kind = str(metadata.get("source") or "path").strip() or "path"
+    source_path = str(metadata.get("source_path") or "").strip()
+    source: Path | None = None
+    source_role = None
+    if source_kind != "path":
+        source_role = find_source_role(role_id, refresh=True)
+        if source_role is not None:
+            source = source_role.path
+            source_kind = source_role.source
+    if source is None and source_path and Path(source_path).expanduser().is_dir():
+        source = Path(source_path).expanduser().resolve()
+    if source is None:
+        source_role = find_source_role(role_id, refresh=True)
+        if source_role is not None:
+            source = source_role.path
+            source_kind = source_role.source
+    if source is None:
+        raise AgentRolesError(f"role source not found for installed role: {role_id}")
+    role = load_role(source)
+    if role.id != role_id:
+        raise AgentRolesError(f"role source id mismatch: requested {role_id}, found {role.id}")
+    return install_role_assets(role, source=source, source_kind=source_kind, status=role_status)
 
 
 def _emit(payload: dict[str, Any], *, json_output: bool, stdout: TextIO) -> None:

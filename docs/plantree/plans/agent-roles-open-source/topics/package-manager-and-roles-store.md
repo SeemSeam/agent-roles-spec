@@ -5,7 +5,8 @@ Date: 2026-06-04
 ## Objective
 
 Define the first `agent-roles` package-management layer for `.roles` content
-sync, installation, update, diagnostics, digest metadata, and alias migration.
+sync, installation, update/upgrade, diagnostics, digest metadata, and alias
+migration.
 
 This layer is host-neutral package management. Hosts such as CCB still own
 project config, project locks, projection, reload, prompt policy, localized
@@ -17,7 +18,7 @@ output, and runtime behavior.
 
 - catalog discovery and sync
 - the `.roles` package store
-- `list`, `install`, `update`, `sync`, `doctor`, and `resolve`
+- `list`, `install`, `update`, `upgrade`, `sync`, `doctor`, and `resolve`
 - role version, digest, source, provenance, and installed path metadata
 - aliases such as `ccb.archi -> agentroles.archi`
 - package-level validation and machine-readable diagnostics
@@ -35,16 +36,23 @@ Hosts own:
 The first executable slice exposes JSON output:
 
 ```bash
-python -m agent_roles list --json
-python -m agent_roles install agentroles.archi --json
-python -m agent_roles update agentroles.archi --json
-python -m agent_roles sync . --json
-python -m agent_roles doctor agentroles.archi --json
-python -m agent_roles resolve agentroles.archi --json
+agent-roles list --json
+agent-roles install agentroles.archi --json
+agent-roles update agentroles.archi --json
+agent-roles upgrade agentroles.archi --json
+agent-roles upgrade --all --json
+agent-roles sync . --json
+agent-roles doctor agentroles.archi --json
+agent-roles resolve agentroles.archi --json
 ```
 
 The repo-local `cli/agent-roles` wrapper calls the same Python module. Host
 adapters should consume the JSON form and ignore the human text form.
+
+`install` creates or refreshes a package-store entry. `update` is intentionally
+stricter: it refreshes one already installed Role and fails if the Role is not
+installed. `upgrade` is the user-facing update alias, and `upgrade --all`
+refreshes every installed Role.
 
 ## Store Shape
 
@@ -70,7 +78,7 @@ The first CCB compatibility requirements are:
 - canonical id `agentroles.archi`
 - legacy alias `ccb.archi`
 - content-addressed installed paths
-- stable JSON for install/update/sync/list/doctor/resolve
+- stable JSON for install/update/upgrade/sync/list/doctor/resolve
 - installed paths that CCB can project from without network access
 - metadata that CCB can copy into `.ccb/role-lock.json`
 
