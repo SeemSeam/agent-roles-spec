@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date, datetime, timezone
 import importlib
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,8 @@ class Role:
     id: str
     name: str
     version: str
+    created_at: str
+    updated_at: str
     description: str
     root: Path
     manifest: dict[str, Any]
@@ -59,6 +62,8 @@ class Role:
             "role_id": self.id,
             "name": self.name,
             "version": self.version,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
             "description": self.description,
             "default_agent_name": self.default_agent_name,
             "providers": list(self.providers),
@@ -88,6 +93,8 @@ def load_role(path: Path) -> Role:
     role_id = normalize_role_id(str(payload.get("id") or ""))
     name = str(payload.get("name") or "").strip()
     version = str(payload.get("version") or "").strip()
+    created_at = normalize_timestamp(payload.get("created_at"), field="created_at", root=root)
+    updated_at = normalize_timestamp(payload.get("updated_at"), field="updated_at", root=root)
     description = str(payload.get("description") or "").strip()
     if not name or not version or not description:
         raise AgentRolesError(f"{root}: role manifest requires name, version, and description")
@@ -95,10 +102,47 @@ def load_role(path: Path) -> Role:
         id=role_id,
         name=name,
         version=version,
+        created_at=created_at,
+        updated_at=updated_at,
         description=description,
         root=root,
         manifest=payload,
     )
+
+
+def normalize_timestamp(value: object, *, field: str, root: Path) -> str:
+    if value is None or value == "":
+        return ""
+    if isinstance(value, datetime):
+        normalized = value
+        if normalized.tzinfo is None:
+            return normalized.replace(microsecond=0).isoformat()
+        return (
+            normalized.astimezone(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+    if isinstance(value, date):
+        return value.isoformat()
+    if not isinstance(value, str):
+        raise AgentRolesError(
+            f"{root}: role manifest {field} must be an ISO 8601 string, date, or datetime"
+        )
+    raw = value.strip()
+    if not raw:
+        return ""
+    candidate = raw.replace("Z", "+00:00")
+    try:
+        if "T" in candidate:
+            datetime.fromisoformat(candidate)
+        else:
+            date.fromisoformat(candidate)
+    except ValueError as exc:
+        raise AgentRolesError(
+            f"{root}: role manifest {field} must use ISO 8601, for example 2026-06-04T00:00:00Z"
+        ) from exc
+    return raw
 
 
 def read_toml(path: Path) -> dict[str, Any]:

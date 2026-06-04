@@ -55,6 +55,9 @@ references should be treated as historical planning language until migrated.
 6. Publish the first PyPI preview only after the release workflow succeeds from
    a GitHub Release or approved manual workflow dispatch.
 7. Continue hardening host adapter consumption of the preview CLI JSON contract.
+8. Decide whether `created_at` / `updated_at` become required for all preview
+   roles or remain "required for published catalog roles" guidance until schema
+   stabilization.
 
 ## Last Verification
 
@@ -67,3 +70,7 @@ references should be treated as historical planning language until migrated.
   tree to a temp source directory, ran tests, built wheel/sdist, ran
   `twine check`, installed the wheel in a temp venv, and verified
   `agent-roles --version` plus `agent-roles list --json`.
+- Role revision metadata verification passed on 2026-06-04: all repository
+  `role.toml` files include `version`, `created_at`, and `updated_at`; tests,
+  compileall, wheel/sdist build, `twine check`, and installed-wheel CLI startup
+  passed with timestamp fields present in JSON output.

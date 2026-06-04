@@ -19,7 +19,8 @@ output, and runtime behavior.
 - catalog discovery and sync
 - the `.roles` package store
 - `list`, `install`, `update`, `upgrade`, `sync`, `doctor`, and `resolve`
-- role version, digest, source, provenance, and installed path metadata
+- role version, revision timestamps, digest, source, provenance, and installed
+  path metadata
 - aliases such as `ccb.archi -> agentroles.archi`
 - package-level validation and machine-readable diagnostics
 
@@ -54,6 +55,9 @@ stricter: it refreshes one already installed Role and fails if the Role is not
 installed. `upgrade` is the user-facing update alias, and `upgrade --all`
 refreshes every installed Role.
 
+Role JSON payloads should expose `version`, content digest, and source revision
+timestamps (`created_at` and `updated_at`) when present in `role.toml`.
+
 ## Store Shape
 
 The preview default is:
@@ -79,6 +83,7 @@ The first CCB compatibility requirements are:
 - legacy alias `ccb.archi`
 - content-addressed installed paths
 - stable JSON for install/update/upgrade/sync/list/doctor/resolve
+- role revision fields that CCB can show in UI or copy into locks
 - installed paths that CCB can project from without network access
 - metadata that CCB can copy into `.ccb/role-lock.json`
 

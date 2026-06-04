@@ -165,6 +165,8 @@ def cmd_upgrade(role_id: str | None, *, all_roles: bool = False) -> dict[str, An
                 "role_id": payload["role_id"],
                 "status": payload["role_status"],
                 "version": payload["version"],
+                "created_at": payload["created_at"],
+                "updated_at": payload["updated_at"],
                 "digest": payload["digest"],
                 "path": payload["path"],
                 "source": payload["source"],
@@ -196,6 +198,8 @@ def cmd_sync(path: Path) -> dict[str, Any]:
                     "role_id": source_role.role_id,
                     "status": "skipped_not_installed",
                     "version": source_role.version,
+                    "created_at": source_role.created_at,
+                    "updated_at": source_role.updated_at,
                     "digest": source_digest,
                     "path": str(source_role.path),
                 }
@@ -207,6 +211,8 @@ def cmd_sync(path: Path) -> dict[str, Any]:
                     "role_id": source_role.role_id,
                     "status": "current",
                     "version": source_role.version,
+                    "created_at": source_role.created_at,
+                    "updated_at": source_role.updated_at,
                     "digest": source_digest,
                     "path": str(source_role.path),
                 }
@@ -219,6 +225,8 @@ def cmd_sync(path: Path) -> dict[str, Any]:
                 "role_id": role.id,
                 "status": "synced",
                 "version": role.version,
+                "created_at": role.created_at,
+                "updated_at": role.updated_at,
                 "digest": str(payload.get("digest") or ""),
                 "path": str(payload.get("path") or ""),
             }
@@ -236,6 +244,11 @@ def cmd_doctor(role_id: str) -> dict[str, Any]:
     source_role = find_source_role(canonical)
     installed = load_installed(canonical)
     role = load_installed_role(canonical)
+    if role is None and source_role is not None:
+        try:
+            role = load_role(source_role.path)
+        except AgentRolesError:
+            role = None
     status = "ok" if source_role is not None or installed is not None else "missing"
     payload: dict[str, Any] = {
         "schema": "agent-roles/doctor/v1",
@@ -257,6 +270,21 @@ def cmd_resolve(role_id: str) -> dict[str, Any]:
     canonical = canonical_role_id(role_id)
     installed = load_installed(canonical)
     source_role = find_source_role(canonical)
+    if installed is not None:
+        version = installed.version
+        created_at = str(installed.metadata.get("role_created_at") or "")
+        updated_at = str(installed.metadata.get("role_updated_at") or "")
+        digest = installed.digest
+    elif source_role is not None:
+        version = source_role.version
+        created_at = source_role.created_at
+        updated_at = source_role.updated_at
+        digest = f"sha256:{source_role.digest}"
+    else:
+        version = ""
+        created_at = ""
+        updated_at = ""
+        digest = ""
     return {
         "schema": "agent-roles/resolve/v1",
         "status": "ok" if installed is not None or source_role is not None else "missing",
@@ -264,8 +292,10 @@ def cmd_resolve(role_id: str) -> dict[str, Any]:
         "requested_role_id": normalize_role_id(role_id),
         "installed": installed is not None,
         "installed_path": str(installed.path) if installed is not None else "",
-        "version": installed.version if installed is not None else (source_role.version if source_role is not None else ""),
-        "digest": installed.digest if installed is not None else (f"sha256:{source_role.digest}" if source_role is not None else ""),
+        "version": version,
+        "created_at": created_at,
+        "updated_at": updated_at,
+        "digest": digest,
         "source_path": str(source_role.path) if source_role is not None else "",
         "store_root": str(store_root()),
     }

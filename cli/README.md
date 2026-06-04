@@ -28,6 +28,9 @@ agent-roles resolve agentroles.archi --json
 installed yet. `upgrade` is the user-facing update alias; `upgrade --all`
 refreshes every installed Role.
 
+Role JSON payloads include `version`, digest metadata, and `created_at` /
+`updated_at` timestamps when the source `role.toml` provides them.
+
 The repo-local `cli/agent-roles` wrapper and `python -m agent_roles` run the
 same module. Host adapters should use `--json` and treat the human text format
 as unstable.

@@ -22,6 +22,8 @@ Date: 2026-06-02
   [topics/package-manager-and-roles-store.md](topics/package-manager-and-roles-store.md).
 - Prepared PyPI package metadata and a Trusted Publishing workflow for the
   `agent-roles` Python package.
+- Added Role revision metadata guidance: `version` is required, while published
+  catalog roles should include `created_at` and `updated_at`.
 
 ## In Progress
 

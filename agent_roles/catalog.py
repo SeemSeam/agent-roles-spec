@@ -19,6 +19,8 @@ class SourceRole:
     source: str
     role_id: str
     version: str
+    created_at: str
+    updated_at: str
     digest: str
     path: Path
     name: str
@@ -117,6 +119,8 @@ def discover_roles_from_paths(
                 source=_source_name(source),
                 role_id=canonical,
                 version=role.version,
+                created_at=role.created_at,
+                updated_at=role.updated_at,
                 digest=tree_digest(role.root),
                 path=role.root.resolve(),
                 name=role.name,
@@ -136,6 +140,8 @@ def discover_roles_from_paths(
                 source=source_role.source,
                 role_id=source_role.role_id,
                 version=source_role.version,
+                created_at=source_role.created_at,
+                updated_at=source_role.updated_at,
                 digest=source_role.digest,
                 path=source_role.path,
                 name=source_role.name,
@@ -154,6 +160,7 @@ def role_catalog_status(*, refresh: bool = False) -> tuple[dict[str, object], ..
     for role_id, source_role in sorted(source_roles.items()):
         metadata = load_installed_metadata(role_id)
         installed_version = str(metadata.get("version") or "") if role_id in installed else ""
+        installed_updated_at = str(metadata.get("role_updated_at") or "") if role_id in installed else ""
         installed_digest = str(metadata.get("digest") or "") if role_id in installed else ""
         source_digest = f"sha256:{source_role.digest}"
         if role_id not in installed:
@@ -167,7 +174,10 @@ def role_catalog_status(*, refresh: bool = False) -> tuple[dict[str, object], ..
                 "role_id": role_id,
                 "source": source_role.source,
                 "version": source_role.version,
+                "created_at": source_role.created_at,
+                "updated_at": source_role.updated_at,
                 "installed_version": installed_version,
+                "installed_updated_at": installed_updated_at,
                 "digest": source_digest,
                 "installed_digest": installed_digest,
                 "status": status,
@@ -185,7 +195,10 @@ def role_catalog_status(*, refresh: bool = False) -> tuple[dict[str, object], ..
                 "role_id": role_id,
                 "source": str(metadata.get("source") or ""),
                 "version": "",
+                "created_at": "",
+                "updated_at": "",
                 "installed_version": str(metadata.get("version") or ""),
+                "installed_updated_at": str(metadata.get("role_updated_at") or ""),
                 "digest": "",
                 "installed_digest": str(metadata.get("digest") or ""),
                 "status": "installed_source_missing",

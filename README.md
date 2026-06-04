@@ -41,6 +41,11 @@ A Role is the core object in Agent Roles — a complete specialist agent definit
 
 A Role Definition is the manifest file for a Role. It describes the Role's responsibilities, required skills, tool dependencies, plugin content, host adapter configuration, and the rules for mounting and unmounting.
 
+Each Role Definition carries package version metadata. `version` is required,
+and published catalog Roles should also include `created_at` and `updated_at`
+timestamps so users and hosts can compare Role revisions before installing,
+updating, or mounting them.
+
 ### Host Adapter
 
 A Host Adapter describes how a Role enters a specific host environment. The same Role can be read and mounted by multiple hosts. The Host Adapter captures the differences in directory layout, config format, tool entry points, and plugin projection for each host.
@@ -113,7 +118,8 @@ agent-roles resolve agentroles.archi --json
 `install` is a package-store operation, not a runtime mount. `update` refreshes
 one already installed Role and will not silently install a missing Role.
 `upgrade` is the user-facing update alias, with `upgrade --all` for every
-installed Role.
+installed Role. JSON output includes the Role `version`, digest, and available
+revision timestamps when the source Role provides them.
 
 By default, the CLI discovers Roles from the current catalog-like directory and
 from the public `agent-roles-spec` catalog cloned into `~/.roles/catalogs`.

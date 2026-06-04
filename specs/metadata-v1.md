@@ -17,6 +17,8 @@ schema = "agent-role/preview-0.1"
 id = "agentroles.archi"
 name = "Architecture Reviewer"
 version = "0.1.0"
+created_at = "2026-06-04T00:00:00Z"
+updated_at = "2026-06-04T00:00:00Z"
 description = "Reviews architecture boundaries, coupling, and maintainability."
 license = "Apache-2.0"
 
@@ -51,6 +53,8 @@ non_goals = [
 
 Preview roles may add sections for:
 
+- `created_at`: original role publication timestamp.
+- `updated_at`: latest role content revision timestamp.
 - `contents`: role-contained memory, skills, prompts, tools, plugin content,
   and tests.
 - `permissions`: declared needs, not automatic grants.
@@ -60,6 +64,25 @@ Preview roles may add sections for:
 Optional fields are advisory in the preview. They should be reviewable and
 host-neutral unless placed under a host-specific adapter section.
 
+Published catalog roles should include both `created_at` and `updated_at`.
+Timestamps should use ISO 8601 / RFC 3339 date or date-time strings, preferably
+UTC date-times such as `2026-06-04T00:00:00Z`.
+
+## Version And Revision Rules
+
+`version` is the package-manager version for the Role. It is required because
+the `.roles/installed` store keys installed content by role id, version, and
+digest.
+
+`updated_at` is revision metadata for humans, catalogs, and host adapters. It
+does not replace `version`; it helps hosts display when a Role changed and gives
+maintainers a stable timestamp even when preview content changes are still too
+small for a final semver policy.
+
+When role behavior, bundled skills, tools, adapters, or memory change,
+maintainers should update `updated_at`. They should also bump `version` when the
+change is published as a new installable Role revision.
+
 ## Full Example With Optional Fields
 
 ```toml
@@ -67,6 +90,8 @@ schema = "agent-role/preview-0.1"
 id = "agentroles.archi"
 name = "Architecture Reviewer"
 version = "0.1.0"
+created_at = "2026-06-04T00:00:00Z"
+updated_at = "2026-06-04T00:00:00Z"
 description = "Reviews architecture boundaries, coupling, and maintainability."
 license = "Apache-2.0"
 

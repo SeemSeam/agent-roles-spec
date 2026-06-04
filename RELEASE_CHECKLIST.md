@@ -40,6 +40,8 @@ Target package: `agent-roles` `0.1.0`
 - [x] Add Python package metadata in `pyproject.toml`.
 - [x] Add `agent-roles` console script entrypoint.
 - [x] Add `upgrade`, strict `update`, and `--version` CLI behavior.
+- [x] Ensure published catalog Roles carry package version metadata and
+  revision timestamps.
 - [x] Add GitHub Actions PyPI Trusted Publishing workflow at
   `.github/workflows/pypi.yml`.
 - [x] Verify wheel/sdist build, `twine check`, wheel install, and CLI startup in
