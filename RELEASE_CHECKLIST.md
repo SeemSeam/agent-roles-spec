@@ -52,7 +52,7 @@ Target package: `agent-roles` `0.1.0`
   - Repository: `agent-roles-spec`
   - Workflow: `pypi.yml`
   - Environment: `pypi`
-- [ ] In GitHub, confirm the `pypi` environment exists and requires maintainer
+- [x] In GitHub, confirm the `pypi` environment exists and requires maintainer
   approval before publish.
 - [ ] Publish a GitHub Release for tag `v0.1.0` or manually dispatch
   `Publish Python package`.
