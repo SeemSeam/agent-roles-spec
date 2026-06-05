@@ -89,7 +89,15 @@ references should be treated as historical planning language until migrated.
   `agent-roles-spec` returned 404 from npm registry lookup, npm user
   `seemseam` was authenticated, `package.json` declares package
   `agent-roles@0.1.0` with `agent-roles` in `keywords`, Python tests passed,
-  the npm tarball excluded Python cache files, a temporary tarball install
-  verified `agent-roles --version` and bundled-catalog
-  `agent-roles list --json`, and `npm publish --dry-run --access public`
-  reported a public latest-tag publish without writing to the registry.
+  and `npm publish --dry-run --access public` reported a public latest-tag
+  publish without writing to the registry. Follow-up direction: the npm package
+  must not bundle catalog Role content such as `roles/`; users should discover
+  available Roles with `agent-roles list` against the configured catalog and
+  install only the Roles they need.
+- npm no-bundled-Roles verification passed on 2026-06-05: the npm tarball
+  payload was reduced to 12 CLI/package files with no `roles/` or
+  `reference_roles/` directories, temporary tarball install verified
+  `agent-roles --version`, default remote-catalog `agent-roles list --json`
+  discovered `agentroles.archi`, and the install command for
+  `agentroles.archi` installed that Role on demand into the temp `.roles`
+  store.

@@ -24,27 +24,9 @@
   },
   "files": [
     "agent_roles/*.py",
-    "aliases.toml",
     "bin/agent-roles.js",
     "cli/README.md",
-    "conformance/**/*.example",
-    "conformance/**/*.md",
-    "conformance/**/*.toml",
-    "host-adapters/**/*.md",
-    "pyproject.toml",
-    "reference_roles/**/*.md",
-    "reference_roles/**/*.py",
-    "reference_roles/**/*.toml",
-    "reference_roles/**/SKILL.md",
-    "roles/**/*.md",
-    "roles/**/*.py",
-    "roles/**/*.toml",
-    "roles/**/SKILL.md",
-    "schemas/**/*.md",
-    "specs/**/*.md",
-    "templates/**/*.md",
-    "templates/**/*.toml",
-    "templates/**/SKILL.md"
+    "pyproject.toml"
   ],
   "engines": {
     "node": ">=18"

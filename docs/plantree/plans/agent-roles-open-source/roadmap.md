@@ -23,8 +23,8 @@ Date: 2026-06-02
 - Prepared PyPI package metadata and a Trusted Publishing workflow for the
   `agent-roles` Python package.
 - Prepared npm package metadata for `agent-roles@0.1.0`, including an
-  `agent-roles` keyword and a Node bin wrapper that invokes the bundled Python
-  CLI module.
+  `agent-roles` keyword and a Node bin wrapper that invokes the Python CLI
+  module without bundling catalog Role content.
 - Added Role revision metadata guidance: `version` is required, while published
   catalog roles should include `created_at` and `updated_at`.
 

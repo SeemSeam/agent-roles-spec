@@ -126,6 +126,9 @@ agent-roles --version
 Python package provides the `agent-roles` command and the `agent_roles` Python
 module. The npm package provides the same command through a Node wrapper that
 invokes the bundled Python module, so it requires Python 3.11+ on `PATH`.
+It does not bundle catalog Roles; use `agent-roles list` to discover available
+Roles from the configured catalog and `agent-roles install <role-id>` to install
+only the Roles you need.
 
 Preview commands:
 
