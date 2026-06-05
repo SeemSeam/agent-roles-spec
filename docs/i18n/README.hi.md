@@ -77,6 +77,27 @@ Host Adapter बताता है कि कोई Role किसी specific 
 
 ---
 
+## प्रकाशित Roles
+
+ये catalog में अभी प्रकाशित Roles हैं। हर entry को `agent-roles` से install
+किया जा सकता है और यह host-specific adapters दे सकती है।
+
+<details>
+<summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
+
+- **संस्करण**: `0.2.1`
+- **उद्देश्य**: Architecture drift, boundaries, coupling, maintainability और structural risk की review करता है।
+- **सबसे उपयुक्त**: architecture reviews, dependency-boundary checks, coupling analysis और practical next-step sequencing.
+- **सामग्री**: Role instructions, architecture review skills, reusable prompt, tool documentation, plugin content और host adapters.
+- **एडेप्टर**: CCB, Claude Code, Codex, HIVE.
+- **इंस्टॉल**: `agent-roles install agentroles.archi`
+- **अपडेट**: `agent-roles update agentroles.archi`
+- **स्रोत**: [`roles/archi`](../../roles/archi/)
+
+</details>
+
+---
+
 ## Current Status
 
 > Specification अभी early design stage में है.

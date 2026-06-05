@@ -39,6 +39,9 @@ references should be treated as historical planning language until migrated.
 - Emphasize easy mount/unmount and minimal interference with the main
   environment, user-global configuration, and other agents' working state.
 - Omit a "Non-goals" section from the first Chinese README draft.
+- Keep the "Published Roles" section synchronized across root and translated
+  READMEs; use collapsible entries for formal catalog Roles and list version,
+  purpose, contents, adapters, install/update commands, and source.
 
 ## Active TODO
 
@@ -78,3 +81,5 @@ references should be treated as historical planning language until migrated.
   tests cover managed venv pip repair/rebuild failure paths, llmgateway-missing
   doctor degraded semantics, role/reference sync, and package-manager
   install/update/doctor store-current behavior.
+- README published-role section sync was added on 2026-06-04 across the root
+  README and translated README files under `docs/i18n/`.

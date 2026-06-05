@@ -77,6 +77,27 @@ Un Host Adapter describe cómo un Role entra en un entorno host específico. El 
 
 ---
 
+## Roles publicados
+
+Estos son los Roles publicados actualmente en el catalog. Cada entrada se puede
+instalar con `agent-roles` y puede exponer adaptadores específicos para hosts.
+
+<details>
+<summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
+
+- **Versión**: `0.2.1`
+- **Propósito**: Revisa desviaciones de arquitectura, límites, acoplamiento, mantenibilidad y riesgo estructural.
+- **Ideal para**: revisiones de arquitectura, comprobaciones de límites de dependencias, análisis de acoplamiento y secuenciación práctica de próximos pasos.
+- **Contenido**: instrucciones de Role, skills de revisión arquitectónica, prompt reutilizable, documentación de herramientas, contenido de plugins y adaptadores de host.
+- **Adaptadores**: CCB, Claude Code, Codex, HIVE.
+- **Instalar**: `agent-roles install agentroles.archi`
+- **Actualizar**: `agent-roles update agentroles.archi`
+- **Fuente**: [`roles/archi`](../../roles/archi/)
+
+</details>
+
+---
+
 ## Estado actual
 
 > La especificación aún está en fase de diseño inicial.

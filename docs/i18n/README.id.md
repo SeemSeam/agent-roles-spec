@@ -77,6 +77,27 @@ Host Adapter menjelaskan bagaimana sebuah Role masuk ke lingkungan host tertentu
 
 ---
 
+## Roles yang Dipublikasikan
+
+Berikut Roles catalog yang saat ini sudah dipublikasikan. Setiap entri dapat
+diinstal melalui `agent-roles` dan dapat menyediakan adapter khusus host.
+
+<details>
+<summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
+
+- **Versi**: `0.2.1`
+- **Tujuan**: Meninjau drift arsitektur, batas, coupling, maintainability, dan risiko struktural.
+- **Cocok untuk**: review arsitektur, pemeriksaan batas dependensi, analisis coupling, dan urutan langkah berikutnya yang praktis.
+- **Isi**: instruksi Role, skills review arsitektur, prompt reusable, dokumentasi tool, konten plugin, dan host adapters.
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **Instal**: `agent-roles install agentroles.archi`
+- **Update**: `agent-roles update agentroles.archi`
+- **Sumber**: [`roles/archi`](../../roles/archi/)
+
+</details>
+
+---
+
 ## Status Saat Ini
 
 > Spesifikasi masih berada pada tahap desain awal.

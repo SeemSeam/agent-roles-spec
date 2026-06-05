@@ -77,6 +77,27 @@ Role Definition هو ملف manifest الخاص بـ Role. يصف مسؤوليا
 
 ---
 
+## Roles المنشورة
+
+هذه هي Roles المنشورة حالياً في catalog. يمكن تثبيت كل Role عبر
+`agent-roles`، ويمكن أن يوفّر adapters خاصة بالـ host.
+
+<details>
+<summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
+
+- **الإصدار**: `0.2.1`
+- **الغرض**: يراجع انحراف البنية، والحدود، والاقتران، وقابلية الصيانة، والمخاطر الهيكلية.
+- **مناسب لـ**: مراجعات البنية، فحص حدود الاعتماديات، تحليل الاقتران، وتسلسل الخطوات العملية التالية.
+- **المحتويات**: تعليمات Role، skills لمراجعة البنية، prompt قابل لإعادة الاستخدام، توثيق الأدوات، plugin content، وhost adapters.
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **التثبيت**: `agent-roles install agentroles.archi`
+- **التحديث**: `agent-roles update agentroles.archi`
+- **المصدر**: [`roles/archi`](../../roles/archi/)
+
+</details>
+
+---
+
 ## الحالة الحالية
 
 > المواصفة في مرحلة تصميم مبكرة.
