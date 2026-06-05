@@ -30,14 +30,24 @@ class SourceRole:
 
 
 def canonical_role_id(role_id: str, *, sources: tuple[Path, ...] | None = None) -> str:
-    normalized = normalize_role_id(role_id)
+    normalized = normalize_role_ref(role_id)
     aliases = load_aliases(sources=sources)
     seen: set[str] = set()
     current = normalized
     while current in aliases and current not in seen:
         seen.add(current)
-        current = normalize_role_id(aliases[current])
-    return current
+        current = normalize_role_ref(aliases[current])
+    return normalize_role_id(current)
+
+
+def normalize_role_ref(value: str) -> str:
+    role_ref = str(value or "").strip().lower()
+    if not role_ref:
+        raise AgentRolesError("role id is required")
+    allowed = set("abcdefghijklmnopqrstuvwxyz0123456789._-")
+    if any(ch not in allowed for ch in role_ref):
+        raise AgentRolesError(f"invalid role id: {value!r}")
+    return role_ref
 
 
 def aliases_for(role_id: str, *, sources: tuple[Path, ...] | None = None) -> tuple[str, ...]:
@@ -47,7 +57,7 @@ def aliases_for(role_id: str, *, sources: tuple[Path, ...] | None = None) -> tup
 
 
 def load_aliases(*, sources: tuple[Path, ...] | None = None) -> dict[str, str]:
-    result: dict[str, str] = {"ccb.archi": "agentroles.archi"}
+    result: dict[str, str] = {"archi": "agentroles.archi", "ccb.archi": "agentroles.archi"}
     for source in sources or catalog_source_paths(refresh=False):
         path = source / "aliases.toml"
         if not path.is_file():
@@ -61,7 +71,7 @@ def load_aliases(*, sources: tuple[Path, ...] | None = None) -> dict[str, str]:
             continue
         for alias, target in aliases.items():
             try:
-                result[normalize_role_id(str(alias))] = normalize_role_id(str(target))
+                result[normalize_role_ref(str(alias))] = normalize_role_ref(str(target))
             except AgentRolesError:
                 continue
     return result

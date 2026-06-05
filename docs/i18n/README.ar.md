@@ -90,8 +90,8 @@ Role Definition هو ملف manifest الخاص بـ Role. يصف مسؤوليا
 - **مناسب لـ**: مراجعات البنية، فحص حدود الاعتماديات، تحليل الاقتران، وتسلسل الخطوات العملية التالية.
 - **المحتويات**: تعليمات Role، skills لمراجعة البنية، prompt قابل لإعادة الاستخدام، توثيق الأدوات، plugin content، وhost adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **التثبيت**: `agent-roles install agentroles.archi`
-- **التحديث**: `agent-roles update agentroles.archi`
+- **التثبيت**: `agent-roles install archi`
+- **التحديث**: `agent-roles update archi`
 - **المصدر**: [`roles/archi`](../../roles/archi/)
 
 </details>

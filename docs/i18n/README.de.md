@@ -90,8 +90,8 @@ Dies sind die derzeit veröffentlichten Catalog Roles. Jeder Eintrag kann über
 - **Geeignet für**: Architekturreviews, Prüfungen von Abhängigkeitsgrenzen, Kopplungsanalyse und praktische nächste Schritte.
 - **Inhalte**: Role-Anweisungen, Architekturreview-Skills, wiederverwendbarer Prompt, Tool-Dokumentation, Plugin-Inhalte und Host-Adapter.
 - **Adapter**: CCB, Claude Code, Codex, HIVE.
-- **Installation**: `agent-roles install agentroles.archi`
-- **Aktualisierung**: `agent-roles update agentroles.archi`
+- **Installation**: `agent-roles install archi`
+- **Aktualisierung**: `agent-roles update archi`
 - **Quelle**: [`roles/archi`](../../roles/archi/)
 
 </details>

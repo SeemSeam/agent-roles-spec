@@ -98,8 +98,8 @@ through `agent-roles` and may expose host-specific adapters.
 - **Best for**: architecture reviews, dependency-boundary checks, coupling analysis, and practical next-step sequencing.
 - **Contents**: Role instructions, architecture review skills, reusable prompts, tool documentation, plugin content, and host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Install**: `agent-roles install agentroles.archi`
-- **Update**: `agent-roles update agentroles.archi`
+- **Install**: `agent-roles install archi`
+- **Update**: `agent-roles update archi`
 - **Source**: [`roles/archi`](roles/archi/)
 
 </details>
@@ -113,41 +113,46 @@ is intentionally narrower than the future mount/unmount runtime: it focuses on
 role discovery, local installation, updates, sync, diagnostics, and
 machine-readable resolution.
 
-After the first preview release is published, install the CLI with either
-Python or npm:
+Install the current public preview with npm:
 
 ```bash
-pipx install agent-roles
 npm install -g agent-roles
 agent-roles --version
 ```
 
-`pip install agent-roles` will also work in a managed Python environment. The
-Python package provides the `agent-roles` command and the `agent_roles` Python
-module. The npm package provides the same command through a Node wrapper that
+The npm package provides the `agent-roles` command through a Node wrapper that
 invokes the bundled Python module, so it requires Python 3.11+ on `PATH`.
-It does not bundle the installable `roles/` catalog; use `agent-roles list` to
-discover available Roles from the configured catalog and
-`agent-roles install <role-id>` to install only the Roles you need.
+The PyPI package is prepared but still pending trusted-publishing completion;
+once it is live, `pipx install agent-roles` and `pip install agent-roles` will
+provide the same command and the `agent_roles` Python module.
+
+The npm package does not bundle the installable `roles/` catalog; use
+`agent-roles list` to discover available Roles from the configured catalog and
+`agent-roles install <role>` to install only the Roles you need. Role aliases
+such as `archi` resolve to their canonical catalog IDs, such as
+`agentroles.archi`.
 
 Preview commands:
 
 ```bash
-agent-roles list --json
-agent-roles install agentroles.archi --json
-agent-roles update agentroles.archi --json
-agent-roles upgrade agentroles.archi --json
-agent-roles upgrade --all --json
-agent-roles sync . --json
-agent-roles doctor agentroles.archi --json
-agent-roles resolve agentroles.archi --json
+agent-roles list
+agent-roles install archi
+agent-roles install --all
+agent-roles update archi
+agent-roles upgrade archi
+agent-roles upgrade --all
+agent-roles sync .
+agent-roles doctor archi
+agent-roles resolve archi
 ```
 
 `install` is a package-store operation, not a runtime mount. `update` refreshes
 one already installed Role and will not silently install a missing Role.
 `upgrade` is the user-facing update alias, with `upgrade --all` for every
-installed Role. JSON output includes the Role `version`, digest, and available
-revision timestamps when the source Role provides them.
+installed Role. `install --all` installs all currently discoverable catalog
+Roles. Add `--json` when an adapter or automation flow needs machine-readable
+output; JSON includes the Role `version`, digest, and available revision
+timestamps when the source Role provides them.
 
 By default, the CLI discovers Roles from the current catalog-like directory and
 from the public `agent-roles-spec` catalog cloned into `~/.roles/catalogs`.

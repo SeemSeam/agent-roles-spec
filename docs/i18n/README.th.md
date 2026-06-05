@@ -90,8 +90,8 @@ Host Adapter อธิบายว่า Role เข้าไปใน host envi
 - **เหมาะสำหรับ**: architecture reviews, dependency-boundary checks, coupling analysis และ practical next-step sequencing.
 - **เนื้อหา**: Role instructions, architecture review skills, reusable prompt, tool documentation, plugin content และ host adapters.
 - **อะแดปเตอร์**: CCB, Claude Code, Codex, HIVE.
-- **ติดตั้ง**: `agent-roles install agentroles.archi`
-- **อัปเดต**: `agent-roles update agentroles.archi`
+- **ติดตั้ง**: `agent-roles install archi`
+- **อัปเดต**: `agent-roles update archi`
 - **แหล่งที่มา**: [`roles/archi`](../../roles/archi/)
 
 </details>

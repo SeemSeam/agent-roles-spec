@@ -189,11 +189,11 @@ def test_doctor_reports_llmgateway_missing_as_degraded_without_secret(tmp_path: 
 
 
 def test_agent_roles_archi_install_update_doctor_store_current(tmp_path: Path, monkeypatch, capsys) -> None:
-    install = _run_json(["install", "agentroles.archi"], tmp_path, monkeypatch, capsys)
+    install = _run_json(["install", "archi"], tmp_path, monkeypatch, capsys)
     assert install["role_id"] == "agentroles.archi"
     assert install["version"] == "0.2.1"
 
-    update = _run_json(["update", "agentroles.archi"], tmp_path, monkeypatch, capsys)
+    update = _run_json(["update", "archi"], tmp_path, monkeypatch, capsys)
     installed_path = Path(update["path"])
     expected_root = tmp_path / "store" / "installed" / "agentroles.archi"
     assert installed_path.is_dir()
@@ -205,7 +205,7 @@ def test_agent_roles_archi_install_update_doctor_store_current(tmp_path: Path, m
     assert current.exists()
     assert current.resolve() == installed_path.resolve()
 
-    doctor = _run_json(["doctor", "agentroles.archi"], tmp_path, monkeypatch, capsys)
+    doctor = _run_json(["doctor", "archi"], tmp_path, monkeypatch, capsys)
     assert doctor["status"] == "ok"
     assert doctor["installed"] is True
     assert doctor["installed_path"] == str(installed_path)

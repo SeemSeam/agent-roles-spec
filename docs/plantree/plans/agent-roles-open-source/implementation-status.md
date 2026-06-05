@@ -42,6 +42,12 @@ references should be treated as historical planning language until migrated.
 - Keep the "Published Roles" section synchronized across root and translated
   READMEs; use collapsible entries for formal catalog Roles and list version,
   purpose, contents, adapters, install/update commands, and source.
+- Present npm as the current public install path for the preview CLI; keep PyPI
+  wording explicit that publishing is prepared but still pending trusted
+  publisher completion.
+- Use user-facing short commands in README examples: `archi` alias instead of
+  `agentroles.archi`, omit `--json` by default, and mention `--json` only for
+  adapters or automation.
 
 ## Active TODO
 
@@ -57,10 +63,8 @@ references should be treated as historical planning language until migrated.
    GitHub environment `pypi`.
 6. Publish the first PyPI preview only after the release workflow succeeds from
    a GitHub Release or approved manual workflow dispatch.
-7. Publish the first npm preview package `agent-roles@0.1.0` only after
-   confirming the current dirty worktree state and final package payload.
-8. Continue hardening host adapter consumption of the preview CLI JSON contract.
-9. Decide whether `created_at` / `updated_at` become required for all preview
+7. Continue hardening host adapter consumption of the preview CLI JSON contract.
+8. Decide whether `created_at` / `updated_at` become required for all preview
    roles or remain "required for published catalog roles" guidance until schema
    stabilization.
 
@@ -101,3 +105,12 @@ references should be treated as historical planning language until migrated.
   remote-catalog `agent-roles list --json` discovered `agentroles.archi`, and
   the install command for `agentroles.archi` installed that Role on demand into
   the temp `.roles` store.
+- npm publish completed on 2026-06-05: `agent-roles@0.1.0` is public on npm,
+  `npm view agent-roles` reports `latest: 0.1.0`, temporary install verified
+  `agent-roles --version`, `.github/workflows/npm.yml` was added, GitHub
+  environment `npm` was created with maintainer approval, and npm trusted
+  publisher was configured for `SeemSeam/agent-roles-spec`, workflow
+  `npm.yml`, environment `npm`.
+- CLI simplification verification passed on 2026-06-05: tests cover short role
+  alias `archi`, `install --all`, and non-JSON `list` output while preserving
+  JSON output for adapters and automation.

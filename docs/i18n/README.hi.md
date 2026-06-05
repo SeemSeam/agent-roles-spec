@@ -90,8 +90,8 @@ Host Adapter बताता है कि कोई Role किसी specific 
 - **सबसे उपयुक्त**: architecture reviews, dependency-boundary checks, coupling analysis और practical next-step sequencing.
 - **सामग्री**: Role instructions, architecture review skills, reusable prompt, tool documentation, plugin content और host adapters.
 - **एडेप्टर**: CCB, Claude Code, Codex, HIVE.
-- **इंस्टॉल**: `agent-roles install agentroles.archi`
-- **अपडेट**: `agent-roles update agentroles.archi`
+- **इंस्टॉल**: `agent-roles install archi`
+- **अपडेट**: `agent-roles update archi`
 - **स्रोत**: [`roles/archi`](../../roles/archi/)
 
 </details>

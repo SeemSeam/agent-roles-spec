@@ -90,8 +90,8 @@ Bunlar catalog içinde şu anda yayınlanmış Roles kayıtlarıdır. Her kayıt
 - **En uygun kullanım**: mimari incelemeler, dependency boundary kontrolleri, coupling analizi ve pratik sonraki adım sıralaması.
 - **İçerik**: Role talimatları, mimari inceleme skills, yeniden kullanılabilir prompt, tool dokümantasyonu, plugin content ve host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Kurulum**: `agent-roles install agentroles.archi`
-- **Güncelleme**: `agent-roles update agentroles.archi`
+- **Kurulum**: `agent-roles install archi`
+- **Güncelleme**: `agent-roles update archi`
 - **Kaynak**: [`roles/archi`](../../roles/archi/)
 
 </details>

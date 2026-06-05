@@ -90,8 +90,8 @@ install でき、host 固有の adapter を提供できます。
 - **Best for**: アーキテクチャレビュー、依存関係境界の確認、結合度分析、実践的な次ステップの整理。
 - **Contents**: Role instructions、アーキテクチャレビュー skills、再利用可能な prompt、tool documentation、plugin content、host adapters。
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Install**: `agent-roles install agentroles.archi`
-- **Update**: `agent-roles update agentroles.archi`
+- **Install**: `agent-roles install archi`
+- **Update**: `agent-roles update archi`
 - **Source**: [`roles/archi`](../../roles/archi/)
 
 </details>

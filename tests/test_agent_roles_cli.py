@@ -54,6 +54,14 @@ def _run_failed_json(argv: list[str], tmp_path: Path, monkeypatch, capsys):
     return json.loads(captured.err)
 
 
+def _run_plain(argv: list[str], tmp_path: Path, monkeypatch, capsys):
+    monkeypatch.setenv("AGENT_ROLES_STORE", str(tmp_path / "store"))
+    code = run(argv, stdout=__import__("sys").stdout, stderr=__import__("sys").stderr)
+    captured = capsys.readouterr()
+    assert code == 0, captured.err
+    return captured.out
+
+
 def test_install_and_resolve_from_catalog(tmp_path: Path, monkeypatch, capsys) -> None:
     catalog = tmp_path / "catalog"
     role = _write_role(catalog)
@@ -141,6 +149,26 @@ def test_upgrade_all_installed_roles(tmp_path: Path, monkeypatch, capsys) -> Non
     assert upgrade["roles"][0]["updated_at"] == "2026-06-04T00:00:00Z"
 
 
+def test_install_all_available_roles(tmp_path: Path, monkeypatch, capsys) -> None:
+    monkeypatch.chdir(tmp_path)
+    catalog = tmp_path / "catalog"
+    _write_role(catalog, role_id="agentroles.demo")
+    _write_role(catalog, role_id="agentroles.other")
+    monkeypatch.setenv("AGENT_ROLES_SPEC_HOME", str(catalog))
+    monkeypatch.setenv("AGENT_ROLES_NO_REMOTE", "1")
+
+    install = _run_json(["install", "--all"], tmp_path, monkeypatch, capsys)
+    assert install["schema"] == "agent-roles/install-all/v1"
+    assert install["status"] == "ok"
+    assert install["error_count"] == 0
+    assert {row["role_id"] for row in install["roles"]} == {"agentroles.demo", "agentroles.other"}
+    assert all(row["status"] == "installed" for row in install["roles"])
+
+    for role_id in ("agentroles.demo", "agentroles.other"):
+        metadata = tmp_path / "store" / "installed" / role_id / "install.json"
+        assert metadata.is_file()
+
+
 def test_sync_updates_only_installed_same_id_roles(tmp_path: Path, monkeypatch, capsys) -> None:
     catalog = tmp_path / "catalog"
     role = _write_role(catalog, version="0.1.0")
@@ -160,18 +188,33 @@ def test_alias_resolves_to_canonical_role(tmp_path: Path, monkeypatch, capsys) -
     catalog = tmp_path / "catalog"
     _write_role(catalog, role_id="agentroles.archi")
     (catalog / "aliases.toml").write_text(
-        'schema = "agent-roles-aliases/v1"\n\n[aliases]\n"ccb.archi" = "agentroles.archi"\n',
+        'schema = "agent-roles-aliases/v1"\n\n[aliases]\n"archi" = "agentroles.archi"\n"ccb.archi" = "agentroles.archi"\n',
         encoding="utf-8",
     )
     monkeypatch.setenv("AGENT_ROLES_SPEC_HOME", str(catalog))
     monkeypatch.setenv("AGENT_ROLES_NO_REMOTE", "1")
 
-    install = _run_json(["install", "ccb.archi"], tmp_path, monkeypatch, capsys)
+    install = _run_json(["install", "archi"], tmp_path, monkeypatch, capsys)
     assert install["role_id"] == "agentroles.archi"
 
-    doctor = _run_json(["doctor", "ccb.archi"], tmp_path, monkeypatch, capsys)
+    doctor = _run_json(["doctor", "archi"], tmp_path, monkeypatch, capsys)
     assert doctor["role_id"] == "agentroles.archi"
-    assert doctor["requested_role_id"] == "ccb.archi"
+    assert doctor["requested_role_id"] == "archi"
+
+
+def test_plain_list_includes_roles_and_aliases(tmp_path: Path, monkeypatch, capsys) -> None:
+    catalog = tmp_path / "catalog"
+    _write_role(catalog, role_id="agentroles.archi")
+    (catalog / "aliases.toml").write_text(
+        'schema = "agent-roles-aliases/v1"\n\n[aliases]\n"archi" = "agentroles.archi"\n',
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("AGENT_ROLES_SPEC_HOME", str(catalog))
+    monkeypatch.setenv("AGENT_ROLES_NO_REMOTE", "1")
+
+    output = _run_plain(["list"], tmp_path, monkeypatch, capsys)
+    assert "agentroles.archi" in output
+    assert "aliases=archi" in output
 
 
 def test_remote_disabled_without_catalog_has_no_home_fallback(tmp_path: Path, monkeypatch, capsys) -> None:

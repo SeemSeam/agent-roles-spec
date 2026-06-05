@@ -90,8 +90,8 @@ instalada com `agent-roles` e pode expor adapters específicos de host.
 - **Indicado para**: revisões de arquitetura, checagens de limites de dependências, análise de acoplamento e sequenciamento prático de próximos passos.
 - **Conteúdo**: instruções de Role, skills de revisão arquitetural, prompt reutilizável, documentação de ferramentas, conteúdo de plugins e host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Instalar**: `agent-roles install agentroles.archi`
-- **Atualizar**: `agent-roles update agentroles.archi`
+- **Instalar**: `agent-roles install archi`
+- **Atualizar**: `agent-roles update archi`
 - **Fonte**: [`roles/archi`](../../roles/archi/)
 
 </details>

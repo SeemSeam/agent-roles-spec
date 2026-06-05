@@ -10,10 +10,12 @@ from . import __version__
 from .catalog import (
     canonical_role_id,
     discover_roles_from_paths,
+    discover_source_roles,
     find_source_role,
+    normalize_role_ref,
     role_catalog_status,
 )
-from .manifest import AgentRolesError, load_role, normalize_role_id
+from .manifest import AgentRolesError, load_role
 from .store import (
     install_role_assets,
     installed_root,
@@ -56,6 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     install = sub.add_parser("install")
     install.add_argument("role_id", nargs="?")
+    install.add_argument("--all", action="store_true", default=False)
     install.add_argument("--path", default=None)
     install.add_argument("--json", action="store_true", default=False)
 
@@ -86,7 +89,7 @@ def dispatch(args: argparse.Namespace) -> dict[str, Any]:
     if args.command == "list":
         return cmd_list(refresh=bool(args.refresh))
     if args.command == "install":
-        return cmd_install(args.role_id, source_path=Path(args.path) if args.path else None)
+        return cmd_install(args.role_id, source_path=Path(args.path) if args.path else None, all_roles=bool(args.all))
     if args.command == "update":
         return cmd_update(args.role_id)
     if args.command == "upgrade":
@@ -110,7 +113,42 @@ def cmd_list(*, refresh: bool = False) -> dict[str, Any]:
     }
 
 
-def cmd_install(role_id: str | None, *, source_path: Path | None = None) -> dict[str, Any]:
+def cmd_install(role_id: str | None, *, source_path: Path | None = None, all_roles: bool = False) -> dict[str, Any]:
+    if all_roles:
+        if role_id or source_path is not None:
+            raise AgentRolesError("use either --all or one role source, not both")
+        rows: list[dict[str, Any]] = []
+        failed = 0
+        source_roles = discover_source_roles(refresh=False)
+        if not source_roles:
+            raise AgentRolesError("no role sources found")
+        for source_role in source_roles:
+            try:
+                role = load_role(source_role.path)
+                payload = install_role_assets(role, source=source_role.path, source_kind=source_role.source, status="installed")
+            except AgentRolesError as exc:
+                failed += 1
+                rows.append({"role_id": source_role.role_id, "status": "failed", "error": str(exc)})
+                continue
+            rows.append(
+                {
+                    "role_id": payload["role_id"],
+                    "status": payload["role_status"],
+                    "version": payload["version"],
+                    "created_at": payload["created_at"],
+                    "updated_at": payload["updated_at"],
+                    "digest": payload["digest"],
+                    "path": payload["path"],
+                    "source": payload["source"],
+                }
+            )
+        return {
+            "schema": "agent-roles/install-all/v1",
+            "status": "partial" if failed else "ok",
+            "store_root": str(store_root()),
+            "roles": rows,
+            "error_count": failed,
+        }
     if source_path is not None:
         source = Path(source_path).expanduser().resolve()
         role = load_role(source)
@@ -137,7 +175,7 @@ def cmd_update(role_id: str) -> dict[str, Any]:
     payload = _update_installed_role(canonical, role_status="updated")
     payload["schema"] = "agent-roles/update/v1"
     payload["status"] = "ok"
-    payload["requested_role_id"] = normalize_role_id(role_id)
+    payload["requested_role_id"] = normalize_role_ref(role_id)
     return payload
 
 
@@ -149,7 +187,7 @@ def cmd_upgrade(role_id: str | None, *, all_roles: bool = False) -> dict[str, An
         payload["schema"] = "agent-roles/update/v1"
         payload["status"] = "ok"
         payload["command"] = "upgrade"
-        payload["requested_role_id"] = normalize_role_id(role_id)
+        payload["requested_role_id"] = normalize_role_ref(role_id)
         return payload
     rows: list[dict[str, Any]] = []
     failed = 0
@@ -254,7 +292,7 @@ def cmd_doctor(role_id: str) -> dict[str, Any]:
         "schema": "agent-roles/doctor/v1",
         "status": status,
         "role_id": canonical,
-        "requested_role_id": normalize_role_id(role_id),
+        "requested_role_id": normalize_role_ref(role_id),
         "available": source_role is not None,
         "installed": installed is not None,
         "source_path": str(source_role.path) if source_role is not None else "",
@@ -289,7 +327,7 @@ def cmd_resolve(role_id: str) -> dict[str, Any]:
         "schema": "agent-roles/resolve/v1",
         "status": "ok" if installed is not None or source_role is not None else "missing",
         "role_id": canonical,
-        "requested_role_id": normalize_role_id(role_id),
+        "requested_role_id": normalize_role_ref(role_id),
         "installed": installed is not None,
         "installed_path": str(installed.path) if installed is not None else "",
         "version": version,
@@ -333,7 +371,50 @@ def _emit(payload: dict[str, Any], *, json_output: bool, stdout: TextIO) -> None
     if json_output:
         print(json.dumps(payload, ensure_ascii=True, sort_keys=True), file=stdout)
         return
+    if _emit_human(payload, stdout=stdout):
+        return
     for key, value in payload.items():
         if isinstance(value, (list, dict)):
             continue
         print(f"{key}: {value}", file=stdout)
+
+
+def _emit_human(payload: dict[str, Any], *, stdout: TextIO) -> bool:
+    schema = str(payload.get("schema") or "")
+    if schema == "agent-roles/list/v1":
+        print(f"status: {payload.get('status')}", file=stdout)
+        roles = payload.get("roles")
+        if not isinstance(roles, list) or not roles:
+            print("roles: none", file=stdout)
+            return True
+        print("roles:", file=stdout)
+        for row in roles:
+            if not isinstance(row, dict):
+                continue
+            aliases = row.get("aliases")
+            alias_text = ""
+            if isinstance(aliases, list) and aliases:
+                alias_text = f" aliases={','.join(str(item) for item in aliases)}"
+            print(
+                f"- {row.get('role_id')} {row.get('version')} {row.get('status')}{alias_text} - {row.get('name')}",
+                file=stdout,
+            )
+        return True
+    if schema in {"agent-roles/install-all/v1", "agent-roles/upgrade/v1", "agent-roles/sync/v1"}:
+        print(f"status: {payload.get('status')}", file=stdout)
+        roles = payload.get("roles")
+        if not isinstance(roles, list) or not roles:
+            print("roles: none", file=stdout)
+            return True
+        print("roles:", file=stdout)
+        for row in roles:
+            if not isinstance(row, dict):
+                continue
+            print(
+                f"- {row.get('role_id')} {row.get('status')} {row.get('version')} {row.get('path')}",
+                file=stdout,
+            )
+        if payload.get("error_count") not in (None, ""):
+            print(f"error_count: {payload.get('error_count')}", file=stdout)
+        return True
+    return False

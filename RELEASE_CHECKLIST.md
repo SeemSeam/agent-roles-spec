@@ -35,7 +35,7 @@ Target: `v0.1.0-spec-preview`
 
 ## PyPI Preview Release
 
-Target package: `agent-roles` `0.1.0`
+Target package: `agent-roles` `0.1.1`
 
 - [x] Add Python package metadata in `pyproject.toml`.
 - [x] Add `agent-roles` console script entrypoint.
@@ -54,15 +54,16 @@ Target package: `agent-roles` `0.1.0`
   - Environment: `pypi`
 - [x] In GitHub, confirm the `pypi` environment exists and requires maintainer
   approval before publish.
-- [ ] Publish a GitHub Release for tag `v0.1.0` or manually dispatch
+- [ ] Publish a GitHub Release for tag `v0.1.1` or manually dispatch
   `Publish Python package`.
 - [ ] Confirm `pipx install agent-roles` installs the uploaded package.
 
 ## npm Preview Release
 
-Target package: `agent-roles` `0.1.0`
+Target package: `agent-roles` `0.1.1`
 
-- [x] Confirm npm package name `agent-roles` is not currently published.
+- [x] Confirm npm package name `agent-roles` is published and target version
+  `0.1.1` is not currently published before the next npm release.
 - [x] Add npm package metadata with `agent-roles` in `keywords`.
 - [x] Add an npm `agent-roles` bin wrapper that invokes the bundled Python
   module.
@@ -72,9 +73,15 @@ Target package: `agent-roles` `0.1.0`
 - [x] Verify `npm pack --dry-run`, tarball install, `agent-roles --version`,
   tarball payload without `roles/` but with `templates/` and
   `reference_roles/`, and catalog-backed `agent-roles list --json`.
-- [ ] Publish to npm only after confirming the dirty worktree state and package
+- [x] Publish to npm only after confirming the dirty worktree state and package
   payload.
-- [ ] Confirm `npm install -g agent-roles` installs the uploaded package.
+- [x] Confirm `npm install -g agent-roles` installs the uploaded package.
+- [x] Add GitHub Actions npm Trusted Publishing workflow at
+  `.github/workflows/npm.yml`.
+- [x] Create the GitHub `npm` environment with maintainer approval before
+  publish.
+- [x] Configure npm trusted publisher for package `agent-roles`, repository
+  `SeemSeam/agent-roles-spec`, workflow `npm.yml`, and environment `npm`.
 
 ## Explicitly Deferred
 

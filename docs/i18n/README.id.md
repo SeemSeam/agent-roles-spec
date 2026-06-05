@@ -90,8 +90,8 @@ diinstal melalui `agent-roles` dan dapat menyediakan adapter khusus host.
 - **Cocok untuk**: review arsitektur, pemeriksaan batas dependensi, analisis coupling, dan urutan langkah berikutnya yang praktis.
 - **Isi**: instruksi Role, skills review arsitektur, prompt reusable, dokumentasi tool, konten plugin, dan host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Instal**: `agent-roles install agentroles.archi`
-- **Update**: `agent-roles update agentroles.archi`
+- **Instal**: `agent-roles install archi`
+- **Update**: `agent-roles update archi`
 - **Sumber**: [`roles/archi`](../../roles/archi/)
 
 </details>
