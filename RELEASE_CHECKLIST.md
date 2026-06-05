@@ -76,6 +76,9 @@ Target package: `agent-roles` `0.1.1`
 - [x] Publish to npm only after confirming the dirty worktree state and package
   payload.
 - [x] Confirm `npm install -g agent-roles` installs the uploaded package.
+- [x] Confirm npm registry reports `agent-roles@0.1.1` as `latest` and a
+  temporary install can run `agent-roles --version`, `agent-roles list`, and
+  `agent-roles install --all`.
 - [x] Add GitHub Actions npm Trusted Publishing workflow at
   `.github/workflows/npm.yml`.
 - [x] Create the GitHub `npm` environment with maintainer approval before

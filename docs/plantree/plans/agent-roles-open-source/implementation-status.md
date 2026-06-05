@@ -114,3 +114,11 @@ references should be treated as historical planning language until migrated.
 - CLI simplification verification passed on 2026-06-05: tests cover short role
   alias `archi`, `install --all`, and non-JSON `list` output while preserving
   JSON output for adapters and automation.
+- npm trusted publish for `agent-roles@0.1.1` completed on 2026-06-05 from
+  workflow run `27006878837` at commit `5b6a493`; npm registry reports
+  versions `0.1.0` and `0.1.1` with `latest: 0.1.1`. A temporary npm install
+  verified `agent-roles --version`, `agent-roles list`, and
+  `agent-roles install --all` with the `archi` alias visible in plain output.
+- PyPI remained unpublished on 2026-06-05: the PyPI JSON endpoint for
+  `agent-roles` still returned 404 until PyPI-side pending trusted publisher
+  configuration is completed.
