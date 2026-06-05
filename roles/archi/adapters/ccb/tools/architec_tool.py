@@ -10,7 +10,14 @@ import sys
 import time
 
 
-DEFAULT_INSTALL_SPEC = 'architec @ git+https://github.com/SeemSeam/architec.git'
+DEFAULT_INSTALL_SPEC = 'architec @ https://github.com/SeemSeam/architec/archive/refs/heads/master.zip'
+DEFAULT_DEPENDENCY_SPECS = (
+    'certifi>=2024.0.0',
+    'PyYAML>=6.0',
+    'cryptography>=43',
+    'llmgateway @ https://github.com/SeemSeam/llmgateway/archive/refs/heads/main.zip',
+    'hippocampus @ https://github.com/SeemSeam/hippocampus/archive/refs/heads/main.zip',
+)
 
 
 def install_or_update(action: str) -> int:
@@ -32,17 +39,7 @@ def install_or_update(action: str) -> int:
         )
         return 1
     install_spec = os.environ.get('CCB_ARCHITEC_INSTALL_SPEC') or DEFAULT_INSTALL_SPEC
-    pip_result = _run(
-        [
-            str(paths['venv_python']),
-            '-m',
-            'pip',
-            'install',
-            '--upgrade',
-            install_spec,
-        ],
-        timeout_s=_timeout_s(),
-    )
+    pip_result = _install_architec(paths, install_spec)
     if pip_result.returncode != 0:
         _print_status(
             {
@@ -81,6 +78,36 @@ def install_or_update(action: str) -> int:
         }
     )
     return 0
+
+
+def _install_architec(paths: dict[str, Path], install_spec: str) -> subprocess.CompletedProcess[str]:
+    if os.environ.get('CCB_ARCHITEC_INSTALL_SPEC'):
+        return _pip_install(paths, [install_spec])
+    dependency_result = _pip_install(paths, _architec_dependency_specs())
+    if dependency_result.returncode != 0:
+        return dependency_result
+    return _pip_install(paths, ['--no-deps', install_spec])
+
+
+def _architec_dependency_specs() -> list[str]:
+    raw = str(os.environ.get('CCB_ARCHITEC_DEPENDENCY_SPECS') or '').strip()
+    if raw:
+        return shlex.split(raw)
+    return list(DEFAULT_DEPENDENCY_SPECS)
+
+
+def _pip_install(paths: dict[str, Path], args: list[str]) -> subprocess.CompletedProcess[str]:
+    return _run(
+        [
+            str(paths['venv_python']),
+            '-m',
+            'pip',
+            'install',
+            '--upgrade',
+            *args,
+        ],
+        timeout_s=_timeout_s(),
+    )
 
 
 def doctor() -> int:
