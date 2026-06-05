@@ -1,10 +1,10 @@
 # Agent Roles Open Source Implementation Status
 
-Date: 2026-06-04
+Date: 2026-06-05
 
 ## Current Phase
 
-Preview package-manager hardening and PyPI release preparation.
+Preview package-manager hardening and PyPI/npm release preparation.
 
 ## Active Context
 
@@ -57,8 +57,10 @@ references should be treated as historical planning language until migrated.
    GitHub environment `pypi`.
 6. Publish the first PyPI preview only after the release workflow succeeds from
    a GitHub Release or approved manual workflow dispatch.
-7. Continue hardening host adapter consumption of the preview CLI JSON contract.
-8. Decide whether `created_at` / `updated_at` become required for all preview
+7. Publish the first npm preview package `agent-roles@0.1.0` only after
+   confirming the current dirty worktree state and final package payload.
+8. Continue hardening host adapter consumption of the preview CLI JSON contract.
+9. Decide whether `created_at` / `updated_at` become required for all preview
    roles or remain "required for published catalog roles" guidance until schema
    stabilization.
 
@@ -83,3 +85,11 @@ references should be treated as historical planning language until migrated.
   install/update/doctor store-current behavior.
 - README published-role section sync was added on 2026-06-04 across the root
   README and translated README files under `docs/i18n/`.
+- npm preview packaging verification passed on 2026-06-05: `agent-roles` and
+  `agent-roles-spec` returned 404 from npm registry lookup, npm user
+  `seemseam` was authenticated, `package.json` declares package
+  `agent-roles@0.1.0` with `agent-roles` in `keywords`, Python tests passed,
+  the npm tarball excluded Python cache files, a temporary tarball install
+  verified `agent-roles --version` and bundled-catalog
+  `agent-roles list --json`, and `npm publish --dry-run --access public`
+  reported a public latest-tag publish without writing to the registry.

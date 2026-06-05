@@ -1,0 +1,24 @@
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Local test/build output
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+dist/
+build/
+*.tgz
+
+# CCB/internal runtime state
+.architec/
+.ccb/
+provider-state/
+provider-runtime/
+sessions/
+conversation-logs/
+
+# Local environments and dependencies
+.venv/
+venv/
+node_modules/

@@ -113,15 +113,19 @@ is intentionally narrower than the future mount/unmount runtime: it focuses on
 role discovery, local installation, updates, sync, diagnostics, and
 machine-readable resolution.
 
-After the first PyPI preview release is published, install the CLI with:
+After the first preview release is published, install the CLI with either
+Python or npm:
 
 ```bash
 pipx install agent-roles
+npm install -g agent-roles
 agent-roles --version
 ```
 
 `pip install agent-roles` will also work in a managed Python environment. The
-package provides the `agent-roles` command and the `agent_roles` Python module.
+Python package provides the `agent-roles` command and the `agent_roles` Python
+module. The npm package provides the same command through a Node wrapper that
+invokes the bundled Python module, so it requires Python 3.11+ on `PATH`.
 
 Preview commands:
 

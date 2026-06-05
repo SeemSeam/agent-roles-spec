@@ -22,13 +22,16 @@ Date: 2026-06-02
   [topics/package-manager-and-roles-store.md](topics/package-manager-and-roles-store.md).
 - Prepared PyPI package metadata and a Trusted Publishing workflow for the
   `agent-roles` Python package.
+- Prepared npm package metadata for `agent-roles@0.1.0`, including an
+  `agent-roles` keyword and a Node bin wrapper that invokes the bundled Python
+  CLI module.
 - Added Role revision metadata guidance: `version` is required, while published
   catalog roles should include `created_at` and `updated_at`.
 
 ## In Progress
 
-- Harden the preview package-management CLI while preparing the first PyPI
-  preview release.
+- Harden the preview package-management CLI while preparing the first PyPI and
+  npm preview releases.
 
 ## Next
 
@@ -48,9 +51,11 @@ Date: 2026-06-02
 6. Add a lightweight validator or validation checklist for the v0.1 preview.
 7. Configure PyPI Trusted Publishing for `agent-roles` and run the release
    workflow from a GitHub Release or approved manual dispatch.
-8. Add CCB compatibility tests for reading `.roles/installed` and resolving
+8. Publish the npm preview package `agent-roles@0.1.0` after final confirmation
+   of the package payload and worktree state.
+9. Add CCB compatibility tests for reading `.roles/installed` and resolving
    legacy aliases through the preview package manager.
-9. Publish `v0.1.0-spec-preview` only when the first-release checklist passes.
+10. Publish `v0.1.0-spec-preview` only when the first-release checklist passes.
 
 ## Deferred
 

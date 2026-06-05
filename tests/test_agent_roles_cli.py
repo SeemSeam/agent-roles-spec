@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import agent_roles.catalog as catalog_module
 from agent_roles.cli import run
 
 
@@ -182,3 +183,23 @@ def test_remote_disabled_without_catalog_has_no_home_fallback(tmp_path: Path, mo
 
     listing = _run_json(["list"], tmp_path, monkeypatch, capsys)
     assert listing["roles"] == []
+
+
+def test_list_uses_packaged_catalog_root(tmp_path: Path, monkeypatch, capsys) -> None:
+    package_root = tmp_path / "package"
+    _write_role(package_root, role_id="agentroles.packaged")
+    module_file = package_root / "agent_roles" / "catalog.py"
+    module_file.parent.mkdir()
+    module_file.write_text("", encoding="utf-8")
+    work = tmp_path / "work"
+    work.mkdir()
+
+    monkeypatch.chdir(work)
+    monkeypatch.delenv("AGENT_ROLES_SPEC_HOME", raising=False)
+    monkeypatch.delenv("AGENT_ROLES_CATALOG", raising=False)
+    monkeypatch.setenv("AGENT_ROLES_NO_REMOTE", "1")
+    monkeypatch.setattr(catalog_module, "__file__", str(module_file))
+
+    listing = _run_json(["list"], tmp_path, monkeypatch, capsys)
+    assert listing["roles"][0]["role_id"] == "agentroles.packaged"
+    assert listing["roles"][0]["source"] == "agentroles"

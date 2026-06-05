@@ -58,6 +58,20 @@ Target package: `agent-roles` `0.1.0`
   `Publish Python package`.
 - [ ] Confirm `pipx install agent-roles` installs the uploaded package.
 
+## npm Preview Release
+
+Target package: `agent-roles` `0.1.0`
+
+- [x] Confirm npm package name `agent-roles` is not currently published.
+- [x] Add npm package metadata with `agent-roles` in `keywords`.
+- [x] Add an npm `agent-roles` bin wrapper that invokes the bundled Python
+  module.
+- [x] Verify `npm pack --dry-run`, tarball install, `agent-roles --version`,
+  and `agent-roles list --json`.
+- [ ] Publish to npm only after confirming the dirty worktree state and package
+  payload.
+- [ ] Confirm `npm install -g agent-roles` installs the uploaded package.
+
 ## Explicitly Deferred
 
 - registry or marketplace

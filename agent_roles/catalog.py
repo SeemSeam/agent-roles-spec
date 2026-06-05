@@ -75,6 +75,9 @@ def catalog_source_paths(*, refresh: bool = False) -> tuple[Path, ...]:
     cwd = Path.cwd()
     if _looks_like_catalog(cwd):
         candidates.append(cwd)
+    packaged = _packaged_catalog_root()
+    if packaged is not None:
+        candidates.append(packaged)
     remote = ensure_default_catalog(refresh=refresh)
     if remote is not None:
         candidates.append(remote)
@@ -298,11 +301,23 @@ def _looks_like_catalog(path: Path) -> bool:
     return (root / "roles").is_dir() or (root / "reference_roles").is_dir()
 
 
+def _packaged_catalog_root() -> Path | None:
+    package_root = Path(__file__).resolve().parent.parent
+    if (package_root / ".git").exists():
+        return None
+    if _looks_like_catalog(package_root):
+        return package_root
+    return None
+
+
 def _source_name(path: Path) -> str:
     resolved = Path(path).resolve()
     if resolved.name == "agent-roles-spec":
         return "agentroles"
     if resolved == (catalogs_root() / "agent-roles-spec").resolve():
+        return "agentroles"
+    packaged = _packaged_catalog_root()
+    if packaged is not None and resolved == packaged.resolve():
         return "agentroles"
     return "path"
 

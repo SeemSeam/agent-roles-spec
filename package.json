@@ -1,0 +1,60 @@
+{
+  "name": "agent-roles",
+  "version": "0.1.0",
+  "description": "Host-neutral role package management preview for Agent Roles.",
+  "license": "Apache-2.0",
+  "author": "SeemSeam",
+  "homepage": "https://github.com/SeemSeam/agent-roles-spec#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeemSeam/agent-roles-spec.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SeemSeam/agent-roles-spec/issues"
+  },
+  "keywords": [
+    "ai-agents",
+    "agent-roles",
+    "roles",
+    "cli",
+    "package-management"
+  ],
+  "bin": {
+    "agent-roles": "bin/agent-roles.js"
+  },
+  "files": [
+    "agent_roles/*.py",
+    "aliases.toml",
+    "bin/agent-roles.js",
+    "cli/README.md",
+    "conformance/**/*.example",
+    "conformance/**/*.md",
+    "conformance/**/*.toml",
+    "host-adapters/**/*.md",
+    "pyproject.toml",
+    "reference_roles/**/*.md",
+    "reference_roles/**/*.py",
+    "reference_roles/**/*.toml",
+    "reference_roles/**/SKILL.md",
+    "roles/**/*.md",
+    "roles/**/*.py",
+    "roles/**/*.toml",
+    "roles/**/SKILL.md",
+    "schemas/**/*.md",
+    "specs/**/*.md",
+    "templates/**/*.md",
+    "templates/**/*.toml",
+    "templates/**/SKILL.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "pack:dry-run": "npm pack --dry-run",
+    "smoke": "node bin/agent-roles.js --version"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
