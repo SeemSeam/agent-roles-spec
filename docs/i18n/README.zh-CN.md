@@ -120,8 +120,8 @@ agent-roles --version
 在受管理的 Python 环境中也可以使用 `pip install agent-roles`。该包会提供
 `agent-roles` 命令和 `agent_roles` Python module。npm 包会通过 Node wrapper
 提供同一个命令，并调用随包发布的 Python module，因此需要 `PATH` 中有 Python
-3.11+。它不会内置 catalog Roles；请用 `agent-roles list` 从已配置 catalog
-发现可用 Roles，再用 `agent-roles install <role-id>` 按需安装。
+3.11+。它不会内置可安装的 `roles/` catalog；请用 `agent-roles list`
+从已配置 catalog 发现可用 Roles，再用 `agent-roles install <role-id>` 按需安装。
 
 预览命令：
 

@@ -66,11 +66,12 @@ Target package: `agent-roles` `0.1.0`
 - [x] Add npm package metadata with `agent-roles` in `keywords`.
 - [x] Add an npm `agent-roles` bin wrapper that invokes the bundled Python
   module.
-- [x] Keep catalog Role content such as `roles/` out of the npm package; the
-  CLI should discover Roles through configured catalogs and install them on
-  demand.
+- [x] Keep installable catalog Role content under `roles/` out of the npm
+  package while retaining templates, reference roles, specs, schemas, and
+  conformance fixtures.
 - [x] Verify `npm pack --dry-run`, tarball install, `agent-roles --version`,
-  tarball payload without `roles/`, and catalog-backed `agent-roles list --json`.
+  tarball payload without `roles/` but with `templates/` and
+  `reference_roles/`, and catalog-backed `agent-roles list --json`.
 - [ ] Publish to npm only after confirming the dirty worktree state and package
   payload.
 - [ ] Confirm `npm install -g agent-roles` installs the uploaded package.
