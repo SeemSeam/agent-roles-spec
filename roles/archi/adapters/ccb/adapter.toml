@@ -23,4 +23,4 @@ required = true
 runtime_network = false
 install_network = true
 update_network = true
-network_note = "Core role runtime does not require network. CCB install/update may fetch Architec from the configured Python package source."
+network_note = "Core role runtime does not require network. CCB install/update may fetch @seemseam/archi from the npm registry."

@@ -3,67 +3,70 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-import shlex
 import shutil
 import subprocess
-import sys
 import time
 
 
-DEFAULT_INSTALL_SPEC = 'architec @ https://github.com/SeemSeam/architec/archive/refs/heads/master.zip'
-DEFAULT_DEPENDENCY_SPECS = (
-    'certifi>=2024.0.0',
-    'PyYAML>=6.0',
-    'cryptography>=43',
-    'llmgateway @ https://github.com/SeemSeam/llmgateway/archive/refs/heads/main.zip',
-    'hippocampus @ https://github.com/SeemSeam/hippocampus/archive/refs/heads/main.zip',
-)
+DEFAULT_NPM_PACKAGE = '@seemseam/archi'
 
 
 def install_or_update(action: str) -> int:
     paths = _paths()
     paths['root'].mkdir(parents=True, exist_ok=True)
-    paths['bin_dir'].mkdir(parents=True, exist_ok=True)
-    paths['bin_link'].parent.mkdir(parents=True, exist_ok=True)
-    try:
-        _ensure_venv(paths)
-    except Exception as exc:
+    npm = shutil.which('npm')
+    if not npm:
         _print_status(
             {
                 'architec_status': 'failed',
                 'action': action,
-                'reason': 'managed venv is not installable',
-                'venv': str(paths['venv']),
-                'stderr': f'{type(exc).__name__}: {exc}',
+                'reason': 'npm is not available',
+                'npm_package': _npm_package(),
+                'hint': 'Install Node.js/npm, then run ccb roles update agentroles.archi.',
             }
         )
         return 1
-    install_spec = os.environ.get('CCB_ARCHITEC_INSTALL_SPEC') or DEFAULT_INSTALL_SPEC
-    pip_result = _install_architec(paths, install_spec)
-    if pip_result.returncode != 0:
+
+    package = _npm_package()
+    result = _run([npm, 'install', '-g', package], timeout_s=_timeout_s())
+    if result.returncode != 0:
         _print_status(
             {
                 'architec_status': 'failed',
                 'action': action,
-                'reason': 'pip install failed',
-                'venv': str(paths['venv']),
-                'stderr': _one_line(pip_result.stderr),
+                'reason': 'npm install failed',
+                'npm': npm,
+                'npm_package': package,
+                'stderr': _one_line(result.stderr),
             }
         )
         return 1
-    _write_wrapper(paths)
-    _write_bin_link(paths)
-    version = _probe_version(paths)
+
+    archi = shutil.which('archi')
+    if not archi:
+        _print_status(
+            {
+                'architec_status': 'failed',
+                'action': action,
+                'reason': 'archi binary not found after npm install',
+                'npm': npm,
+                'npm_package': package,
+                'hint': 'Ensure the npm global bin directory is on PATH.',
+            }
+        )
+        return 1
+
+    version = _probe_version(archi)
     manifest = {
-        'schema': 'ccb-tool-architec/v1',
+        'schema': 'ccb-tool-archi/v1',
         'status': 'ok',
         'action': action,
-        'install_spec': install_spec,
-        'venv': str(paths['venv']),
-        'wrapper': str(paths['wrapper']),
-        'bin_link': str(paths['bin_link']),
-        'archi_binary': str(paths['archi_binary']),
+        'package_manager': 'npm',
+        'npm': npm,
+        'npm_package': package,
+        'archi_binary': archi,
         'version': version,
+        'legacy_ccb_archi': _legacy_ccb_archi(),
         'updated_at': int(time.time()),
     }
     paths['manifest'].write_text(json.dumps(manifest, sort_keys=True, indent=2) + '\n', encoding='utf-8')
@@ -71,89 +74,56 @@ def install_or_update(action: str) -> int:
         {
             'architec_status': 'ok',
             'action': action,
-            'venv': str(paths['venv']),
-            'wrapper': str(paths['wrapper']),
-            'bin_link': str(paths['bin_link']),
+            'package_manager': 'npm',
+            'npm_package': package,
+            'archi_binary': archi,
             'version': version,
+            'manifest': str(paths['manifest']),
         }
     )
     return 0
 
 
-def _install_architec(paths: dict[str, Path], install_spec: str) -> subprocess.CompletedProcess[str]:
-    if os.environ.get('CCB_ARCHITEC_INSTALL_SPEC'):
-        return _pip_install(paths, [install_spec])
-    dependency_result = _pip_install(paths, _architec_dependency_specs())
-    if dependency_result.returncode != 0:
-        return dependency_result
-    return _pip_install(paths, ['--no-deps', install_spec])
-
-
-def _architec_dependency_specs() -> list[str]:
-    raw = str(os.environ.get('CCB_ARCHITEC_DEPENDENCY_SPECS') or '').strip()
-    if raw:
-        return shlex.split(raw)
-    return list(DEFAULT_DEPENDENCY_SPECS)
-
-
-def _pip_install(paths: dict[str, Path], args: list[str]) -> subprocess.CompletedProcess[str]:
-    return _run(
-        [
-            str(paths['venv_python']),
-            '-m',
-            'pip',
-            'install',
-            '--upgrade',
-            *args,
-        ],
-        timeout_s=_timeout_s(),
-    )
-
-
 def doctor() -> int:
     paths = _paths()
-    wrapper_ok = _is_executable(paths['wrapper'])
-    managed_binary_ok = _is_executable(paths['archi_binary'])
-    path_wrapper = shutil.which('ccb-archi')
-    path_archi = shutil.which('archi')
-    selected = str(paths['wrapper']) if wrapper_ok else (path_wrapper or path_archi)
-    selected_kind = _selected_kind(
-        selected,
-        managed_wrapper=paths['wrapper'],
-        path_wrapper=path_wrapper,
-        path_archi=path_archi,
-    )
+    npm = shutil.which('npm')
+    archi = shutil.which('archi')
+    legacy = _legacy_ccb_archi()
     help_status = 'skipped'
-    if selected:
-        result = _run([selected, '--help'], timeout_s=20)
-        help_status = 'ok' if result.returncode == 0 else 'failed'
+    version = ''
+    if archi:
+        help_result = _run([archi, '--help'], timeout_s=20)
+        help_status = 'ok' if help_result.returncode == 0 else 'failed'
+        version = _probe_version(archi)
     llmgateway = _llmgateway_config()
     status, reason = _doctor_status(
-        selected=selected,
+        archi=archi,
         help_status=help_status,
         llmgateway=llmgateway,
-        wrapper_ok=wrapper_ok,
-        managed_binary_ok=managed_binary_ok,
     )
     _print_status(
         {
             'architec_status': status,
             'reason': reason,
-            'managed_wrapper': str(paths['wrapper']),
-            'managed_wrapper_exists': wrapper_ok,
-            'managed_archi_binary_exists': managed_binary_ok,
-            'path_ccb_archi': path_wrapper or '',
-            'path_archi': path_archi or '',
-            'selected_binary': selected or '',
-            'selected_kind': selected_kind,
+            'package_manager': 'npm',
+            'npm': npm or '',
+            'npm_package': _npm_package(),
+            'path_archi': archi or '',
+            'selected_binary': archi or '',
+            'selected_kind': 'path_archi' if archi else 'none',
             'help_status': help_status,
+            'version': version,
+            'package_bundle': 'present' if archi and help_status == 'ok' else 'missing',
+            'hippo_bundle': 'bundled_with_archi_package' if archi and help_status == 'ok' else 'unknown',
+            'llmgateway_bundle': 'bundled_with_archi_package' if archi and help_status == 'ok' else 'unknown',
             'llmgateway_config': 'present' if llmgateway else 'missing',
             'llmgateway_config_path': str(llmgateway or ''),
             'llmgateway_hint': _llmgateway_hint() if not llmgateway else '',
             'llm_readiness': 'ok' if llmgateway else 'degraded',
+            'legacy_ccb_archi': legacy,
+            'legacy_ccb_archi_note': _legacy_note(legacy),
             'route_check': 'not_run',
-            'route_check_command': 'ccb-archi --check . || archi --check .',
-            'venv': str(paths['venv']),
+            'route_check_command': 'archi --check .',
             'manifest': str(paths['manifest']),
         }
     )
@@ -162,89 +132,29 @@ def doctor() -> int:
 
 def _paths() -> dict[str, Path]:
     data_home = Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local' / 'share').expanduser()
-    root = data_home / 'ccb' / 'tools' / 'architec'
-    venv = root / 'venv'
-    venv_bin = venv / ('Scripts' if os.name == 'nt' else 'bin')
-    wrapper_name = 'ccb-archi.cmd' if os.name == 'nt' else 'ccb-archi'
-    archi_name = 'archi.exe' if os.name == 'nt' else 'archi'
-    bin_home = Path(os.environ.get('CODEX_BIN_DIR') or Path.home() / '.local' / 'bin').expanduser()
     return {
-        'root': root,
-        'bin_dir': root / 'bin',
-        'venv': venv,
-        'venv_python': venv_bin / ('python.exe' if os.name == 'nt' else 'python'),
-        'archi_binary': venv_bin / archi_name,
-        'wrapper': root / 'bin' / wrapper_name,
-        'bin_link': bin_home / wrapper_name,
-        'manifest': root / 'manifest.json',
+        'root': data_home / 'ccb' / 'tools' / 'archi',
+        'manifest': data_home / 'ccb' / 'tools' / 'archi' / 'manifest.json',
     }
 
 
-def _ensure_venv(paths: dict[str, Path]) -> None:
-    if not _is_executable(paths['venv_python']):
-        _create_venv(paths, clear=False)
-    if _pip_available(paths):
-        return
-    _run([str(paths['venv_python']), '-m', 'ensurepip', '--upgrade'], timeout_s=120)
-    if _pip_available(paths):
-        return
-    _create_venv(paths, clear=True)
-    if _pip_available(paths):
-        return
-    raise RuntimeError('pip unavailable in managed Architec venv after ensurepip/rebuild')
+def _npm_package() -> str:
+    return str(os.environ.get('CCB_ARCHI_NPM_PACKAGE') or DEFAULT_NPM_PACKAGE).strip() or DEFAULT_NPM_PACKAGE
 
 
-def _create_venv(paths: dict[str, Path], *, clear: bool) -> None:
-    args = [sys.executable, '-m', 'venv']
-    if clear:
-        args.append('--clear')
-    args.append(str(paths['venv']))
-    result = _run(args, timeout_s=120)
-    if result.returncode != 0:
-        action = 'rebuild' if clear else 'create'
-        raise RuntimeError(f'failed to {action} managed Architec venv: {_one_line(result.stderr)}')
+def _legacy_ccb_archi() -> str:
+    return shutil.which('ccb-archi') or ''
 
 
-def _pip_available(paths: dict[str, Path]) -> bool:
-    if not _is_executable(paths['venv_python']):
-        return False
-    result = _run([str(paths['venv_python']), '-m', 'pip', '--version'], timeout_s=60)
-    return result.returncode == 0
-
-
-def _write_wrapper(paths: dict[str, Path]) -> None:
-    wrapper = paths['wrapper']
-    if os.name == 'nt':
-        wrapper.write_text(f'@echo off\r\n"{paths["archi_binary"]}" %*\r\n', encoding='utf-8')
-    else:
-        wrapper.write_text(
-            '#!/usr/bin/env sh\n'
-            f'exec {shlex.quote(str(paths["archi_binary"]))} "$@"\n',
-            encoding='utf-8',
-        )
-        wrapper.chmod(0o755)
-
-
-def _write_bin_link(paths: dict[str, Path]) -> None:
-    source = paths['wrapper']
-    target = paths['bin_link']
-    if source.resolve() == target.resolve():
-        return
-    if target.exists() or target.is_symlink():
-        target.unlink()
-    try:
-        target.symlink_to(source)
-    except OSError:
-        shutil.copy2(source, target)
-        if os.name != 'nt':
-            target.chmod(0o755)
-
-
-def _probe_version(paths: dict[str, Path]) -> str:
-    if not _is_executable(paths['wrapper']):
+def _legacy_note(legacy: str) -> str:
+    if not legacy:
         return ''
-    for args in ([str(paths['wrapper']), '--version'], [str(paths['wrapper']), 'version']):
-        result = _run(args, timeout_s=20)
+    return 'legacy ccb-archi wrapper detected and ignored; CCB now prefers the npm archi CLI'
+
+
+def _probe_version(binary: str) -> str:
+    for args in ([binary, '--version'], [binary, 'version']):
+        result = _run(list(args), timeout_s=20)
         if result.returncode == 0 and result.stdout.strip():
             return _one_line(result.stdout)
     return ''
@@ -277,45 +187,19 @@ def _llmgateway_hint() -> str:
     )
 
 
-def _selected_kind(
-    selected: str | None,
-    *,
-    managed_wrapper: Path,
-    path_wrapper: str | None,
-    path_archi: str | None,
-) -> str:
-    if not selected:
-        return 'none'
-    try:
-        selected_path = Path(selected).expanduser().resolve()
-        if selected_path == managed_wrapper.expanduser().resolve():
-            return 'managed_wrapper'
-        if path_wrapper and selected_path == Path(path_wrapper).expanduser().resolve():
-            return 'path_ccb_archi'
-        if path_archi and selected_path == Path(path_archi).expanduser().resolve():
-            return 'path_archi'
-    except OSError:
-        pass
-    return 'unknown'
-
-
 def _doctor_status(
     *,
-    selected: str | None,
+    archi: str | None,
     help_status: str,
     llmgateway: Path | None,
-    wrapper_ok: bool,
-    managed_binary_ok: bool,
 ) -> tuple[str, str]:
-    if not selected:
-        return ('missing', 'neither ccb-archi nor archi is available')
+    if not archi:
+        return ('missing', 'archi CLI is not available; install npm package @seemseam/archi')
     if help_status != 'ok':
-        return ('failed', 'selected Architec binary does not pass --help')
+        return ('failed', 'archi CLI does not pass --help')
     if not llmgateway:
-        return ('degraded', 'llmgateway config is missing; Architec LLM analysis is not ready')
-    if not wrapper_ok or not managed_binary_ok:
-        return ('degraded', 'CCB-managed ccb-archi wrapper is missing; using fallback Architec binary')
-    return ('ok', 'managed Architec wrapper and llmgateway config are present')
+        return ('degraded', 'llmgateway config is missing; Archi LLM analysis is not ready')
+    return ('ok', 'npm archi CLI and llmgateway config are present')
 
 
 def _run(args: list[str], *, timeout_s: float) -> subprocess.CompletedProcess[str]:
@@ -334,13 +218,9 @@ def _run(args: list[str], *, timeout_s: float) -> subprocess.CompletedProcess[st
 
 def _timeout_s() -> float:
     try:
-        return float(os.environ.get('CCB_ARCHITEC_INSTALL_TIMEOUT_S') or '900')
+        return float(os.environ.get('CCB_ARCHI_INSTALL_TIMEOUT_S') or '900')
     except ValueError:
         return 900.0
-
-
-def _is_executable(path: Path) -> bool:
-    return path.is_file() and (os.name == 'nt' or os.access(path, os.X_OK))
 
 
 def _one_line(text: str) -> str:

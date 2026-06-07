@@ -85,7 +85,7 @@ diinstal melalui `agent-roles` dan dapat menyediakan adapter khusus host.
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Versi**: `0.2.1`
+- **Versi**: `0.2.2`
 - **Tujuan**: Meninjau drift arsitektur, batas, coupling, maintainability, dan risiko struktural.
 - **Cocok untuk**: review arsitektur, pemeriksaan batas dependensi, analisis coupling, dan urutan langkah berikutnya yang praktis.
 - **Isi**: instruksi Role, skills review arsitektur, prompt reusable, dokumentasi tool, konten plugin, dan host adapters.

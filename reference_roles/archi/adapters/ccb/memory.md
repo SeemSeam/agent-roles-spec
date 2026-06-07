@@ -11,13 +11,15 @@ This adapter projects `agentroles.archi` into a CCB-managed agent.
 - `ccb.archi` is only a legacy input alias. Prefer `agentroles.archi` in new
   commands and explain that CCB normalizes the old alias to the canonical Role
   id.
-- CCB may install a managed Architec wrapper named `ccb-archi` in a CCB-owned
-  tool root. Prefer `ccb-archi` when it exists; fall back to `archi` only after
-  reporting that the managed wrapper is unavailable.
+- CCB now installs and checks the global npm package `@seemseam/archi`, which
+  provides the `archi` CLI. Prefer `archi` for all architecture-analysis route
+  checks.
+- `ccb-archi` is a legacy wrapper name. If it exists, treat it as stale
+  compatibility residue and do not select it as the preferred route.
 - `archi-tooling` is an internal skill name, not a shell command.
-- CCB-managed Architec tooling normally lives under the CCB data/tool root,
-  with a virtual environment, a stable wrapper, and a user bin link. Do not
-  require a global `pip install --user` when the managed wrapper exists.
+- The npm `archi` package carries the Archi dispatcher and bundled
+  Hippo/llmgateway capabilities. Do not split Hippo or llmgateway into separate
+  pip-managed dependencies for the CCB adapter.
 - llmgateway configuration remains outside CCB project config. Check only
   whether a config exists; never display secret values.
 - Hippo and Architec artifacts inside the project are generated evidence. Do
@@ -32,7 +34,7 @@ ccb roles install agentroles.archi
 ccb roles update agentroles.archi
 ccb roles doctor agentroles.archi
 ccb roles add agentroles.archi:codex
-ccb-archi --check . || archi --check .
+archi --check .
 ```
 
 `ccb roles doctor agentroles.archi` checks role/tool readiness. It may not run a
@@ -42,22 +44,24 @@ artifacts.
 For a quick readiness investigation, collect:
 
 - `ccb roles doctor agentroles.archi`;
-- `command -v ccb-archi` and `command -v archi`;
-- `ccb-archi --version` or `archi --version` when available;
+- `command -v archi`;
+- `archi --version` and `archi --help` when available;
+- whether a legacy `ccb-archi` wrapper exists as stale residue;
 - whether llmgateway config is present in the user's external config location;
 - whether `.hippocampus/` and `.architec/` artifacts exist and look stale.
 
-If enhanced Architec analysis fails because a Python package such as `h2` is
-missing, report it as a managed-tool dependency issue and prefer
-`ccb roles update agentroles.archi` before advising manual package surgery.
+If enhanced Archi analysis fails after the npm route is available, report the
+exact `archi` command, version, and error. Prefer `ccb roles update
+agentroles.archi` or `npm install -g @seemseam/archi` before advising manual
+package surgery.
 
 ## CCB Boundaries
 
 - Do not store llmgateway secrets, provider API keys, or auth state in
   `.ccb/ccb.config`.
-- Do not treat missing `ccb-archi` as proof that a global `archi` route is
-  ready.
-- When `ccb-archi` is missing but `archi` exists, report degraded fallback
-  status.
+- Do not treat missing legacy `ccb-archi` as a failure when `archi` exists;
+  that is the expected npm route.
+- Do not use an existing legacy `ccb-archi` wrapper as the selected binary. It
+  is stale residue unless CCB source explicitly says otherwise.
 - Do not add role skills to global inherited skills. Role skills should project
   only into the bound CCB agent's managed provider home.

@@ -1,9 +1,9 @@
 schema = "agent-role/preview-0.1"
 id = "agentroles.archi"
 name = "Architecture Reviewer"
-version = "0.2.1"
+version = "0.2.2"
 created_at = "2026-06-03T00:00:00Z"
-updated_at = "2026-06-04T13:00:00Z"
+updated_at = "2026-06-07T09:00:00Z"
 description = "Reviews architecture drift, boundaries, coupling, maintainability, and structural risk."
 license = "Apache-2.0"
 

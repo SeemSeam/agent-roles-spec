@@ -1,10 +1,24 @@
 # Agent Roles Open Source Implementation Status
 
-Date: 2026-06-05
+Date: 2026-06-07
 
 ## Current Phase
 
 Preview package-manager hardening and PyPI/npm release preparation.
+
+## Current Review Target
+
+`agentroles.archi` CCB adapter tooling has been aligned with the npm
+`@seemseam/archi` CLI. CCB source installs/checks the npm `archi` command, and
+this repository's Role adapter memory, `archi-tooling` skill, adapter metadata,
+and adapter tool script now match that route instead of the older CCB-managed
+`ccb-archi` Python venv path. See
+[topics/archi-ccb-adapter-tooling-alignment.md](topics/archi-ccb-adapter-tooling-alignment.md).
+
+Reviewer1 reviewed this plan on 2026-06-07 and returned `Proceed` with no
+blocking plan issues. The plan was tightened to expand `ccb-archi` acceptance
+checks and to make `tests/test_archi_ccb_tool.py` the executable test target for
+adapter-tool behavior.
 
 ## Active Context
 
@@ -122,3 +136,9 @@ references should be treated as historical planning language until migrated.
 - PyPI remained unpublished on 2026-06-05: the PyPI JSON endpoint for
   `agent-roles` still returned 404 until PyPI-side pending trusted publisher
   configuration is completed.
+- `agentroles.archi` CCB adapter npm-tooling alignment verification passed on
+  2026-06-07: tests replaced venv repair coverage with npm install/update and
+  doctor coverage, role/reference adapter files stayed synchronized,
+  acceptance `rg` checks found no preferred `ccb-archi`/Python venv/pip route,
+  and a real adapter doctor run selected npm `archi` 0.2.15 while reporting the
+  old `ccb-archi` wrapper only as ignored legacy residue.

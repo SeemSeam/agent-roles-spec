@@ -6,18 +6,22 @@ from pathlib import Path
 import subprocess
 import sys
 
-import pytest
-
 from agent_roles.cli import run
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-ROLE_TOOL = REPO_ROOT / "roles" / "archi" / "adapters" / "ccb" / "tools" / "architec_tool.py"
-REFERENCE_TOOL = (
-    REPO_ROOT / "reference_roles" / "archi" / "adapters" / "ccb" / "tools" / "architec_tool.py"
+ROLE_ROOT = REPO_ROOT / "roles" / "archi"
+REFERENCE_ROOT = REPO_ROOT / "reference_roles" / "archi"
+ROLE_TOOL = ROLE_ROOT / "adapters" / "ccb" / "tools" / "architec_tool.py"
+REFERENCE_TOOL = REFERENCE_ROOT / "adapters" / "ccb" / "tools" / "architec_tool.py"
+SYNCED_FILES = (
+    "role.toml",
+    "adapters/ccb/README.md",
+    "adapters/ccb/adapter.toml",
+    "adapters/ccb/memory.md",
+    "adapters/ccb/skills/archi-tooling/SKILL.md",
+    "adapters/ccb/tools/architec_tool.py",
 )
-ROLE_TOML = REPO_ROOT / "roles" / "archi" / "role.toml"
-REFERENCE_ROLE_TOML = REPO_ROOT / "reference_roles" / "archi" / "role.toml"
 
 
 def _load_tool():
@@ -32,30 +36,11 @@ def _completed(args: list[str], returncode: int, stdout: str = "", stderr: str =
     return subprocess.CompletedProcess(args, returncode, stdout, stderr)
 
 
-def _make_paths(tmp_path: Path, *, executable_python: bool = True) -> dict[str, Path]:
-    root = tmp_path / "architec"
-    venv = root / "venv"
-    venv_bin = venv / ("Scripts" if sys.platform == "win32" else "bin")
-    venv_python = venv_bin / ("python.exe" if sys.platform == "win32" else "python")
-    if executable_python:
-        _make_executable(venv_python)
+def _paths(tmp_path: Path) -> dict[str, Path]:
     return {
-        "root": root,
-        "bin_dir": root / "bin",
-        "venv": venv,
-        "venv_python": venv_python,
-        "archi_binary": venv_bin / ("archi.exe" if sys.platform == "win32" else "archi"),
-        "wrapper": root / "bin" / ("ccb-archi.cmd" if sys.platform == "win32" else "ccb-archi"),
-        "bin_link": tmp_path / "user-bin" / ("ccb-archi.cmd" if sys.platform == "win32" else "ccb-archi"),
-        "manifest": root / "manifest.json",
+        "root": tmp_path / "archi",
+        "manifest": tmp_path / "archi" / "manifest.json",
     }
-
-
-def _make_executable(path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
-    if sys.platform != "win32":
-        path.chmod(0o755)
 
 
 def _run_json(argv: list[str], tmp_path: Path, monkeypatch, capsys):
@@ -69,115 +54,150 @@ def _run_json(argv: list[str], tmp_path: Path, monkeypatch, capsys):
 
 
 def test_archi_role_and_reference_role_stay_in_sync() -> None:
-    assert ROLE_TOOL.read_text(encoding="utf-8") == REFERENCE_TOOL.read_text(encoding="utf-8")
-    assert ROLE_TOML.read_text(encoding="utf-8") == REFERENCE_ROLE_TOML.read_text(encoding="utf-8")
+    for rel in SYNCED_FILES:
+        assert ROLE_ROOT.joinpath(rel).read_text(encoding="utf-8") == REFERENCE_ROOT.joinpath(rel).read_text(
+            encoding="utf-8"
+        )
 
 
-def test_ensure_venv_restores_missing_pip_with_ensurepip(tmp_path: Path, monkeypatch) -> None:
+def test_install_uses_npm_archi_package_and_records_manifest(tmp_path: Path, monkeypatch, capsys) -> None:
     tool = _load_tool()
-    paths = _make_paths(tmp_path)
+    paths = _paths(tmp_path)
     calls: list[list[str]] = []
-    pip_checks = 0
+
+    def fake_which(name: str):
+        return {"npm": "/bin/npm", "archi": "/bin/archi"}.get(name)
 
     def fake_run(args: list[str], *, timeout_s: float):
-        nonlocal pip_checks
         calls.append(args)
-        if args == [str(paths["venv_python"]), "-m", "pip", "--version"]:
-            pip_checks += 1
-            return _completed(args, 0 if pip_checks == 2 else 1, stderr="No module named pip")
-        if args == [str(paths["venv_python"]), "-m", "ensurepip", "--upgrade"]:
+        if args == ["/bin/npm", "install", "-g", "@seemseam/archi"]:
             return _completed(args, 0)
-        if "--clear" in args:
-            pytest.fail("venv --clear should not run when ensurepip repairs pip")
+        if args == ["/bin/archi", "--version"]:
+            return _completed(args, 0, stdout="Architec CLI version: 0.2.15\n")
         return _completed(args, 1, stderr="unexpected command")
-
-    monkeypatch.setattr(tool, "_run", fake_run)
-
-    tool._ensure_venv(paths)
-
-    assert [str(paths["venv_python"]), "-m", "ensurepip", "--upgrade"] in calls
-    assert not any("--clear" in call for call in calls)
-
-
-def test_ensure_venv_rebuilds_when_ensurepip_does_not_restore_pip(tmp_path: Path, monkeypatch) -> None:
-    tool = _load_tool()
-    paths = _make_paths(tmp_path)
-    calls: list[list[str]] = []
-    pip_checks = 0
-
-    def fake_run(args: list[str], *, timeout_s: float):
-        nonlocal pip_checks
-        calls.append(args)
-        if args == [str(paths["venv_python"]), "-m", "pip", "--version"]:
-            pip_checks += 1
-            return _completed(args, 0 if pip_checks == 3 else 1, stderr="No module named pip")
-        if args == [str(paths["venv_python"]), "-m", "ensurepip", "--upgrade"]:
-            return _completed(args, 1, stderr="ensurepip failed")
-        if args[:3] == [sys.executable, "-m", "venv"] and "--clear" in args:
-            return _completed(args, 0)
-        return _completed(args, 1, stderr="unexpected command")
-
-    monkeypatch.setattr(tool, "_run", fake_run)
-
-    tool._ensure_venv(paths)
-
-    assert any(call[:3] == [sys.executable, "-m", "venv"] and "--clear" in call for call in calls)
-
-
-def test_ensure_venv_reports_pip_unavailable_after_repair_attempts(tmp_path: Path, monkeypatch) -> None:
-    tool = _load_tool()
-    paths = _make_paths(tmp_path)
-
-    def fake_run(args: list[str], *, timeout_s: float):
-        if args == [str(paths["venv_python"]), "-m", "pip", "--version"]:
-            return _completed(args, 1, stderr="No module named pip")
-        if args == [str(paths["venv_python"]), "-m", "ensurepip", "--upgrade"]:
-            return _completed(args, 1, stderr="ensurepip failed")
-        if args[:3] == [sys.executable, "-m", "venv"] and "--clear" in args:
-            return _completed(args, 0)
-        return _completed(args, 1, stderr="unexpected command")
-
-    monkeypatch.setattr(tool, "_run", fake_run)
-
-    with pytest.raises(RuntimeError, match="pip unavailable"):
-        tool._ensure_venv(paths)
-
-
-def test_install_reports_managed_venv_not_installable(tmp_path: Path, monkeypatch, capsys) -> None:
-    tool = _load_tool()
-    paths = _make_paths(tmp_path)
 
     monkeypatch.setattr(tool, "_paths", lambda: paths)
-    monkeypatch.setattr(
-        tool,
-        "_ensure_venv",
-        lambda _: (_ for _ in ()).throw(
-            RuntimeError("pip unavailable in managed Architec venv after ensurepip/rebuild")
-        ),
-    )
+    monkeypatch.setattr(tool.shutil, "which", fake_which)
+    monkeypatch.setattr(tool, "_run", fake_run)
+
+    assert tool.install_or_update("install") == 0
+    output = capsys.readouterr().out
+    assert ["/bin/npm", "install", "-g", "@seemseam/archi"] in calls
+    assert not any("pip" in part for call in calls for part in call)
+    assert "package_manager: npm" in output
+    assert "npm_package: @seemseam/archi" in output
+    manifest = json.loads(paths["manifest"].read_text(encoding="utf-8"))
+    assert manifest["schema"] == "ccb-tool-archi/v1"
+    assert manifest["npm_package"] == "@seemseam/archi"
+    assert manifest["archi_binary"] == "/bin/archi"
+
+
+def test_update_honors_custom_npm_package(tmp_path: Path, monkeypatch, capsys) -> None:
+    tool = _load_tool()
+    paths = _paths(tmp_path)
+    calls: list[list[str]] = []
+    monkeypatch.setenv("CCB_ARCHI_NPM_PACKAGE", "@example/archi")
+    monkeypatch.setattr(tool, "_paths", lambda: paths)
+    monkeypatch.setattr(tool.shutil, "which", lambda name: {"npm": "/bin/npm", "archi": "/bin/archi"}.get(name))
+
+    def fake_run(args: list[str], *, timeout_s: float):
+        calls.append(args)
+        if args == ["/bin/npm", "install", "-g", "@example/archi"]:
+            return _completed(args, 0)
+        if args == ["/bin/archi", "--version"]:
+            return _completed(args, 0, stdout="custom archi\n")
+        return _completed(args, 1, stderr="unexpected command")
+
+    monkeypatch.setattr(tool, "_run", fake_run)
+
+    assert tool.install_or_update("update") == 0
+    assert ["/bin/npm", "install", "-g", "@example/archi"] in calls
+
+
+def test_install_reports_missing_npm(tmp_path: Path, monkeypatch, capsys) -> None:
+    tool = _load_tool()
+    monkeypatch.setattr(tool, "_paths", lambda: _paths(tmp_path))
+    monkeypatch.setattr(tool.shutil, "which", lambda _: None)
 
     assert tool.install_or_update("install") == 1
     output = capsys.readouterr().out
-    assert "reason: managed venv is not installable" in output
-    assert "pip unavailable in managed Architec venv after ensurepip/rebuild" in output
-    assert "reason: pip install failed" not in output
+    assert "architec_status: failed" in output
+    assert "reason: npm is not available" in output
 
 
-def test_doctor_reports_llmgateway_missing_as_degraded_without_secret(tmp_path: Path, monkeypatch, capsys) -> None:
+def test_install_reports_missing_archi_binary_after_npm_install(tmp_path: Path, monkeypatch, capsys) -> None:
     tool = _load_tool()
-    paths = _make_paths(tmp_path)
-    _make_executable(paths["wrapper"])
-    _make_executable(paths["archi_binary"])
-    monkeypatch.setenv("LLMGATEWAY_CONFIG", "secret-token-should-not-print")
+    paths = _paths(tmp_path)
+
+    def fake_which(name: str):
+        return {"npm": "/bin/npm"}.get(name)
+
+    def fake_run(args: list[str], *, timeout_s: float):
+        if args == ["/bin/npm", "install", "-g", "@seemseam/archi"]:
+            return _completed(args, 0)
+        return _completed(args, 1, stderr="unexpected command")
+
     monkeypatch.setattr(tool, "_paths", lambda: paths)
-    monkeypatch.setattr(tool.shutil, "which", lambda _: None)
+    monkeypatch.setattr(tool.shutil, "which", fake_which)
+    monkeypatch.setattr(tool, "_run", fake_run)
+
+    assert tool.install_or_update("install") == 1
+    output = capsys.readouterr().out
+    assert "architec_status: failed" in output
+    assert "reason: archi binary not found after npm install" in output
+    assert "Ensure the npm global bin directory is on PATH." in output
+
+
+def test_doctor_selects_archi_and_reports_legacy_ccb_archi_residue(tmp_path: Path, monkeypatch, capsys) -> None:
+    tool = _load_tool()
+    config = tmp_path / "llmgateway.yaml"
+    config.write_text("model: test\n", encoding="utf-8")
+    monkeypatch.setenv("LLMGATEWAY_CONFIG", str(config))
+    monkeypatch.setattr(tool, "_paths", lambda: _paths(tmp_path))
+    monkeypatch.setattr(
+        tool.shutil,
+        "which",
+        lambda name: {"npm": "/bin/npm", "archi": "/bin/archi", "ccb-archi": "/old/ccb-archi"}.get(name),
+    )
+
+    def fake_run(args: list[str], *, timeout_s: float):
+        if args == ["/bin/archi", "--help"]:
+            return _completed(args, 0, stdout="usage: archi\n")
+        if args == ["/bin/archi", "--version"]:
+            return _completed(args, 0, stdout="Architec CLI version: 0.2.15\n")
+        return _completed(args, 1, stderr="unexpected command")
+
+    monkeypatch.setattr(tool, "_run", fake_run)
+
+    assert tool.doctor() == 0
+    output = capsys.readouterr().out
+    assert "architec_status: ok" in output
+    assert "selected_binary: /bin/archi" in output
+    assert "selected_kind: path_archi" in output
+    assert "legacy_ccb_archi: /old/ccb-archi" in output
+    assert "legacy ccb-archi wrapper detected and ignored" in output
+    assert "route_check_command: archi --check ." in output
+
+
+def test_doctor_reports_llmgateway_missing_as_degraded_without_secret(monkeypatch, capsys) -> None:
+    tool = _load_tool()
+    monkeypatch.setenv("LLMGATEWAY_CONFIG", "secret-token-should-not-print")
+    monkeypatch.setattr(tool.shutil, "which", lambda name: {"npm": "/bin/npm", "archi": "/bin/archi"}.get(name))
     monkeypatch.setattr(tool, "_llmgateway_config", lambda: None)
-    monkeypatch.setattr(tool, "_run", lambda args, timeout_s: _completed(args, 0, stdout="usage: archi\n"))
+
+    def fake_run(args: list[str], *, timeout_s: float):
+        if args == ["/bin/archi", "--help"]:
+            return _completed(args, 0, stdout="usage: archi\n")
+        if args == ["/bin/archi", "--version"]:
+            return _completed(args, 0, stdout="Architec CLI version: 0.2.15\n")
+        return _completed(args, 1, stderr="unexpected command")
+
+    monkeypatch.setattr(tool, "_run", fake_run)
 
     assert tool.doctor() == 0
     output = capsys.readouterr().out
     assert "architec_status: degraded" in output
-    assert "reason: llmgateway config is missing; Architec LLM analysis is not ready" in output
+    assert "reason: llmgateway config is missing; Archi LLM analysis is not ready" in output
     assert "llm_readiness: degraded" in output
     assert "LLMGATEWAY_CONFIG" in output
     assert "LLM_GATEWAY_CONFIG" in output
@@ -188,10 +208,71 @@ def test_doctor_reports_llmgateway_missing_as_degraded_without_secret(tmp_path: 
     assert "secret-token-should-not-print" not in output
 
 
+def test_doctor_reports_missing_archi_as_failure(monkeypatch, capsys) -> None:
+    tool = _load_tool()
+    monkeypatch.setattr(tool.shutil, "which", lambda name: {"npm": "/bin/npm", "ccb-archi": "/old/ccb-archi"}.get(name))
+
+    assert tool.doctor() == 1
+    output = capsys.readouterr().out
+    assert "architec_status: missing" in output
+    assert "archi CLI is not available" in output
+    assert "selected_binary: " in output
+    assert "legacy_ccb_archi: /old/ccb-archi" in output
+
+
+def test_doctor_reports_archi_help_failure(monkeypatch, capsys) -> None:
+    tool = _load_tool()
+    monkeypatch.setattr(tool.shutil, "which", lambda name: {"npm": "/bin/npm", "archi": "/bin/archi"}.get(name))
+
+    def fake_run(args: list[str], *, timeout_s: float):
+        if args == ["/bin/archi", "--help"]:
+            return _completed(args, 2, stderr="broken")
+        if args == ["/bin/archi", "--version"]:
+            return _completed(args, 0, stdout="Architec CLI version: 0.2.15\n")
+        return _completed(args, 1, stderr="unexpected command")
+
+    monkeypatch.setattr(tool, "_run", fake_run)
+
+    assert tool.doctor() == 1
+    output = capsys.readouterr().out
+    assert "architec_status: failed" in output
+    assert "reason: archi CLI does not pass --help" in output
+    assert "help_status: failed" in output
+
+
+def test_ccb_adapter_guidance_does_not_prefer_legacy_ccb_archi() -> None:
+    text = "\n".join(
+        [
+            (ROLE_ROOT / "adapters" / "ccb" / "memory.md").read_text(encoding="utf-8"),
+            (ROLE_ROOT / "adapters" / "ccb" / "skills" / "archi-tooling" / "SKILL.md").read_text(encoding="utf-8"),
+            (REFERENCE_ROOT / "adapters" / "ccb" / "memory.md").read_text(encoding="utf-8"),
+            (REFERENCE_ROOT / "adapters" / "ccb" / "skills" / "archi-tooling" / "SKILL.md").read_text(
+                encoding="utf-8"
+            ),
+        ]
+    )
+    forbidden = (
+        "Prefer `ccb-archi`",
+        "ccb-archi --check",
+        "ccb-archi --help",
+        "ccb-archi --version",
+        "command -v ccb-archi",
+        "managed Architec venv",
+        "Python venv",
+        "pip install",
+    )
+    for phrase in forbidden:
+        assert phrase not in text
+    for line in text.splitlines():
+        if "ccb-archi" in line:
+            lowered = line.lower()
+            assert any(word in lowered for word in ("legacy", "stale", "residue")), line
+
+
 def test_agent_roles_archi_install_update_doctor_store_current(tmp_path: Path, monkeypatch, capsys) -> None:
     install = _run_json(["install", "archi"], tmp_path, monkeypatch, capsys)
     assert install["role_id"] == "agentroles.archi"
-    assert install["version"] == "0.2.1"
+    assert install["version"] == "0.2.2"
 
     update = _run_json(["update", "archi"], tmp_path, monkeypatch, capsys)
     installed_path = Path(update["path"])

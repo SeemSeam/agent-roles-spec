@@ -27,6 +27,10 @@ Date: 2026-06-02
   module without bundling the installable `roles/` catalog.
 - Added Role revision metadata guidance: `version` is required, while published
   catalog roles should include `created_at` and `updated_at`.
+- Aligned `agentroles.archi` CCB adapter tooling with npm `@seemseam/archi` /
+  `archi`, retiring the old preferred `ccb-archi`/Python venv route in Role
+  adapter memory, tooling skill, adapter metadata, tool hooks, reference role
+  copy, and tests.
 
 ## In Progress
 

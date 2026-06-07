@@ -85,7 +85,7 @@ install でき、host 固有の adapter を提供できます。
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Version**: `0.2.1`
+- **Version**: `0.2.2`
 - **Purpose**: アーキテクチャの drift、境界、結合度、保守性、構造的リスクをレビューします。
 - **Best for**: アーキテクチャレビュー、依存関係境界の確認、結合度分析、実践的な次ステップの整理。
 - **Contents**: Role instructions、アーキテクチャレビュー skills、再利用可能な prompt、tool documentation、plugin content、host adapters。

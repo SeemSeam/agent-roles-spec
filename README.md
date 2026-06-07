@@ -93,7 +93,7 @@ through `agent-roles` and may expose host-specific adapters.
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Version**: `0.2.1`
+- **Version**: `0.2.2`
 - **Purpose**: Reviews architecture drift, boundaries, coupling, maintainability, and structural risk.
 - **Best for**: architecture reviews, dependency-boundary checks, coupling analysis, and practical next-step sequencing.
 - **Contents**: Role instructions, architecture review skills, reusable prompts, tool documentation, plugin content, and host adapters.

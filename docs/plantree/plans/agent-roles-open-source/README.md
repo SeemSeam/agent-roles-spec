@@ -35,6 +35,9 @@ remain CCB-owned runtime concerns.
 - [topics/package-manager-and-roles-store.md](topics/package-manager-and-roles-store.md):
   preview `agent-roles` package manager, `.roles` store, and host integration
   boundary.
+- [topics/archi-ccb-adapter-tooling-alignment.md](topics/archi-ccb-adapter-tooling-alignment.md):
+  align the `agentroles.archi` CCB adapter with the npm `archi` CLI and retire
+  stale `ccb-archi`/Python venv guidance.
 - [decisions/001-spec-first-project.md](decisions/001-spec-first-project.md):
   Agent Roles starts as a specification project; CLI and runtime work follows.
 - [decisions/002-rolepack-contains-plugin-content.md](decisions/002-rolepack-contains-plugin-content.md):
