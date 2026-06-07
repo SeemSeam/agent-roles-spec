@@ -41,9 +41,10 @@ A Role is the core object in Agent Roles — a complete specialist agent definit
 
 A Role Definition is the manifest file for a Role. It describes the Role's responsibilities, required skills, tool dependencies, plugin content, host adapter configuration, and the rules for mounting and unmounting.
 
-Each Role Definition carries package version metadata. `version` is required,
-and published catalog Roles should also include `created_at` and `updated_at`
-timestamps so users and hosts can compare Role revisions before installing,
+Each Role Definition carries Role revision metadata. `version` is the Role's
+own semantic version, separate from the `agent-roles` npm/PyPI package version.
+Published catalog Roles should also include `created_at`, `updated_at`, and a
+catalog level so users and hosts can compare Role revisions before installing,
 updating, or mounting them.
 
 ### Host Adapter
@@ -94,6 +95,7 @@ through `agent-roles` and may expose host-specific adapters.
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
 - **Version**: `0.2.2`
+- **Level**: `stable`
 - **Purpose**: Reviews architecture drift, boundaries, coupling, maintainability, and structural risk.
 - **Best for**: architecture reviews, dependency-boundary checks, coupling analysis, and practical next-step sequencing.
 - **Contents**: Role instructions, architecture review skills, reusable prompts, tool documentation, plugin content, and host adapters.
@@ -126,7 +128,9 @@ The PyPI package is prepared but still pending trusted-publishing completion;
 once it is live, `pipx install agent-roles` and `pip install agent-roles` will
 provide the same command and the `agent_roles` Python module.
 
-The npm package does not bundle the installable `roles/` catalog; use
+The npm package does not bundle the installable `roles/` catalog. Role catalog
+changes are published through the GitHub catalog, so adding or updating Roles
+does not require an `agent-roles` npm/PyPI package release. Use
 `agent-roles list` to discover available Roles from the configured catalog and
 `agent-roles install <role>` to install only the Roles you need. Role aliases
 such as `archi` resolve to their canonical catalog IDs, such as
@@ -151,8 +155,10 @@ one already installed Role and will not silently install a missing Role.
 `upgrade` is the user-facing update alias, with `upgrade --all` for every
 installed Role. `install --all` installs all currently discoverable catalog
 Roles. Add `--json` when an adapter or automation flow needs machine-readable
-output; JSON includes the Role `version`, digest, and available revision
-timestamps when the source Role provides them.
+output; JSON includes the Role `version`, `catalog_level`, digest,
+`update_reason`, and available revision timestamps when the source Role
+provides them. Same-version content patches can be represented by digest
+changes without publishing a new `agent-roles` package version.
 
 By default, the CLI discovers Roles from the current catalog-like directory and
 from the public `agent-roles-spec` catalog cloned into `~/.roles/catalogs`.

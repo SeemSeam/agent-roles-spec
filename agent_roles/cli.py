@@ -137,6 +137,7 @@ def cmd_install(role_id: str | None, *, source_path: Path | None = None, all_rol
                     "version": payload["version"],
                     "created_at": payload["created_at"],
                     "updated_at": payload["updated_at"],
+                    "catalog_level": payload["catalog_level"],
                     "digest": payload["digest"],
                     "path": payload["path"],
                     "source": payload["source"],
@@ -205,6 +206,7 @@ def cmd_upgrade(role_id: str | None, *, all_roles: bool = False) -> dict[str, An
                 "version": payload["version"],
                 "created_at": payload["created_at"],
                 "updated_at": payload["updated_at"],
+                "catalog_level": payload["catalog_level"],
                 "digest": payload["digest"],
                 "path": payload["path"],
                 "source": payload["source"],
@@ -238,6 +240,7 @@ def cmd_sync(path: Path) -> dict[str, Any]:
                     "version": source_role.version,
                     "created_at": source_role.created_at,
                     "updated_at": source_role.updated_at,
+                    "catalog_level": source_role.catalog_level,
                     "digest": source_digest,
                     "path": str(source_role.path),
                 }
@@ -251,6 +254,7 @@ def cmd_sync(path: Path) -> dict[str, Any]:
                     "version": source_role.version,
                     "created_at": source_role.created_at,
                     "updated_at": source_role.updated_at,
+                    "catalog_level": source_role.catalog_level,
                     "digest": source_digest,
                     "path": str(source_role.path),
                 }
@@ -265,6 +269,7 @@ def cmd_sync(path: Path) -> dict[str, Any]:
                 "version": role.version,
                 "created_at": role.created_at,
                 "updated_at": role.updated_at,
+                "catalog_level": role.catalog_level,
                 "digest": str(payload.get("digest") or ""),
                 "path": str(payload.get("path") or ""),
             }
@@ -312,16 +317,19 @@ def cmd_resolve(role_id: str) -> dict[str, Any]:
         version = installed.version
         created_at = str(installed.metadata.get("role_created_at") or "")
         updated_at = str(installed.metadata.get("role_updated_at") or "")
+        catalog_level = str(installed.metadata.get("catalog_level") or "")
         digest = installed.digest
     elif source_role is not None:
         version = source_role.version
         created_at = source_role.created_at
         updated_at = source_role.updated_at
+        catalog_level = source_role.catalog_level
         digest = f"sha256:{source_role.digest}"
     else:
         version = ""
         created_at = ""
         updated_at = ""
+        catalog_level = ""
         digest = ""
     return {
         "schema": "agent-roles/resolve/v1",
@@ -333,6 +341,7 @@ def cmd_resolve(role_id: str) -> dict[str, Any]:
         "version": version,
         "created_at": created_at,
         "updated_at": updated_at,
+        "catalog_level": catalog_level,
         "digest": digest,
         "source_path": str(source_role.path) if source_role is not None else "",
         "store_root": str(store_root()),
@@ -395,8 +404,12 @@ def _emit_human(payload: dict[str, Any], *, stdout: TextIO) -> bool:
             alias_text = ""
             if isinstance(aliases, list) and aliases:
                 alias_text = f" aliases={','.join(str(item) for item in aliases)}"
+            catalog_level = str(row.get("catalog_level") or "")
+            level_text = f" {catalog_level}" if catalog_level else ""
+            update_reason = str(row.get("update_reason") or "")
+            reason_text = f" reason={update_reason}" if update_reason else ""
             print(
-                f"- {row.get('role_id')} {row.get('version')} {row.get('status')}{alias_text} - {row.get('name')}",
+                f"- {row.get('role_id')} {row.get('version')}{level_text} {row.get('status')}{reason_text}{alias_text} - {row.get('name')}",
                 file=stdout,
             )
         return True
@@ -410,8 +423,10 @@ def _emit_human(payload: dict[str, Any], *, stdout: TextIO) -> bool:
         for row in roles:
             if not isinstance(row, dict):
                 continue
+            catalog_level = str(row.get("catalog_level") or "")
+            level_text = f" {catalog_level}" if catalog_level else ""
             print(
-                f"- {row.get('role_id')} {row.get('status')} {row.get('version')} {row.get('path')}",
+                f"- {row.get('role_id')} {row.get('status')} {row.get('version')}{level_text} {row.get('path')}",
                 file=stdout,
             )
         if payload.get("error_count") not in (None, ""):

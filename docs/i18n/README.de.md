@@ -86,6 +86,7 @@ Dies sind die derzeit veröffentlichten Catalog Roles. Jeder Eintrag kann über
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
 - **Version**: `0.2.2`
+- **Stufe**: `stable`
 - **Zweck**: Prüft Architekturdrift, Grenzen, Kopplung, Wartbarkeit und strukturelle Risiken.
 - **Geeignet für**: Architekturreviews, Prüfungen von Abhängigkeitsgrenzen, Kopplungsanalyse und praktische nächste Schritte.
 - **Inhalte**: Role-Anweisungen, Architekturreview-Skills, wiederverwendbarer Prompt, Tool-Dokumentation, Plugin-Inhalte und Host-Adapter.

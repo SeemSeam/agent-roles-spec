@@ -6,7 +6,12 @@ from pathlib import Path
 from agent_roles.cli import run
 
 
-def _write_role(root: Path, role_id: str = "agentroles.demo", version: str = "0.1.0") -> Path:
+def _write_role(
+    root: Path,
+    role_id: str = "agentroles.demo",
+    version: str = "0.1.0",
+    catalog_level: str = "preview",
+) -> Path:
     role = root / "roles" / role_id.rsplit(".", 1)[-1]
     role.mkdir(parents=True)
     (role / "role.toml").write_text(
@@ -18,6 +23,9 @@ created_at = "2026-06-04T00:00:00Z"
 updated_at = "2026-06-04T00:00:00Z"
 description = "Demo role."
 license = "Apache-2.0"
+
+[catalog]
+level = "{catalog_level}"
 
 [identity]
 default_name = "demo"
@@ -73,6 +81,7 @@ def test_install_and_resolve_from_catalog(tmp_path: Path, monkeypatch, capsys) -
     assert install["role_id"] == "agentroles.demo"
     assert install["version"] == "0.1.0"
     assert install["updated_at"] == "2026-06-04T00:00:00Z"
+    assert install["catalog_level"] == "preview"
     assert Path(install["path"]).is_dir()
 
     resolve = _run_json(["resolve", "agentroles.demo"], tmp_path, monkeypatch, capsys)
@@ -81,10 +90,13 @@ def test_install_and_resolve_from_catalog(tmp_path: Path, monkeypatch, capsys) -
     assert resolve["installed_path"] == install["path"]
     assert resolve["version"] == "0.1.0"
     assert resolve["updated_at"] == "2026-06-04T00:00:00Z"
+    assert resolve["catalog_level"] == "preview"
 
     metadata = tmp_path / "store" / "installed" / "agentroles.demo" / "install.json"
     assert metadata.is_file()
-    assert json.loads(metadata.read_text(encoding="utf-8"))["role_updated_at"] == "2026-06-04T00:00:00Z"
+    installed_metadata = json.loads(metadata.read_text(encoding="utf-8"))
+    assert installed_metadata["role_updated_at"] == "2026-06-04T00:00:00Z"
+    assert installed_metadata["catalog_level"] == "preview"
     assert role.is_dir()
 
 
@@ -110,6 +122,17 @@ def test_invalid_role_timestamp_fails(tmp_path: Path, monkeypatch, capsys) -> No
     install = _run_failed_json(["install", "--path", str(role)], tmp_path, monkeypatch, capsys)
     assert install["schema"] == "agent-roles/error/v1"
     assert "created_at" in install["error"]
+
+
+def test_invalid_catalog_level_fails(tmp_path: Path, monkeypatch, capsys) -> None:
+    catalog = tmp_path / "catalog"
+    role = _write_role(catalog, catalog_level="gold")
+    monkeypatch.setenv("AGENT_ROLES_SPEC_HOME", str(catalog))
+    monkeypatch.setenv("AGENT_ROLES_NO_REMOTE", "1")
+
+    install = _run_failed_json(["install", "--path", str(role)], tmp_path, monkeypatch, capsys)
+    assert install["schema"] == "agent-roles/error/v1"
+    assert "catalog.level" in install["error"]
 
 
 def test_upgrade_single_role_alias(tmp_path: Path, monkeypatch, capsys) -> None:
@@ -204,7 +227,7 @@ def test_alias_resolves_to_canonical_role(tmp_path: Path, monkeypatch, capsys) -
 
 def test_plain_list_includes_roles_and_aliases(tmp_path: Path, monkeypatch, capsys) -> None:
     catalog = tmp_path / "catalog"
-    _write_role(catalog, role_id="agentroles.archi")
+    _write_role(catalog, role_id="agentroles.archi", catalog_level="stable")
     (catalog / "aliases.toml").write_text(
         'schema = "agent-roles-aliases/v1"\n\n[aliases]\n"archi" = "agentroles.archi"\n',
         encoding="utf-8",
@@ -214,7 +237,35 @@ def test_plain_list_includes_roles_and_aliases(tmp_path: Path, monkeypatch, caps
 
     output = _run_plain(["list"], tmp_path, monkeypatch, capsys)
     assert "agentroles.archi" in output
+    assert "0.1.0 stable available" in output
+    assert "reason=not_installed" in output
     assert "aliases=archi" in output
+
+
+def test_list_reports_catalog_level_and_digest_update_reason(tmp_path: Path, monkeypatch, capsys) -> None:
+    catalog = tmp_path / "catalog"
+    role = _write_role(catalog, role_id="agentroles.archi", catalog_level="stable")
+    monkeypatch.setenv("AGENT_ROLES_SPEC_HOME", str(catalog))
+    monkeypatch.setenv("AGENT_ROLES_NO_REMOTE", "1")
+
+    _run_json(["install", "agentroles.archi"], tmp_path, monkeypatch, capsys)
+
+    current = _run_json(["list"], tmp_path, monkeypatch, capsys)
+    row = current["roles"][0]
+    assert row["catalog_level"] == "stable"
+    assert row["status"] == "current"
+    assert row["update_reason"] == ""
+
+    (role / "memory.md").write_text("Demo memory with a same-version catalog patch.\n", encoding="utf-8")
+
+    changed = _run_json(["list"], tmp_path, monkeypatch, capsys)
+    row = changed["roles"][0]
+    assert row["version"] == "0.1.0"
+    assert row["installed_version"] == "0.1.0"
+    assert row["catalog_level"] == "stable"
+    assert row["status"] == "update_available"
+    assert row["update_reason"] == "digest_changed"
+    assert row["digest"] != row["installed_digest"]
 
 
 def test_remote_disabled_without_catalog_has_no_home_fallback(tmp_path: Path, monkeypatch, capsys) -> None:

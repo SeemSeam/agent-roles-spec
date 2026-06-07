@@ -86,6 +86,7 @@ instalada com `agent-roles` e pode expor adapters específicos de host.
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
 - **Versão**: `0.2.2`
+- **Nível**: `stable`
 - **Propósito**: Revisa drift de arquitetura, limites, acoplamento, manutenibilidade e risco estrutural.
 - **Indicado para**: revisões de arquitetura, checagens de limites de dependências, análise de acoplamento e sequenciamento prático de próximos passos.
 - **Conteúdo**: instruções de Role, skills de revisão arquitetural, prompt reutilizável, documentação de ferramentas, conteúdo de plugins e host adapters.

@@ -7,6 +7,9 @@ updated_at = "2026-06-04T00:00:00Z"
 description = "a minimal role template."
 license = "Apache-2.0"
 
+[catalog]
+level = "preview"
+
 [identity]
 purpose = "Describe why this role exists."
 responsibilities = [

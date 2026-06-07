@@ -86,6 +86,7 @@ Host Adapter อธิบายว่า Role เข้าไปใน host envi
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
 - **เวอร์ชัน**: `0.2.2`
+- **ระดับ**: `stable`
 - **วัตถุประสงค์**: review architecture drift, boundaries, coupling, maintainability และ structural risk.
 - **เหมาะสำหรับ**: architecture reviews, dependency-boundary checks, coupling analysis และ practical next-step sequencing.
 - **เนื้อหา**: Role instructions, architecture review skills, reusable prompt, tool documentation, plugin content และ host adapters.

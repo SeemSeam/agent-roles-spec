@@ -86,6 +86,7 @@ Bunlar catalog içinde şu anda yayınlanmış Roles kayıtlarıdır. Her kayıt
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
 - **Sürüm**: `0.2.2`
+- **Seviye**: `stable`
 - **Amaç**: Mimari drift, sınırlar, coupling, maintainability ve yapısal riski inceler.
 - **En uygun kullanım**: mimari incelemeler, dependency boundary kontrolleri, coupling analizi ve pratik sonraki adım sıralaması.
 - **İçerik**: Role talimatları, mimari inceleme skills, yeniden kullanılabilir prompt, tool dokümantasyonu, plugin content ve host adapters.

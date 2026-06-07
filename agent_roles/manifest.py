@@ -11,6 +11,9 @@ class AgentRolesError(ValueError):
     pass
 
 
+CATALOG_LEVELS = frozenset({"experimental", "preview", "stable", "deprecated"})
+
+
 @dataclass(frozen=True)
 class Role:
     id: str
@@ -19,6 +22,7 @@ class Role:
     created_at: str
     updated_at: str
     description: str
+    catalog_level: str
     root: Path
     manifest: dict[str, Any]
 
@@ -65,6 +69,7 @@ class Role:
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "description": self.description,
+            "catalog_level": self.catalog_level,
             "default_agent_name": self.default_agent_name,
             "providers": list(self.providers),
             "path": str(self.root),
@@ -96,6 +101,7 @@ def load_role(path: Path) -> Role:
     created_at = normalize_timestamp(payload.get("created_at"), field="created_at", root=root)
     updated_at = normalize_timestamp(payload.get("updated_at"), field="updated_at", root=root)
     description = str(payload.get("description") or "").strip()
+    catalog_level = normalize_catalog_level(payload.get("catalog"), root=root)
     if not name or not version or not description:
         raise AgentRolesError(f"{root}: role manifest requires name, version, and description")
     return Role(
@@ -105,6 +111,7 @@ def load_role(path: Path) -> Role:
         created_at=created_at,
         updated_at=updated_at,
         description=description,
+        catalog_level=catalog_level,
         root=root,
         manifest=payload,
     )
@@ -142,6 +149,18 @@ def normalize_timestamp(value: object, *, field: str, root: Path) -> str:
         raise AgentRolesError(
             f"{root}: role manifest {field} must use ISO 8601, for example 2026-06-04T00:00:00Z"
         ) from exc
+    return raw
+
+
+def normalize_catalog_level(value: object, *, root: Path) -> str:
+    if value is None or value == "":
+        return "preview"
+    if not isinstance(value, dict):
+        raise AgentRolesError(f"{root}: role manifest catalog must be a table")
+    raw = str(value.get("level") or "preview").strip().lower()
+    if raw not in CATALOG_LEVELS:
+        allowed = ", ".join(sorted(CATALOG_LEVELS))
+        raise AgentRolesError(f"{root}: role manifest catalog.level must be one of: {allowed}")
     return raw
 
 

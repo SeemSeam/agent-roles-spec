@@ -8,6 +8,12 @@ Preview package-manager hardening and PyPI/npm release preparation.
 
 ## Current Review Target
 
+Preview package-manager catalog semantics now separate the `agent-roles`
+npm/PyPI package version from GitHub-published Role catalog revisions. Roles
+carry their own semantic `version`, optional `[catalog] level`, `updated_at`,
+and content digest; same-version catalog patches can be reported as
+`digest_changed` without requiring an npm/PyPI package release.
+
 `agentroles.archi` CCB adapter tooling has been aligned with the npm
 `@seemseam/archi` CLI. CCB source installs/checks the npm `archi` command, and
 this repository's Role adapter memory, `archi-tooling` skill, adapter metadata,
@@ -55,7 +61,8 @@ references should be treated as historical planning language until migrated.
 - Omit a "Non-goals" section from the first Chinese README draft.
 - Keep the "Published Roles" section synchronized across root and translated
   READMEs; use collapsible entries for formal catalog Roles and list version,
-  purpose, contents, adapters, install/update commands, and source.
+  catalog level, purpose, contents, adapters, install/update commands, and
+  source.
 - Present npm as the current public install path for the preview CLI; keep PyPI
   wording explicit that publishing is prepared but still pending trusted
   publisher completion.
@@ -142,3 +149,9 @@ references should be treated as historical planning language until migrated.
   acceptance `rg` checks found no preferred `ccb-archi`/Python venv/pip route,
   and a real adapter doctor run selected npm `archi` 0.2.15 while reporting the
   old `ccb-archi` wrapper only as ignored legacy residue.
+- Role catalog version/level separation verification passed on 2026-06-07:
+  `agent-roles list` now exposes `catalog_level` and `update_reason`, a
+  same-version `agentroles.archi` catalog metadata patch reports
+  `update_available reason=digest_changed`, `roles/archi` and
+  `reference_roles/archi` remain synchronized, and `python -m pytest` passed
+  with 24 tests.

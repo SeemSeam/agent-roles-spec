@@ -3,7 +3,9 @@
 This directory contains published Roles ready for use.
 
 Roles here have passed the quality bar described in `CONTRIBUTING.md`. They
-are intended for direct mounting, not just spec demonstration.
+are intended for direct mounting, not just spec demonstration. Published Roles
+should declare `[catalog] level = "stable"` or another explicit catalog level
+in `role.toml` so `agent-roles list` can display their maturity.
 
 ## Difference from `reference_roles/`
 
@@ -20,5 +22,5 @@ are intended for direct mounting, not just spec demonstration.
 
 ## Current Roles
 
-- [archi](archi/) (`agentroles.archi`): architecture review role with memory,
+- [archi](archi/) (`agentroles.archi`, `stable`): architecture review role with memory,
   skills, prompts, plugin content, and CCB adapter metadata.

@@ -25,6 +25,7 @@ class SourceRole:
     path: Path
     name: str
     description: str
+    catalog_level: str
     aliases: tuple[str, ...] = ()
     duplicates: tuple[str, ...] = ()
 
@@ -135,6 +136,7 @@ def discover_roles_from_paths(
                 path=role.root.resolve(),
                 name=role.name,
                 description=role.description,
+                catalog_level=role.catalog_level,
                 aliases=tuple(sorted(reverse_aliases.get(canonical) or ())),
             )
             existing = discovered.get(canonical)
@@ -156,6 +158,7 @@ def discover_roles_from_paths(
                 path=source_role.path,
                 name=source_role.name,
                 description=source_role.description,
+                catalog_level=source_role.catalog_level,
                 aliases=source_role.aliases,
                 duplicates=dupes,
             )
@@ -175,10 +178,18 @@ def role_catalog_status(*, refresh: bool = False) -> tuple[dict[str, object], ..
         source_digest = f"sha256:{source_role.digest}"
         if role_id not in installed:
             status = "available"
+            update_reason = "not_installed"
         elif installed_version != source_role.version or installed_digest != source_digest:
             status = "update_available"
+            update_reason = _update_reason(
+                installed_version=installed_version,
+                source_version=source_role.version,
+                installed_digest=installed_digest,
+                source_digest=source_digest,
+            )
         else:
             status = "current"
+            update_reason = ""
         rows.append(
             {
                 "role_id": role_id,
@@ -186,11 +197,13 @@ def role_catalog_status(*, refresh: bool = False) -> tuple[dict[str, object], ..
                 "version": source_role.version,
                 "created_at": source_role.created_at,
                 "updated_at": source_role.updated_at,
+                "catalog_level": source_role.catalog_level,
                 "installed_version": installed_version,
                 "installed_updated_at": installed_updated_at,
                 "digest": source_digest,
                 "installed_digest": installed_digest,
                 "status": status,
+                "update_reason": update_reason,
                 "path": str(source_role.path),
                 "name": source_role.name,
                 "description": source_role.description,
@@ -207,11 +220,13 @@ def role_catalog_status(*, refresh: bool = False) -> tuple[dict[str, object], ..
                 "version": "",
                 "created_at": "",
                 "updated_at": "",
+                "catalog_level": str(metadata.get("catalog_level") or ""),
                 "installed_version": str(metadata.get("version") or ""),
                 "installed_updated_at": str(metadata.get("role_updated_at") or ""),
                 "digest": "",
                 "installed_digest": str(metadata.get("digest") or ""),
                 "status": "installed_source_missing",
+                "update_reason": "source_missing",
                 "path": str(metadata.get("source_path") or ""),
                 "name": "",
                 "description": "",
@@ -228,6 +243,24 @@ def find_source_role(role_id: str, *, refresh: bool = False) -> SourceRole | Non
         if role.role_id == canonical:
             return role
     return None
+
+
+def _update_reason(
+    *,
+    installed_version: str,
+    source_version: str,
+    installed_digest: str,
+    source_digest: str,
+) -> str:
+    version_changed = installed_version != source_version
+    digest_changed = installed_digest != source_digest
+    if version_changed and digest_changed:
+        return "version_and_digest_changed"
+    if version_changed:
+        return "version_changed"
+    if digest_changed:
+        return "digest_changed"
+    return ""
 
 
 def iter_role_paths(source_root: Path, *, include_reference: bool = False) -> tuple[Path, ...]:

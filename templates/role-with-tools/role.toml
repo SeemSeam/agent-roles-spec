@@ -7,6 +7,9 @@ updated_at = "2026-06-04T00:00:00Z"
 description = "a role template that declares tool documentation."
 license = "Apache-2.0"
 
+[catalog]
+level = "preview"
+
 [identity]
 purpose = "Package tool-aware role behavior without hiding installer actions."
 responsibilities = [

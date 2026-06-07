@@ -19,8 +19,8 @@ output, and runtime behavior.
 - catalog discovery and sync
 - the `.roles` package store
 - `list`, `install`, `update`, `upgrade`, `sync`, `doctor`, and `resolve`
-- role version, revision timestamps, digest, source, provenance, and installed
-  path metadata
+- role version, catalog level, revision timestamps, digest, update reason,
+  source, provenance, and installed path metadata
 - aliases such as `ccb.archi -> agentroles.archi`
 - package-level validation and machine-readable diagnostics
 
@@ -55,8 +55,16 @@ stricter: it refreshes one already installed Role and fails if the Role is not
 installed. `upgrade` is the user-facing update alias, and `upgrade --all`
 refreshes every installed Role.
 
-Role JSON payloads should expose `version`, content digest, and source revision
-timestamps (`created_at` and `updated_at`) when present in `role.toml`.
+Role JSON payloads should expose `version`, `catalog_level`, content digest,
+`update_reason`, and source revision timestamps (`created_at` and `updated_at`)
+when present in `role.toml`.
+
+The `agent-roles` npm/PyPI package versions the package manager itself, not the
+installable Role catalog. Catalog Role updates are delivered through GitHub or a
+configured catalog path. A Role may keep the same `version` for small content or
+metadata patches; `agent-roles list` should still report `update_available`
+with `update_reason: digest_changed` when the source digest differs from the
+installed digest.
 
 ## Store Shape
 

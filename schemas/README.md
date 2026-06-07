@@ -6,4 +6,6 @@ conventions are stable enough to encode.
 The current preview metadata rules are documented in
 [../specs/metadata-v1.md](../specs/metadata-v1.md). The package manager already
 requires `version` and validates optional `created_at` / `updated_at` timestamp
-fields when they appear in `role.toml`.
+fields when they appear in `role.toml`. It also exposes optional
+`catalog.level` metadata as `catalog_level` in list/resolve/install payloads,
+defaulting omitted levels to `preview`.

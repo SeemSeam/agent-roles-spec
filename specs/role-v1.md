@@ -55,9 +55,11 @@ or external plugin dependency resolver.
 ## Source And Projection Boundary
 
 Role files are source content. Source content is reviewable and versioned with
-the role. The Role Definition carries the package `version`, and published
-catalog roles should also carry `created_at` and `updated_at` revision
-timestamps. See [metadata-v1.md](metadata-v1.md).
+the role. The Role Definition carries the Role `version`, and published catalog
+roles should also carry `created_at`, `updated_at`, and catalog maturity
+metadata. Role versions are separate from the `agent-roles` npm/PyPI package
+version; catalog content can change through GitHub and be tracked by digest
+without a package release. See [metadata-v1.md](metadata-v1.md).
 
 A host adapter may generate host-native files from role source content. Those
 generated files are projection output — they should be traceable to the role
