@@ -27,3 +27,6 @@ in `role.toml` so `agent-roles list` can display their maturity.
 - [ccb-self](ccb-self/) (`agentroles.ccb_self`, `preview`): CCB runtime
   maintenance role with bounded self-diagnosis, recovery, config, and message
   chain skills.
+- [mather](mather/) (`agentroles.mather`, `preview`): Role creation and audit
+  role for spec compliance, catalog readiness, source-boundary checks, and
+  optimization findings.
