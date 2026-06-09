@@ -18,6 +18,13 @@ responsibilities = [
 non_goals = [
   "Run hidden installers or undocumented commands"
 ]
+interaction_mode = "interactive"
+initiates_actions = false
 
 [contents]
 tools = ["tools/README.md"]
+
+[permissions]
+read_files = false
+write_files = false
+network = false

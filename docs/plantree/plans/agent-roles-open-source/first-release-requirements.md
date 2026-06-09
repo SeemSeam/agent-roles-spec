@@ -17,17 +17,18 @@ host adapters are future work.
   - explains "from scattered skills/plugins to managed roles"
   - states that Agent Roles starts with the specification
   - states that CLI and runtime adapters come later
-  - describes RolePack as the central artifact
+  - describes Role as the central artifact
 - `LICENSE`
   - recommended: Apache-2.0 for an ecosystem/specification project
 - `CONTRIBUTING.md`
   - role PR expectations
   - no secrets, credentials, provider sessions, or runtime state
   - clear role purpose, responsibilities, and boundaries
-- `specs/rolepack-v1.md`
-  - role package shape
+- `specs/role-v1.md`
+  - role source shape
   - content categories
   - host-neutral boundaries
+  - source/projection boundary
   - forbidden state
 - `specs/metadata-v1.md`
   - minimum role metadata fields
@@ -54,7 +55,7 @@ host adapters are future work.
 
 ## README Acceptance Criteria
 
-- First screen identifies the project as a host-neutral RolePack specification.
+- First screen identifies the project as a host-neutral Role specification.
 - First screen contains the developer/user contrast:
   - developers: from skill development to role development
   - users: from scattered skills/plugins to managed roles
@@ -67,7 +68,7 @@ host adapters are future work.
 
 ## Spec Acceptance Criteria
 
-- RolePack is described as a package for one specialist agent role.
+- Role is described as a portable source definition for one specialist agent.
 - A role may carry:
   - identity and responsibilities
   - memory
@@ -83,12 +84,16 @@ host adapters are future work.
   - secrets
   - provider sessions
   - runtime authority files
+  - mounted instance state, progress, traces, and project binding state
   - project-specific private state
   - hidden installer behavior in memory or prompt text
 - The spec distinguishes:
-  - core RolePack content
+  - core Role source content
+  - Project Binding and mounted role state
+  - projection output
   - host adapter behavior
   - future runtime management
+- Permission declarations are high-level advisory needs, not automatic grants.
 
 ## Reference Role Acceptance Criteria
 
@@ -119,7 +124,7 @@ The v0.1 release is ready when a new reader can answer these questions from
 the repository without private context:
 
 1. What is Agent Roles?
-2. What is a RolePack?
+2. What is a Role?
 3. Why is role development different from skill development?
 4. How does role management simplify scattered skills/plugins?
 5. What is in scope for v0.1?

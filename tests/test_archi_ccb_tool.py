@@ -272,7 +272,7 @@ def test_ccb_adapter_guidance_does_not_prefer_legacy_ccb_archi() -> None:
 def test_agent_roles_archi_install_update_doctor_store_current(tmp_path: Path, monkeypatch, capsys) -> None:
     install = _run_json(["install", "archi"], tmp_path, monkeypatch, capsys)
     assert install["role_id"] == "agentroles.archi"
-    assert install["version"] == "0.2.2"
+    assert install["version"] == "0.2.3"
 
     update = _run_json(["update", "archi"], tmp_path, monkeypatch, capsys)
     installed_path = Path(update["path"])

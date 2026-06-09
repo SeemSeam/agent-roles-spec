@@ -85,7 +85,7 @@ Host Adapter बताता है कि कोई Role किसी specific 
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **संस्करण**: `0.2.2`
+- **संस्करण**: `0.2.3`
 - **स्तर**: `stable`
 - **उद्देश्य**: Architecture drift, boundaries, coupling, maintainability और structural risk की review करता है।
 - **सबसे उपयुक्त**: architecture reviews, dependency-boundary checks, coupling analysis और practical next-step sequencing.

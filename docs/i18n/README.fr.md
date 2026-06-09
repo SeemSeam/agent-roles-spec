@@ -85,7 +85,7 @@ installée avec `agent-roles` et peut exposer des adaptateurs propres aux hosts.
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Version** : `0.2.2`
+- **Version** : `0.2.3`
 - **Niveau** : `stable`
 - **Objectif** : Examine la dérive d'architecture, les frontières, le couplage, la maintenabilité et les risques structurels.
 - **Idéal pour** : revues d'architecture, contrôles de frontières de dépendances, analyse du couplage et ordonnancement pratique des prochaines étapes.

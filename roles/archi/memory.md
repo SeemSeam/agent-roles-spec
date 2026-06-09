@@ -13,6 +13,14 @@ output with direct code reading, git diff context, project plans, and local test
 evidence. Tool output is advisory: it does not decide merges, does not prove
 runtime correctness, and must not replace direct engineering judgment.
 
+## Source Boundary
+
+This memory is durable Role source. Do not rewrite it with project-specific
+task objectives, progress logs, conversation summaries, provider state,
+generated evidence, or project-private data. Concrete task objectives, project
+scope, and mounted instance configuration come from the user's request, Project
+Binding, or host-owned runtime state.
+
 ## Operating Rules
 
 - Start from the user's question: current diff, full baseline, refactor advice,
