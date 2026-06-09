@@ -1,0 +1,23 @@
+schema = "agent-role-adapter/ccb-preview-0.1"
+host = "ccb"
+
+default_agent_name = "ccb_self"
+recommended_provider = "codex"
+supported_providers = ["codex", "claude"]
+recommended_workspace_mode = "inplace"
+permission_default = "manual"
+memory_merge_strategy = "append_after_project_memory"
+
+memory = ["adapters/ccb/memory.md"]
+
+[skill_projection]
+strategy = "copy-generic-skills"
+description = "The full ccb-config skill is Role source under agentroles.ccb_self. CCB may copy Role-owned skills into the mounted ccb_self agent home, but common inherited skill folders must not contain or install the full ccb-config skill."
+
+[tools.doctor]
+doctor = "python -B adapters/ccb/tools/doctor.py"
+required = false
+runtime_network = false
+install_network = false
+update_network = false
+network_note = "The read-only CCB Self doctor helper runs CCB control-plane diagnostics only and does not require network access."

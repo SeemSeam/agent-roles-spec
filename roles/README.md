@@ -24,3 +24,6 @@ in `role.toml` so `agent-roles list` can display their maturity.
 
 - [archi](archi/) (`agentroles.archi`, `stable`): architecture review role with memory,
   skills, prompts, plugin content, and CCB adapter metadata.
+- [ccb-self](ccb-self/) (`agentroles.ccb_self`, `preview`): CCB runtime
+  maintenance role with bounded self-diagnosis, recovery, config, and message
+  chain skills.

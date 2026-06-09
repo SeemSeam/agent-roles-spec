@@ -3,3 +3,6 @@ schema = "agent-roles-aliases/v1"
 [aliases]
 "archi" = "agentroles.archi"
 "ccb.archi" = "agentroles.archi"
+"ccb-self" = "agentroles.ccb_self"
+"ccb_self" = "agentroles.ccb_self"
+"ccb.self" = "agentroles.ccb_self"
