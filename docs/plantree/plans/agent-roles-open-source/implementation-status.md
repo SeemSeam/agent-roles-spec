@@ -92,6 +92,9 @@ references should be treated as historical planning language until migrated.
   boundary in `specs/`, updated `roles/archi`, `reference_roles/archi`, starter
   templates, and conformance notes to avoid project state, path-level tool
   permission grants, and projection output inside Role source.
+- 2026-06-09: Merged the boundary updates into `main`, released
+  `agent-roles@0.1.2` through the npm trusted publishing workflow, and bumped
+  `agentroles.archi` to `0.2.3`.
 
 ## Active TODO
 
@@ -185,3 +188,7 @@ references should be treated as historical planning language until migrated.
 - On 2026-06-09, searched specs, roles, reference roles, templates, and
   conformance for removed `run_tools` / `default_name` patterns and
   source/runtime boundary regressions.
+- npm trusted publish for `agent-roles@0.1.2` completed on 2026-06-09 from
+  workflow run `27194830188` at commit `a704d64`; npm registry reports latest
+  `0.1.2`, temporary install verified `agent-roles --version`, and the
+  published tarball contains `reference_roles/archi` version `0.2.3`.

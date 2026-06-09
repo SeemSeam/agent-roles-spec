@@ -93,9 +93,9 @@ Target package: `agent-roles` `0.1.2`
 - [x] Confirm npm registry reports `agent-roles@0.1.1` as latest before the
   `0.1.2` release.
 - [x] Verify tests, TOML parsing, `npm run smoke`, and `npm pack --dry-run`.
-- [ ] Publish `agent-roles@0.1.2` through trusted publishing or an authenticated
+- [x] Publish `agent-roles@0.1.2` through trusted publishing or an authenticated
   local npm publish.
-- [ ] Confirm npm registry reports `agent-roles@0.1.2` as latest after publish.
+- [x] Confirm npm registry reports `agent-roles@0.1.2` as latest after publish.
 
 ## Explicitly Deferred
 
