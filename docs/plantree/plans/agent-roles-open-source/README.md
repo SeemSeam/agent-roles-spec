@@ -36,6 +36,9 @@ store, projection, reload, ask, or sidebar behavior into the new repository.
 - [decisions/002-rolepack-contains-plugin-content.md](decisions/002-rolepack-contains-plugin-content.md):
   plugin content may live inside role packages; plugin systems are not the
   root abstraction.
+- [decisions/003-role-source-is-static-module.md](decisions/003-role-source-is-static-module.md):
+  Role source is a static module definition; project binding and runtime state
+  stay outside Role source.
 
 ## Scope
 

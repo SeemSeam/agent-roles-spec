@@ -16,3 +16,14 @@ sidebar display remain CCB-owned implementation details.
 CCB should convert the Role source into provider-native assets at projection
 time. The core Role does not need Codex-specific or Claude-specific skill
 directories.
+
+## Project Binding Boundary
+
+CCB-specific project configuration, such as the bound agent name, workspace
+mode, approved permissions, project scope, and provider selection, belongs in
+CCB project configuration or CCB-owned runtime state rather than the core Role
+source.
+
+Generated provider-state assets are projection output. They should be traceable
+to the mounted Role and removable by CCB unmount or cleanup behavior, but they
+must not be written back into this Role source directory.

@@ -28,6 +28,22 @@ Repository source migration and terminology handoff.
 Avoid introducing `Pack` as the main artifact term. Earlier `RolePack`
 references should be treated as historical planning language until migrated.
 
+## Latest Design Clarification
+
+- Treat Role source as a static module definition for v0.1.
+- `role.toml` is the Role Definition: compact, machine-readable metadata and
+  stable role boundaries.
+- `memory.md` is durable role instruction content: prose guidance, working
+  style, and operating boundaries for mounted agents.
+- Task objectives, project scope, interaction topology, progress, and runtime
+  state belong outside Role source in Project Binding, mounted role state, or
+  host-owned runtime state.
+- Project Binding is a concept for v0.1, not yet a required cross-host file
+  format.
+- Host adapter projection output must not be written back into Role source.
+- Defer progress/state/plan directories, unified binding format, path-level
+  permission semantics, runtime supervisor, and semantic drift enforcement.
+
 ## README Direction
 
 - Emphasize Agent Roles as a general-purpose encapsulation specification for
@@ -39,12 +55,21 @@ references should be treated as historical planning language until migrated.
   environment, user-global configuration, and other agents' working state.
 - Omit a "Non-goals" section from the first Chinese README draft.
 
+## Last Landed
+
+- 2026-06-09: Formalized the Role source / Project Binding / runtime state
+  boundary in `specs/`, updated `roles/archi`, `reference_roles/archi`, starter
+  templates, and conformance notes to avoid project state, path-level tool
+  permission grants, and projection output inside Role source.
+
 ## Active TODO
 
 1. Keep translated README files under `docs/i18n/`; root `README.md` remains
    the English authoritative entrypoint.
 2. Migrate specs, templates, conformance, and reference role wording from
-   `RolePack` to `Role` where that reflects the current terminology decision.
+   `RolePack` to `Role` where that reflects the current terminology decision;
+   apply the Role source / Project Binding / runtime state boundary from
+   Decision 003 while updating the specs.
 3. Review whether filenames such as `rolepack-v1.md` should remain historical
    references or be renamed to `role-v1.md`.
 4. Align release checklist and roadmap with the new GitHub repository name.
@@ -53,4 +78,8 @@ references should be treated as historical planning language until migrated.
 ## Last Verification
 
 - Directory rename and remote setup were performed locally on 2026-06-02.
-- No test or link checker has been run after migrating this plan tree.
+- On 2026-06-09, parsed all touched `role.toml` examples with Python
+  `tomllib`.
+- On 2026-06-09, searched specs, roles, reference roles, templates, and
+  conformance for removed `run_tools` / `default_name` patterns and
+  source/runtime boundary regressions.

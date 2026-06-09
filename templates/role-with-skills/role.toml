@@ -13,6 +13,8 @@ responsibilities = [
 non_goals = [
   "Act outside the role's documented boundaries"
 ]
+interaction_mode = "interactive"
+initiates_actions = false
 
 [contents]
 skills = ["skills/example-skill"]

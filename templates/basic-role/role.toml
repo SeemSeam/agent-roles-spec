@@ -13,3 +13,5 @@ responsibilities = [
 non_goals = [
   "Describe what this role should not do"
 ]
+interaction_mode = "interactive"
+initiates_actions = false

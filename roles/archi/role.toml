@@ -6,7 +6,6 @@ description = "Reviews architecture drift, boundaries, coupling, maintainability
 license = "Apache-2.0"
 
 [identity]
-default_name = "archi"
 purpose = "Review architecture drift, boundaries, coupling, maintainability, and structural risk."
 responsibilities = [
   "Review diffs for architecture risk",
@@ -21,6 +20,8 @@ non_goals = [
   "Certify runtime correctness",
   "Store provider credentials or project-private runtime state"
 ]
+interaction_mode = "review-only"
+initiates_actions = false
 
 [contents]
 memory = ["memory.md"]
@@ -36,5 +37,17 @@ plugins = ["plugins/archi-workbench"]
 
 [permissions]
 read_files = true
-run_tools = ["archi", "hippo"]
+write_files = false
 network = false
+
+[adapters."claude-code"]
+display_name = "archi"
+
+[adapters.codex]
+display_name = "archi"
+
+[adapters.ccb]
+display_name = "archi"
+
+[adapters.hive]
+display_name = "archi"

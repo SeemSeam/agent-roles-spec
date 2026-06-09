@@ -6,3 +6,4 @@ This fixture represents a minimal valid Role shape:
 - role memory
 - clear identity boundaries
 - no forbidden runtime or secret state
+- no project-specific task progress or mounted instance state

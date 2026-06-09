@@ -6,13 +6,15 @@ description = "a role template that carries plugin content."
 license = "Apache-2.0"
 
 [identity]
-purpose = "Show how plugin content can live inside a concrete role package."
+purpose = "Show how plugin content can live inside concrete Role source."
 responsibilities = [
   "Document role-contained plugin content"
 ]
 non_goals = [
   "Install global plugins automatically"
 ]
+interaction_mode = "interactive"
+initiates_actions = false
 
 [contents]
 plugins = ["plugins/example-plugin"]

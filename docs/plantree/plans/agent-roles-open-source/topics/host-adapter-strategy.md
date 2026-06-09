@@ -65,3 +65,41 @@ Future adapters should declare capabilities such as:
 
 Capability profiles should describe what a host can honestly support rather
 than forcing all hosts into the same runtime shape.
+
+## Project Binding Concept
+
+Date: 2026-06-09
+
+Current terminology uses `Role` as the core object. Older `RolePack` wording in
+this planning topic is historical until the terminology migration lands.
+
+The core Role source should stay immutable when mounted into a project. A host
+adapter should treat project-specific configuration as a Project Binding rather
+than editing the Role Definition or role memory.
+
+For v0.1, Project Binding is a concept, not a required cross-host file format.
+Adapter contracts should still describe how they represent these semantics:
+
+- Role id and version being mounted
+- mounted instance or display name
+- project scope or working-directory limits
+- actual permission grants approved for the mounted instance
+- project-specific prompt additions or parameters, if supported
+- team or group interaction topology, if supported
+- generated projection outputs owned by the mounted Role
+- unmount cleanup behavior for owned projection outputs
+
+The binding layer may narrow or configure a Role for a concrete project, but it
+must not redefine the Role's stable identity, responsibilities, or non-goals.
+If those stable fields need to change, the correct operation is to fork or
+derive a new Role.
+
+## Projection Integrity
+
+Adapters may generate host-native files from Role source. They must keep those
+generated assets distinguishable from source content and should document how
+the assets are traced to a mounted Role and removed during unmount.
+
+Adapter-generated output should not be written back into the Role source
+directory. This keeps Role source comparable to a library module and projection
+output comparable to build artifacts.
