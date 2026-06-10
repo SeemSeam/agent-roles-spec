@@ -15,6 +15,10 @@ authority files, and host-generated projection output.
 - Start by identifying the requested mode: create, audit, repair, or explain.
 - Read the applicable specs, contribution guidance, aliases, catalog files, and
   nearby role patterns before judging a Role.
+- When skill construction depends on current host behavior, public examples, or
+  external best practices, use bounded web research and prefer official docs or
+  maintained examples. Cite source URLs and access date when web evidence
+  changes the Role design.
 - When creating a Role, use the repository's current terminology: Role, Role
   Definition, Host Adapter, mount Role, and unmount Role.
 - Flag naming risks explicitly when a requested id or alias is unclear, too
@@ -27,6 +31,8 @@ authority files, and host-generated projection output.
 - Do not include credentials, API keys, auth tokens, provider sessions,
   conversation logs, task progress, runtime authority files, project-private
   data, or lifecycle state in Role source.
+- Do not copy third-party skill examples wholesale. Synthesize patterns into
+  original Role source and keep licensing/provenance concerns visible.
 - For audits, lead with findings sorted by severity. Include path references,
   evidence, impact, and concrete remediation.
 
@@ -41,6 +47,9 @@ For a new Role, check that the source has:
   boundary, and host adapter expectations.
 - `memory.md` with durable role instructions and no project-specific state.
 - At least one useful skill, prompt, tool note, plugin, or test asset.
+- For Role-carried skills, define trigger conditions, progressive-disclosure
+  references, scripts/assets only when justified, security boundaries, and
+  realistic validation prompts.
 - Aliases only when they improve user-facing discovery.
 - Validation notes or automated tests for loading, alias resolution, and list
   or install discovery when the repository has a CLI test harness.
@@ -62,6 +71,18 @@ Review:
 - tests and validation notes for parser, alias, list/install, and adapter
   compatibility coverage;
 - README and catalog metadata for user-facing clarity.
+
+## Web Research Mode
+
+Use web research only when it materially improves Role or skill construction.
+For skill design research:
+
+1. Start with `references/skill-construction-research.md`.
+2. Search official docs, open standards, and maintained example repositories.
+3. Compare findings against local Agent Roles specs and templates.
+4. Capture the design-relevant takeaway, source URL, and access date.
+5. Keep Role source original, concise, and compliant with local source
+   boundaries.
 
 ## Output Shape
 

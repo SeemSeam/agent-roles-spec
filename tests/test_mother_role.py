@@ -28,7 +28,7 @@ def test_mother_role_loads_with_expected_source_inventory() -> None:
 
     assert role.id == "agentroles.mother"
     assert role.name == "Role Mother"
-    assert role.version == "0.1.0"
+    assert role.version == "0.2.0"
     assert role.catalog_level == "preview"
     assert role.default_agent_name == "mother"
 
@@ -36,17 +36,19 @@ def test_mother_role_loads_with_expected_source_inventory() -> None:
     assert identity["interaction_mode"] == "interactive"
     assert identity["initiates_actions"] is False
     assert "audit existing Role source" in identity["purpose"]
+    assert any("Research public skill construction" in item for item in identity["responsibilities"])
 
     contents = role.table("contents")
     assert contents["memory"] == ["memory.md"]
     assert contents["skills"] == ["skills/role-creation-audit"]
-    assert contents["prompts"] == ["prompts/role-audit.md"]
+    assert contents["prompts"] == ["prompts/role-audit.md", "prompts/role-creation.md"]
+    assert contents["references"] == ["references/skill-construction-research.md"]
     assert contents["tests"] == ["tests/validation.md"]
 
     permissions = role.table("permissions")
     assert permissions["read_files"] is True
     assert permissions["write_files"] is True
-    assert permissions["network"] is False
+    assert permissions["network"] is True
     assert permissions["secrets"] == "none"
 
     assert role.adapter("codex")["display_name"] == "mother"
@@ -57,9 +59,16 @@ def test_mother_role_loads_with_expected_source_inventory() -> None:
         "memory.md",
         "skills/role-creation-audit/SKILL.md",
         "prompts/role-audit.md",
+        "prompts/role-creation.md",
+        "references/skill-construction-research.md",
         "tests/validation.md",
     ):
         assert ROLE_ROOT.joinpath(relative).is_file()
+
+    research = ROLE_ROOT.joinpath("references/skill-construction-research.md").read_text(encoding="utf-8")
+    assert "OpenAI Codex Agent Skills" in research
+    assert "Claude skill authoring best practices" in research
+    assert "Do not copy third-party examples wholesale" in research
 
 
 def test_mother_installs_and_aliases_resolve_from_catalog(tmp_path: Path, monkeypatch, capsys) -> None:
@@ -76,7 +85,7 @@ def test_mother_installs_and_aliases_resolve_from_catalog(tmp_path: Path, monkey
     install = _run_json(["install", "role-author"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
     assert install["role_id"] == "agentroles.mother"
-    assert install["version"] == "0.1.0"
+    assert install["version"] == "0.2.0"
     assert install["catalog_level"] == "preview"
 
     resolved = _run_json(["resolve", "role-auditor"], tmp_path, monkeypatch, capsys)
@@ -92,7 +101,7 @@ def test_mother_list_discovers_role_from_clean_store(tmp_path: Path, monkeypatch
 
     assert "agentroles.mother" in rows
     row = rows["agentroles.mother"]
-    assert row["version"] == "0.1.0"
+    assert row["version"] == "0.2.0"
     assert row["catalog_level"] == "preview"
     assert row["status"] == "available"
     assert row["update_reason"] == "not_installed"

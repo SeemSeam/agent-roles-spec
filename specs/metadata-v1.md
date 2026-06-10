@@ -63,8 +63,8 @@ Preview roles may add sections for:
 
 - `created_at`: original role publication timestamp.
 - `updated_at`: latest role content revision timestamp.
-- `contents`: role-contained memory, skills, prompts, tools, plugin content,
-  and tests.
+- `contents`: role-contained memory, skills, prompts, references, tools,
+  plugin content, and tests.
 - `catalog.level`: catalog maturity level. Allowed values are `experimental`,
   `preview`, `stable`, and `deprecated`. If omitted, package-manager tooling
   should treat the Role as `preview`.
@@ -154,6 +154,7 @@ initiates_actions = false
 memory  = ["memory.md"]
 skills  = ["skills/architecture-review"]
 prompts = ["prompts/architecture-review.md"]
+references = ["references/domain-guide.md"]
 tools   = ["tools/README.md"]
 plugins = ["plugins/archi-workbench"]
 

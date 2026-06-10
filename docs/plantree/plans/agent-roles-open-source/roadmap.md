@@ -33,7 +33,8 @@ Date: 2026-06-02
   copy, and tests.
 - Added the preview `agentroles.mother` Role for creating and auditing Agent
   Roles, with aliases, authoring/audit memory, a reusable role-creation/audit
-  skill, an audit prompt, validation notes, and package-manager tests. See
+  skill, creation/audit prompts, bounded web-backed skill construction
+  research, validation notes, and package-manager tests. See
   [topics/mother-role-creation-audit.md](topics/mother-role-creation-audit.md).
 
 ## In Progress

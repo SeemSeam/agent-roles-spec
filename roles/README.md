@@ -28,5 +28,5 @@ in `role.toml` so `agent-roles list` can display their maturity.
   maintenance role with bounded self-diagnosis, recovery, config, and message
   chain skills.
 - [mother](mother/) (`agentroles.mother`, `preview`): Role creation and audit
-  role for spec compliance, catalog readiness, source-boundary checks, and
-  optimization findings.
+  role for spec compliance, catalog readiness, source-boundary checks,
+  web-backed skill construction research, and optimization findings.

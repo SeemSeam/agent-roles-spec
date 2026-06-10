@@ -25,6 +25,7 @@ role/
   memory.md
   skills/
   prompts/
+  references/
   tools/
   plugins/
   adapters/
@@ -42,6 +43,8 @@ expected in the preview. A minimal role can contain only metadata and memory.
   boundaries.
 - `skills/`: reusable capabilities carried by the role.
 - `prompts/`: prompt fragments, examples, and reusable task templates.
+- `references/`: longer reference material that role memory or skills can load
+  only when needed.
 - `tools/`: tool documentation, runbooks, scripts, and explicit lifecycle
   notes. The preview spec does not imply that hosts execute these files.
 - `plugins/`: host-native plugin files bundled with the role.

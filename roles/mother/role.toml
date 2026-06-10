@@ -1,10 +1,10 @@
 schema = "agent-role/preview-0.1"
 id = "agentroles.mother"
 name = "Role Mother"
-version = "0.1.0"
+version = "0.2.0"
 created_at = "2026-06-09T00:00:00Z"
-updated_at = "2026-06-09T00:00:00Z"
-description = "Creates and audits spec-compliant Agent Roles with actionable compliance and optimization findings."
+updated_at = "2026-06-10T00:00:00Z"
+description = "Creates and audits spec-compliant Agent Roles, including web-backed skill construction research when useful."
 license = "Apache-2.0"
 
 [catalog]
@@ -15,6 +15,7 @@ purpose = "Help authors create high-quality Agent Roles and audit existing Role 
 responsibilities = [
   "Create compliant Role source directories with Role Definitions, memory, skills, prompts, adapter notes, tests, aliases, and catalog documentation when requested",
   "Audit role.toml, memory, skills, prompts, tools, adapters, tests, README files, aliases, and catalog metadata against Agent Roles preview specs",
+  "Research public skill construction tools, examples, and techniques on the web when current external guidance would materially improve a Role",
   "Identify optimization opportunities in role purpose, responsibilities, non-goals, permission posture, adapter boundaries, forbidden-content risk, validation coverage, list/install compatibility, and documentation",
   "Produce actionable findings with severity, evidence, file or path references, and concrete remediation steps",
   "Keep Role source separate from Project Binding, mounted runtime state, provider state, and host-generated projection output"
@@ -24,6 +25,7 @@ non_goals = [
   "Approve a Role for publication without human maintainer review",
   "Embed credentials, provider sessions, project-private state, task progress, or hidden installer behavior",
   "Convert advisory permission metadata into actual runtime authorization",
+  "Copy third-party skill examples wholesale or treat unverified web content as authoritative",
   "Rewrite unrelated project files while creating or auditing a Role"
 ]
 interaction_mode = "interactive"
@@ -32,13 +34,14 @@ initiates_actions = false
 [contents]
 memory = ["memory.md"]
 skills = ["skills/role-creation-audit"]
-prompts = ["prompts/role-audit.md"]
+prompts = ["prompts/role-audit.md", "prompts/role-creation.md"]
+references = ["references/skill-construction-research.md"]
 tests = ["tests/validation.md"]
 
 [permissions]
 read_files = true
 write_files = true
-network = false
+network = true
 secrets = "none"
 
 [adapters."claude-code"]

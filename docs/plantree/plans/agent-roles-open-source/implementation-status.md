@@ -9,9 +9,10 @@ Preview package-manager hardening and PyPI/npm release preparation.
 ## Current Review Target
 
 `agentroles.mother` is being aligned as the preview Role for creating and
-auditing Agent Role source. The local catalog contains `mother`, `role-mother`,
-`role-author`, and `role-auditor` aliases; README/i18n Published Roles sections
-now list it as a preview Role; and the plan direction is captured in
+auditing Agent Role source, including bounded public web research for skill
+construction tools and techniques. The local catalog contains `mother`,
+`role-mother`, `role-author`, and `role-auditor` aliases; README/i18n Published
+Roles sections list it as a preview Role; and the plan direction is captured in
 [topics/mother-role-creation-audit.md](topics/mother-role-creation-audit.md).
 
 Preview package-manager catalog semantics now separate the `agent-roles`
@@ -203,3 +204,7 @@ references should be treated as historical planning language until migrated.
   passed with 31 tests, TOML parsing for `roles/mother` passed, and
   `agent-roles list --json` discovered `agentroles.mother` with preview level
   and the `mother`, `role-mother`, `role-author`, and `role-auditor` aliases.
+  Follow-up design work on the same date bumped the Role to `0.2.0`, added
+  bounded network research for skill construction, added creation/audit prompt
+  coverage and a skill-construction research reference, and updated tests to
+  require that inventory.

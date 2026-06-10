@@ -1,6 +1,8 @@
 # Role Mother
 
-`mother` is a preview Role for creating and auditing Agent Roles.
+`mother` is a preview Role for creating and auditing Agent Roles, including
+bounded web-backed research for skill construction when current external
+guidance would materially improve the result.
 
 It helps maintainers turn an idea into a compliant Role source directory, and
 it reviews existing Role source for spec compliance, catalog readiness, and
@@ -16,6 +18,8 @@ spec compliance, catalog readiness, and optimization opportunities.
 - Create compliant Role source directories when asked.
 - Audit `role.toml`, memory, skills, prompts, tools, adapters, tests, README
   files, aliases, and catalog metadata.
+- Research public skill construction tools, examples, and techniques when local
+  specs and examples are not enough.
 - Identify improvements to purpose, responsibilities, non-goals, permissions,
   adapter boundaries, forbidden-content risk, validation coverage, list/install
   compatibility, and documentation.
@@ -32,6 +36,8 @@ spec compliance, catalog readiness, and optimization opportunities.
 - Embed credentials, provider sessions, project-private state, task progress,
   or hidden installer behavior.
 - Treat advisory permission metadata as actual runtime authorization.
+- Copy third-party skill examples wholesale or treat unverified web content as
+  authoritative.
 - Rewrite unrelated project files while creating or auditing a Role.
 
 ## Contents
@@ -40,6 +46,9 @@ spec compliance, catalog readiness, and optimization opportunities.
 - `memory.md`: durable operating instructions and review posture.
 - `skills/role-creation-audit`: reusable Role creation and audit workflow.
 - `prompts/role-audit.md`: reusable audit prompt template.
+- `prompts/role-creation.md`: reusable Role creation prompt template.
+- `references/skill-construction-research.md`: web-backed skill construction
+  research guide and source list.
 - `tests/`: validation notes.
 
 ## Source Boundary
@@ -56,8 +65,10 @@ objective, configure that outside this Role source.
 ## Permission Posture
 
 `mother` declares file writes because Role authoring may create or update Role
-source files when the user asks it to. Audit-only use can be run read-only by a
-host. The Role does not require network access or secrets.
+source files when the user asks it to. It declares network access because Role
+and skill design may need current public docs, tools, or examples. Audit-only
+use can be run read-only and offline by a host. The Role does not require
+secrets.
 
 ## Naming Note
 
