@@ -1,6 +1,6 @@
-# Role Mather
+# Role Mother
 
-`mather` is a preview Role for creating and auditing Agent Roles.
+`mother` is a preview Role for creating and auditing Agent Roles.
 
 It helps maintainers turn an idea into a compliant Role source directory, and
 it reviews existing Role source for spec compliance, catalog readiness, and
@@ -55,12 +55,12 @@ objective, configure that outside this Role source.
 
 ## Permission Posture
 
-`mather` declares file writes because Role authoring may create or update Role
+`mother` declares file writes because Role authoring may create or update Role
 source files when the user asks it to. Audit-only use can be run read-only by a
 host. The Role does not require network access or secrets.
 
 ## Naming Note
 
-The canonical Role id is `agentroles.mather`, with `mather` as the short alias.
+The canonical Role id is `agentroles.mother`, with `mother` as the short alias.
 The term is intentionally kept as the requested catalog name; clearer aliases
 such as `role-author` and `role-auditor` may also resolve to this Role.

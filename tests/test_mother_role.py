@@ -10,7 +10,7 @@ from agent_roles.manifest import load_role
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-ROLE_ROOT = REPO_ROOT / "roles" / "mather"
+ROLE_ROOT = REPO_ROOT / "roles" / "mother"
 
 
 def _run_json(argv: list[str], tmp_path: Path, monkeypatch, capsys):
@@ -23,14 +23,14 @@ def _run_json(argv: list[str], tmp_path: Path, monkeypatch, capsys):
     return json.loads(captured.out)
 
 
-def test_mather_role_loads_with_expected_source_inventory() -> None:
+def test_mother_role_loads_with_expected_source_inventory() -> None:
     role = load_role(ROLE_ROOT)
 
-    assert role.id == "agentroles.mather"
-    assert role.name == "Role Mather"
+    assert role.id == "agentroles.mother"
+    assert role.name == "Role Mother"
     assert role.version == "0.1.0"
     assert role.catalog_level == "preview"
-    assert role.default_agent_name == "mather"
+    assert role.default_agent_name == "mother"
 
     identity = role.table("identity")
     assert identity["interaction_mode"] == "interactive"
@@ -49,8 +49,8 @@ def test_mather_role_loads_with_expected_source_inventory() -> None:
     assert permissions["network"] is False
     assert permissions["secrets"] == "none"
 
-    assert role.adapter("codex")["display_name"] == "mather"
-    assert role.adapter("ccb")["display_name"] == "mather"
+    assert role.adapter("codex")["display_name"] == "mother"
+    assert role.adapter("ccb")["display_name"] == "mother"
 
     for relative in (
         "README.md",
@@ -62,38 +62,38 @@ def test_mather_role_loads_with_expected_source_inventory() -> None:
         assert ROLE_ROOT.joinpath(relative).is_file()
 
 
-def test_mather_installs_and_aliases_resolve_from_catalog(tmp_path: Path, monkeypatch, capsys) -> None:
-    assert canonical_role_id("mather", sources=(REPO_ROOT,)) == "agentroles.mather"
-    assert canonical_role_id("role-author", sources=(REPO_ROOT,)) == "agentroles.mather"
-    assert canonical_role_id("role-auditor", sources=(REPO_ROOT,)) == "agentroles.mather"
-    assert set(aliases_for("agentroles.mather", sources=(REPO_ROOT,))) == {
-        "mather",
+def test_mother_installs_and_aliases_resolve_from_catalog(tmp_path: Path, monkeypatch, capsys) -> None:
+    assert canonical_role_id("mother", sources=(REPO_ROOT,)) == "agentroles.mother"
+    assert canonical_role_id("role-author", sources=(REPO_ROOT,)) == "agentroles.mother"
+    assert canonical_role_id("role-auditor", sources=(REPO_ROOT,)) == "agentroles.mother"
+    assert set(aliases_for("agentroles.mother", sources=(REPO_ROOT,))) == {
+        "mother",
         "role-auditor",
         "role-author",
-        "role-mather",
+        "role-mother",
     }
 
     install = _run_json(["install", "role-author"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
-    assert install["role_id"] == "agentroles.mather"
+    assert install["role_id"] == "agentroles.mother"
     assert install["version"] == "0.1.0"
     assert install["catalog_level"] == "preview"
 
     resolved = _run_json(["resolve", "role-auditor"], tmp_path, monkeypatch, capsys)
     assert resolved["status"] == "ok"
     assert resolved["requested_role_id"] == "role-auditor"
-    assert resolved["role_id"] == "agentroles.mather"
+    assert resolved["role_id"] == "agentroles.mother"
     assert resolved["installed"] is True
 
 
-def test_mather_list_discovers_role_from_clean_store(tmp_path: Path, monkeypatch, capsys) -> None:
+def test_mother_list_discovers_role_from_clean_store(tmp_path: Path, monkeypatch, capsys) -> None:
     listing = _run_json(["list"], tmp_path, monkeypatch, capsys)
     rows = {row["role_id"]: row for row in listing["roles"]}
 
-    assert "agentroles.mather" in rows
-    row = rows["agentroles.mather"]
+    assert "agentroles.mother" in rows
+    row = rows["agentroles.mother"]
     assert row["version"] == "0.1.0"
     assert row["catalog_level"] == "preview"
     assert row["status"] == "available"
     assert row["update_reason"] == "not_installed"
-    assert set(row["aliases"]) == {"mather", "role-auditor", "role-author", "role-mather"}
+    assert set(row["aliases"]) == {"mother", "role-auditor", "role-author", "role-mother"}

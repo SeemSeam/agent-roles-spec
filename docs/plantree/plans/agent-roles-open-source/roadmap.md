@@ -31,6 +31,10 @@ Date: 2026-06-02
   `archi`, retiring the old preferred `ccb-archi`/Python venv route in Role
   adapter memory, tooling skill, adapter metadata, tool hooks, reference role
   copy, and tests.
+- Added the preview `agentroles.mother` Role for creating and auditing Agent
+  Roles, with aliases, authoring/audit memory, a reusable role-creation/audit
+  skill, an audit prompt, validation notes, and package-manager tests. See
+  [topics/mother-role-creation-audit.md](topics/mother-role-creation-audit.md).
 
 ## In Progress
 
@@ -71,3 +75,6 @@ Date: 2026-06-02
 - Permission enforcement beyond declarations and adapter guidance.
 - Dependency solving across conflicting tools or plugin content.
 - Multi-role composition on one mounted agent instance.
+- Programmatic role scaffolding commands such as `agent-roles new` or
+  `agent-roles scaffold`; `agentroles.mother` may guide authoring first, while
+  CLI scaffolding remains later package-manager work.

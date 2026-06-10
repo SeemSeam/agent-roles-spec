@@ -1,12 +1,18 @@
 # Agent Roles Open Source Implementation Status
 
-Date: 2026-06-07
+Date: 2026-06-10
 
 ## Current Phase
 
 Preview package-manager hardening and PyPI/npm release preparation.
 
 ## Current Review Target
+
+`agentroles.mother` is being aligned as the preview Role for creating and
+auditing Agent Role source. The local catalog contains `mother`, `role-mother`,
+`role-author`, and `role-auditor` aliases; README/i18n Published Roles sections
+now list it as a preview Role; and the plan direction is captured in
+[topics/mother-role-creation-audit.md](topics/mother-role-creation-audit.md).
 
 Preview package-manager catalog semantics now separate the `agent-roles`
 npm/PyPI package version from GitHub-published Role catalog revisions. Roles
@@ -192,3 +198,8 @@ references should be treated as historical planning language until migrated.
   workflow run `27194830188` at commit `a704d64`; npm registry reports latest
   `0.1.2`, temporary install verified `agent-roles --version`, and the
   published tarball contains `reference_roles/archi` version `0.2.3`.
+- `agentroles.mother` preview Role validation passed on 2026-06-10:
+  `python -m pytest tests/test_mother_role.py` passed, full `python -m pytest`
+  passed with 31 tests, TOML parsing for `roles/mother` passed, and
+  `agent-roles list --json` discovered `agentroles.mother` with preview level
+  and the `mother`, `role-mother`, `role-author`, and `role-auditor` aliases.

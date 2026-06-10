@@ -97,6 +97,21 @@ Dies sind die derzeit veröffentlichten Catalog Roles. Jeder Eintrag kann über
 
 </details>
 
+<details>
+<summary><strong>agentroles.mother</strong> - Role Mother</summary>
+
+- **Version**: `0.1.0`
+- **Stufe**: `preview`
+- **Zweck**: Erstellt und auditiert spec-konforme Agent Roles mit umsetzbaren Compliance- und Optimierungsbefunden.
+- **Geeignet für**: Entwurf neuer Roles, Audit von Role source, Schärfung von memory, skills und prompts sowie Prüfung der catalog readiness.
+- **Inhalte**: Role-Authoring-Memory, Role-Erstellungs- und Audit-Skill, wiederverwendbarer Audit-Prompt, Validierungsnotizen und Host-Adapter-Anzeigemetadaten.
+- **Adapter**: CCB, Claude Code, Codex, HIVE.
+- **Installation**: `agent-roles install mother`
+- **Aktualisierung**: `agent-roles update mother`
+- **Quelle**: [`roles/mother`](../../roles/mother/)
+
+</details>
+
 ---
 
 ## Aktueller Stand

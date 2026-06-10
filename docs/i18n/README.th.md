@@ -97,6 +97,21 @@ Host Adapter อธิบายว่า Role เข้าไปใน host envi
 
 </details>
 
+<details>
+<summary><strong>agentroles.mother</strong> - Role Mother</summary>
+
+- **เวอร์ชัน**: `0.1.0`
+- **ระดับ**: `preview`
+- **วัตถุประสงค์**: สร้างและ audit Agent Roles ที่ตรงตาม spec พร้อม findings ด้าน compliance และ optimization ที่นำไปแก้ไขได้
+- **เหมาะสำหรับ**: draft Roles ใหม่, audit Role source, ปรับ memory, skills และ prompts, และตรวจ catalog readiness.
+- **เนื้อหา**: Role authoring memory, Role creation/audit skill, reusable audit prompt, validation notes และ host adapter display metadata.
+- **อะแดปเตอร์**: CCB, Claude Code, Codex, HIVE.
+- **ติดตั้ง**: `agent-roles install mother`
+- **อัปเดต**: `agent-roles update mother`
+- **แหล่งที่มา**: [`roles/mother`](../../roles/mother/)
+
+</details>
+
 ---
 
 ## Current Status

@@ -97,6 +97,21 @@ Role Definition هو ملف manifest الخاص بـ Role. يصف مسؤوليا
 
 </details>
 
+<details>
+<summary><strong>agentroles.mother</strong> - Role Mother</summary>
+
+- **الإصدار**: `0.1.0`
+- **المستوى**: `preview`
+- **الغرض**: ينشئ ويدقق Agent Roles المتوافقة مع spec مع نتائج قابلة للتنفيذ لتحسين compliance وoptimization.
+- **مناسب لـ**: صياغة Roles جديدة، تدقيق Role source، تحسين memory وskills وprompts، وفحص catalog readiness.
+- **المحتويات**: Role authoring memory، skill لإنشاء وتدقيق Role، audit prompt قابل لإعادة الاستخدام، validation notes، وhost adapter display metadata.
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **التثبيت**: `agent-roles install mother`
+- **التحديث**: `agent-roles update mother`
+- **المصدر**: [`roles/mother`](../../roles/mother/)
+
+</details>
+
 ---
 
 ## الحالة الحالية

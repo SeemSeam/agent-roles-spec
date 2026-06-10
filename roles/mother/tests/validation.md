@@ -1,11 +1,11 @@
 # Validation Notes
 
-The `mather` Role should be validated with:
+The `mother` Role should be validated with:
 
-- TOML parsing for `roles/mather/role.toml`.
-- loader coverage confirming `agentroles.mather` metadata, contents, advisory
+- TOML parsing for `roles/mother/role.toml`.
+- loader coverage confirming `agentroles.mother` metadata, contents, advisory
   permissions, and adapter display names.
-- alias coverage for `mather`, `role-author`, and `role-auditor`.
+- alias coverage for `mother`, `role-author`, and `role-auditor`.
 - catalog list discovery with a clean `AGENT_ROLES_STORE`.
 
 The Role source must not contain secrets, provider sessions, runtime state,

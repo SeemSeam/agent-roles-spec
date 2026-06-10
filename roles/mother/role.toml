@@ -1,6 +1,6 @@
 schema = "agent-role/preview-0.1"
-id = "agentroles.mather"
-name = "Role Mather"
+id = "agentroles.mother"
+name = "Role Mother"
 version = "0.1.0"
 created_at = "2026-06-09T00:00:00Z"
 updated_at = "2026-06-09T00:00:00Z"
@@ -42,13 +42,13 @@ network = false
 secrets = "none"
 
 [adapters."claude-code"]
-display_name = "mather"
+display_name = "mother"
 
 [adapters.codex]
-display_name = "mather"
+display_name = "mother"
 
 [adapters.ccb]
-display_name = "mather"
+display_name = "mother"
 
 [adapters.hive]
-display_name = "mather"
+display_name = "mother"

@@ -97,6 +97,21 @@ install でき、host 固有の adapter を提供できます。
 
 </details>
 
+<details>
+<summary><strong>agentroles.mother</strong> - Role Mother</summary>
+
+- **Version**: `0.1.0`
+- **レベル**: `preview`
+- **Purpose**: spec 準拠の Agent Roles を作成・監査し、実行可能な compliance と optimization の指摘を返します。
+- **Best for**: 新しい Roles のドラフト、Role source の監査、memory・skills・prompts の改善、catalog readiness の確認。
+- **Contents**: Role authoring memory、Role creation/audit skill、再利用可能な audit prompt、validation notes、host adapter display metadata。
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **Install**: `agent-roles install mother`
+- **Update**: `agent-roles update mother`
+- **Source**: [`roles/mother`](../../roles/mother/)
+
+</details>
+
 ---
 
 ## 現在の状況

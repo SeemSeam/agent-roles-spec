@@ -38,6 +38,10 @@ remain CCB-owned runtime concerns.
 - [topics/archi-ccb-adapter-tooling-alignment.md](topics/archi-ccb-adapter-tooling-alignment.md):
   align the `agentroles.archi` CCB adapter with the npm `archi` CLI and retire
   stale `ccb-archi`/Python venv guidance.
+- [topics/mother-role-creation-audit.md](topics/mother-role-creation-audit.md):
+  define the `agentroles.mother` preview Role for creating and auditing Role
+  source, including aliases, workflow boundaries, validation, and promotion
+  criteria.
 - [decisions/001-spec-first-project.md](decisions/001-spec-first-project.md):
   Agent Roles starts as a specification project; CLI and runtime work follows.
 - [decisions/002-rolepack-contains-plugin-content.md](decisions/002-rolepack-contains-plugin-content.md):

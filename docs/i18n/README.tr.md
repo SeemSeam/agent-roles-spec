@@ -97,6 +97,21 @@ Bunlar catalog içinde şu anda yayınlanmış Roles kayıtlarıdır. Her kayıt
 
 </details>
 
+<details>
+<summary><strong>agentroles.mother</strong> - Role Mother</summary>
+
+- **Sürüm**: `0.1.0`
+- **Seviye**: `preview`
+- **Amaç**: Spec'e uygun Agent Roles oluşturur ve denetler; uygulanabilir compliance ve optimization bulguları üretir.
+- **En uygun kullanım**: yeni Roles taslakları, Role source denetimi, memory, skills ve prompts iyileştirmesi, catalog readiness kontrolü.
+- **İçerik**: Role authoring memory, Role creation/audit skill, yeniden kullanılabilir audit prompt, validation notes ve host adapter display metadata.
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **Kurulum**: `agent-roles install mother`
+- **Güncelleme**: `agent-roles update mother`
+- **Kaynak**: [`roles/mother`](../../roles/mother/)
+
+</details>
+
 ---
 
 ## Mevcut Durum
