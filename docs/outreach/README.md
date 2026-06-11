@@ -6,6 +6,8 @@ This folder keeps short-form outreach material for explaining the Agent Roles sp
 
 - [agent-roles-public-proposal.en.md](agent-roles-public-proposal.en.md): public English proposal for a GitHub Discussion or Issue. This is the preferred link for LinkedIn or community posts.
 - [agent-roles-public-proposal.en.pdf](agent-roles-public-proposal.en.pdf): PDF export of the public proposal.
+- [agent-roles-public-proposal.zh-CN.md](agent-roles-public-proposal.zh-CN.md): public Chinese proposal.
+- [agent-roles-public-proposal.zh-CN.pdf](agent-roles-public-proposal.zh-CN.pdf): PDF export of the Chinese proposal.
 
 ## Suggested Use
 
