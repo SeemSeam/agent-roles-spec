@@ -28,6 +28,13 @@ Before any mutation:
    the rules are known test residue. If a rule is recent, or its task/reason
    fields could represent an active drill, ask before clearing unless the user
    explicitly asked to clear fault-injection rules.
+   - "Recent" means created within the last 30 minutes by wall time. If no
+     creation timestamp is available, treat the rule as recent.
+   - Active-drill markers include task or reason text containing `test`,
+     `drill`, `fault-inject`, `fault injection`, `chaos`, or `ci`.
+   - Safe test residue is an old rule whose task/reason clearly matches a
+     completed local test and no active queue/inbox/trace evidence depends on
+     it.
 5. Choose the least disruptive supported action.
 6. Report exact commands, gates, affected agents, blockers, and what remains
    unchanged.
@@ -62,6 +69,26 @@ context, use this exact flow:
 
 `ccb reload` is not the recovery finish line. It materializes config into the
 daemon graph; running provider processes may still hold old startup inputs.
+
+## Reload Aftermath
+
+Use this section after `ccb-config` reports that validation and reload either
+completed or are ready to materialize.
+
+- Presentation-only changes, sidebar/tips display, labels, or other UI-only
+  reloadable changes: re-check `ccb ps` and do not restart unless independent
+  runtime evidence shows a stale or broken agent.
+- Role asset, skill, prompt, tool, workspace, restore, permission, queue policy,
+  watch-path, or startup-context changes: inspect the dry-run affected-agent
+  list, re-check those current-graph agents, and restart only affected agents
+  whose running provider state still reflects old startup assets or context.
+- Provider command, provider profile, model, base URL, environment, API route,
+  or command-template changes: after successful reload, expect affected running
+  agents to need guarded `ccb restart <agent>` when busy checks pass.
+
+Never restart an agent only because disk config changed. Restart decisions
+must combine the reload plan, affected-agent list, current daemon graph, busy
+checks, and provider/pane evidence.
 
 ## Supported Actions
 

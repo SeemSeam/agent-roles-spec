@@ -1,6 +1,6 @@
 ---
 name: ccb-self-chain
-description: Diagnose and repair CCB ask/job/message/reply/artifact/callback lineage. Use for missing replies, incomplete artifacts, pending callbacks, retry/resubmit/ack decisions, reply delivery problems, or work-chain resume advice.
+description: Internal CCB lineage repair for retry/resubmit/ack decisions when a job/message/attempt/reply/inbound-event/artifact id is already in hand. Prefer ccb-comm-reply-recover for user-visible "reply did not arrive", stuck busy/delivering, queued-behind-active, empty artifact, duplicate retry, or callback-stalled incidents because it includes mailbox and pane cross-checks.
 ---
 
 # CCB Self Chain

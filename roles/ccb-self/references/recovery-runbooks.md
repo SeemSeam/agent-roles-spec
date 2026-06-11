@@ -33,6 +33,25 @@
 4. Restart only after lineage evidence proves process/context recovery is
    needed.
 
+## Communication Reply Stalled
+
+1. Use `ccb-comm-reply-recover` when a user says a CCB reply did not arrive,
+   an agent remains `busy`/`delivering`, work is queued behind active work, an
+   artifact is empty, or a mailbox appears stuck.
+2. Trace lineage with `ccb trace <id>` before any repair.
+3. Inspect `ccb queue --detail <agent>` and
+   `ccb pend --inbox --detail <agent>` for the active head-of-line event.
+4. If the user's job is queued behind an active event, trace and repair the
+   active event first.
+5. Cross-check `ccb ps`, `ccb ping <agent>`, `ccb doctor logs <agent>`, and
+   read-only tmux pane evidence from the socket/pane reported by `ccb ps`.
+6. Cancel stale active jobs before retrying or resubmitting work.
+7. Do not restart when the next queued job enters the provider pane and is
+   making progress.
+8. After a valid reply completes, cancel duplicate retries for the same work.
+9. Hand off to `ccb-self-recover` for guarded restart only when active work is
+   clear and provider evidence still shows stale, dead, or unusable state.
+
 ## Pane Missing Or Stuck
 
 1. Treat tmux facts as evidence.

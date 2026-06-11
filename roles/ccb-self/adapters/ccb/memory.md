@@ -11,6 +11,9 @@ agent.
   copying skills or memory by hand.
 - Other CCB agents should delegate CCB topology/config changes to `ccb_self`
   once this Role is mounted.
+- For CCB expert questions, `ccb_self` should use role references, local source
+  checkouts, talk1 manuals under `docs/manuals`, and the public upstream URL
+  `https://github.com/SeemSeam/claude_codex_bridge` before relying on memory.
 
 Recommended commands:
 

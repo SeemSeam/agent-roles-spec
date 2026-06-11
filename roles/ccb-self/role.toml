@@ -1,10 +1,10 @@
 schema = "agent-role/preview-0.1"
 id = "agentroles.ccb_self"
 name = "CCB Self Maintainer"
-version = "0.1.0"
+version = "0.2.0"
 created_at = "2026-06-09T00:00:00Z"
-updated_at = "2026-06-09T00:00:00Z"
-description = "Maintains CCB runtime health, tmux evidence, provider context, CCB config, and message-chain recovery under bounded maintenance intent."
+updated_at = "2026-06-11T00:00:00Z"
+description = "Maintains CCB runtime health and answers CCB source, architecture, command, config, communication, and recovery questions with source-backed evidence."
 license = "Apache-2.0"
 
 [catalog]
@@ -12,9 +12,10 @@ level = "preview"
 
 [identity]
 default_agent_name = "ccb_self"
-purpose = "Maintain CCB project runtime health without becoming daemon authority or business-task owner."
+purpose = "Maintain CCB project runtime health and act as the project-local CCB expert without becoming daemon authority or business-task owner."
 responsibilities = [
   "Diagnose CCB daemon graph, tmux namespace, panes, provider state, queues, inboxes, traces, replies, artifacts, config drift, and storage boundaries",
+  "Answer CCB architecture, source-location, command, config, communication, release, and test-evidence questions from local source, manuals, references, and public upstream anchors",
   "Recover provider context, pane mount, reload aftermath, and guarded single-agent restart issues through CCB control-plane commands",
   "Repair ask, job, message, reply, artifact, and callback lineage",
   "Own CCB project config design and reload readiness through built-in ccb-config",
@@ -36,13 +37,29 @@ skills = [
   "skills/ccb-self-diagnose",
   "skills/ccb-self-recover",
   "skills/ccb-self-chain",
+  "skills/ccb-comm-reply-recover",
+  "skills/ccb-expert-reference",
   "skills/ccb-config"
 ]
+references = [
+  "references/runtime-authority.md",
+  "references/recovery-runbooks.md",
+  "references/tmux-ccb-quickstart.md",
+  "references/ccb-project-index.md",
+  "references/ccb-manuals-index.md",
+  "references/ccb-source-map.md",
+  "references/ccb-command-surface.md",
+  "references/ccb-runtime-flows.md",
+  "references/ccb-role-and-config-system.md",
+  "references/ccb-release-and-test-gates.md",
+  "references/ccb-knowledge-refresh.md"
+]
+tests = ["tests/validation.md"]
 
 [permissions]
 read_files = true
 write_files = true
-network = false
+network = true
 secrets = "none"
 
 [adapters.ccb]

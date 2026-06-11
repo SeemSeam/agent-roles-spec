@@ -32,8 +32,8 @@ but they must not be written back into this Role source directory.
   `skills/ccb-config`.
 - Common inherited skill folders must not contain or install the full
   `ccb-config` skill.
-- CCB may copy the four Role-owned skills only into the bound `ccb_self`
-  instance during mount/materialization.
+- CCB may copy the Role-owned skills only into the bound `ccb_self` instance
+  during mount/materialization.
 - If a non-self CCB agent sees a CCB config task, it should delegate to
   `ccb_self` or ask the user to route the request there.
 - Adapter materialization must preserve the role source boundary: no runtime

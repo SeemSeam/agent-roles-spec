@@ -42,7 +42,7 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
 
     assert role.id == "agentroles.ccb_self"
     assert role.name == "CCB Self Maintainer"
-    assert role.version == "0.1.0"
+    assert role.version == "0.2.0"
     assert role.catalog_level == "preview"
     assert role.default_agent_name == "ccb_self"
     assert role.providers == ("codex", "claude")
@@ -53,8 +53,24 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
         "skills/ccb-self-diagnose",
         "skills/ccb-self-recover",
         "skills/ccb-self-chain",
+        "skills/ccb-comm-reply-recover",
+        "skills/ccb-expert-reference",
         "skills/ccb-config",
     }
+    assert contents["references"] == [
+        "references/runtime-authority.md",
+        "references/recovery-runbooks.md",
+        "references/tmux-ccb-quickstart.md",
+        "references/ccb-project-index.md",
+        "references/ccb-manuals-index.md",
+        "references/ccb-source-map.md",
+        "references/ccb-command-surface.md",
+        "references/ccb-runtime-flows.md",
+        "references/ccb-role-and-config-system.md",
+        "references/ccb-release-and-test-gates.md",
+        "references/ccb-knowledge-refresh.md",
+    ]
+    assert contents["tests"] == ["tests/validation.md"]
 
     ccb = role.adapter("ccb")
     assert ccb["default_agent_name"] == "ccb_self"
@@ -66,7 +82,7 @@ def test_ccb_self_installs_and_aliases_resolve_from_catalog(tmp_path: Path, monk
     install = _run_json(["install", "ccb-self"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
     assert install["role_id"] == "agentroles.ccb_self"
-    assert install["version"] == "0.1.0"
+    assert install["version"] == "0.2.0"
     assert install["catalog_level"] == "preview"
 
     resolved = _run_json(["resolve", "ccb_self"], tmp_path, monkeypatch, capsys)
@@ -101,7 +117,54 @@ def test_ccb_self_doctor_helper_runs_declared_read_only_commands(monkeypatch, ca
 
 
 def test_ccb_self_distributable_skill_text_has_no_local_source_paths() -> None:
-    for path in ROLE_ROOT.joinpath("skills").rglob("SKILL.md"):
-        text = path.read_text(encoding="utf-8")
-        assert "/home/bfly/yunwei/ccb_source" not in text
-        assert "/home/bfly/yunwei/test_ccb2" not in text
+    for base in ("skills", "references"):
+        paths = ROLE_ROOT.joinpath(base).rglob("*.md")
+        for path in paths:
+            text = path.read_text(encoding="utf-8")
+            assert "/home/bfly/yunwei/ccb_source" not in text
+            assert "/home/bfly/yunwei/test_ccb2" not in text
+
+
+def test_ccb_self_expert_references_include_github_and_manuals() -> None:
+    project_index = ROLE_ROOT.joinpath("references/ccb-project-index.md").read_text(
+        encoding="utf-8"
+    )
+    manuals_index = ROLE_ROOT.joinpath("references/ccb-manuals-index.md").read_text(
+        encoding="utf-8"
+    )
+    skill = ROLE_ROOT.joinpath("skills/ccb-expert-reference/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "https://github.com/SeemSeam/claude_codex_bridge" in project_index
+    assert "docs/manuals/developer-guide/" in manuals_index
+    assert "docs/manuals/user-guide/" in manuals_index
+    assert "docs/manuals/ccb-self-expert-guide.md" in manuals_index
+    assert "ccb-source-map.md" in skill
+    assert "ccb-release-and-test-gates.md" in skill
+    assert "When the current project is not a CCB source checkout" in skill
+
+
+def test_ccb_self_review_followups_are_encoded() -> None:
+    memory = ROLE_ROOT.joinpath("memory.md").read_text(encoding="utf-8")
+    command_surface = ROLE_ROOT.joinpath("references/ccb-command-surface.md").read_text(
+        encoding="utf-8"
+    )
+    recover = ROLE_ROOT.joinpath("skills/ccb-self-recover/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    chain = ROLE_ROOT.joinpath("skills/ccb-self-chain/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    refresh = ROLE_ROOT.joinpath("references/ccb-knowledge-refresh.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "## Skill Routing" in memory
+    assert "ccb-comm-reply-recover" in memory
+    assert "ccb-expert-reference" in memory
+    assert "doctor [ps|logs <agent_name>|storage]" in command_surface
+    assert "Recent\" means created within the last 30 minutes" in recover
+    assert "## Reload Aftermath" in recover
+    assert "Prefer ccb-comm-reply-recover" in chain
+    assert "role version increments" in refresh
