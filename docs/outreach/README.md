@@ -8,13 +8,10 @@ specification to developer-platform, agent-tooling, and open-source audiences.
 - [agent-roles-public-proposal.en.md](agent-roles-public-proposal.en.md): public
   English proposal for a GitHub Discussion or Issue. This is the preferred link
   for LinkedIn or community posts.
-- [agent-roles-introduction-letter.en.md](agent-roles-introduction-letter.en.md):
-  English direct message or email version.
-- [agent-roles-introduction-letter.md](agent-roles-introduction-letter.md):
-  Chinese direct message or email version.
 
 ## Suggested Use
 
 For first contact, send a short note and link to the public proposal instead of
 pasting the full text into a direct message.
 
+Private direct-message or email drafts should stay local and ignored by Git.

@@ -45,3 +45,7 @@ provider-runtime/
 *.key
 *.p12
 *.pfx
+
+# Private outreach drafts
+docs/outreach/agent-roles-introduction-letter.md
+docs/outreach/agent-roles-introduction-letter.en.md
