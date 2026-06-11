@@ -12,11 +12,11 @@ A Role is a higher-level unit than a skill. Where a skill describes one reusable
 role memory + skills + tool dependencies + permission boundaries + host adapter metadata
 ```
 
-The intent is that a Role is a static, portable definition: installable from a catalog, mountable into a host like Codex or Claude Code, and removable without polluting the main environment. Role source should not store project state or session history. Hosts may generate projection output from role source; that output should not get written back into the role.
+The intent is that a Role is a static, portable definition: installable from a catalog, mountable into an agent host, and removable without polluting the main environment. That host might be Codex, Claude Code, DeepSeek-based tooling, or a local multi-agent runtime. Role source should not store project state or session history. Hosts may generate projection output from role source; that output should not get written back into the role.
 
 ## Role is not a new concept
 
-Custom GPTs in the ChatGPT Store, character cards in AI role-playing communities — these are both trying to solve the same underlying need: a stable, reusable agent identity with specific behaviors, knowledge, and interaction patterns.
+Custom GPTs in the ChatGPT Store, Claude/Anthropic workflows, DeepSeek-based agent tooling, and character cards in AI role-playing communities are all pointing at a similar need: stable, reusable agent identities with specific behaviors, knowledge, and interaction patterns.
 
 What those systems have not needed to address is the engineering packaging side: portability across different hosts, declared tool dependencies, lifecycle management (install / update / mount / unmount), and interoperability outside a single product's ecosystem. That is the gap I am trying to address with Agent Roles.
 
@@ -36,10 +36,10 @@ The current spec is intentionally conservative for v0.1: permissions are advisor
 
 **On permissions**: `[permissions]` in `role.toml` is currently a high-level advisory declaration (`read_files = true`, `write_files = false`, `network = false`). This makes the preview usable without requiring a full permission runtime, but it also means the declarations don't actually enforce anything. Is that the right trade-off for a preview spec, or does it make the whole permissions section misleading?
 
-**On scope**: The spec intentionally describes the portable Role artifact rather than a marketplace or host runtime. I've tried to keep it host-neutral so that Codex, Claude Code, or other hosts could each implement adapters without being locked into one implementation. Does that framing hold up, or is it too abstract without a concrete host to anchor against first?
+**On scope**: The spec intentionally describes the portable Role artifact rather than a marketplace or host runtime. I've tried to keep it host-neutral so that OpenAI, Anthropic, DeepSeek, open-source agent frameworks, or local coding-agent hosts could each implement adapters without being locked into one implementation. Does that framing hold up, or is it too abstract without a concrete host to anchor against first?
 
 **On the concept itself**: I may be solving a problem that existing plugin systems already handle, or solving it at the wrong layer. If you see an obvious gap in the framing, I'd rather hear it early.
 
 Project: <https://github.com/SeemSeam/agent-roles-spec>
 
-If you work on agent platforms, Codex, Claude Code, Custom GPTs, or multi-agent systems and have thoughts — including skeptical ones — I'd genuinely like to hear them.
+If you work on agent platforms, coding-agent hosts, Custom GPTs, Claude/Anthropic tooling, DeepSeek-based agent systems, open-source multi-agent frameworks, or related developer platforms, I'd genuinely like to hear your thoughts — including skeptical ones.
