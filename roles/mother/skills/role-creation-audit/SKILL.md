@@ -1,3 +1,8 @@
+---
+name: role-creation-audit
+description: Create, audit, repair, or explain Agent Role source for spec compliance and catalog readiness; use for Role authoring, Role source review, memory/skill/prompt optimization, catalog checks, and routing broad research or external source conversion through the dedicated research, candidate-score, blueprint, or source-ingest workflows before writing.
+---
+
 # Role Creation And Audit
 
 Use this skill when creating a new Agent Role, reviewing an existing Role, or

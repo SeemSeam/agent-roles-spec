@@ -194,6 +194,17 @@ def test_mother_role_loads_with_expected_source_inventory() -> None:
     assert "behavior_fixtures" in evaluation_schema["required"]
 
 
+def test_mother_skills_have_yaml_frontmatter() -> None:
+    for skill_path in sorted(ROLE_ROOT.glob("skills/*/SKILL.md")):
+        text = skill_path.read_text(encoding="utf-8")
+        assert text.startswith("---\n"), skill_path
+        closing = text.find("\n---\n", 4)
+        assert closing > 0, skill_path
+        frontmatter = text[4:closing]
+        assert "\nname:" in f"\n{frontmatter}", skill_path
+        assert "\ndescription:" in f"\n{frontmatter}", skill_path
+
+
 def test_mother_artifact_schemas_accept_golden_samples() -> None:
     schemas = {
         path.stem.removesuffix(".schema"): json.loads(path.read_text(encoding="utf-8"))
