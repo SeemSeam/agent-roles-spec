@@ -1,19 +1,35 @@
 # Agent Roles Open Source Implementation Status
 
-Date: 2026-06-10
+Date: 2026-06-14
 
 ## Current Phase
 
-Preview package-manager hardening and PyPI/npm release preparation.
+Preview package-manager hardening, PyPI/npm release preparation, and
+`agentroles.mother` capability planning.
 
 ## Current Review Target
 
-`agentroles.mother` is being aligned as the preview Role for creating and
-auditing Agent Role source, including bounded public web research for skill
-construction tools and techniques. The local catalog contains `mother`,
-`role-mother`, `role-author`, and `role-auditor` aliases; README/i18n Published
-Roles sections list it as a preview Role; and the plan direction is captured in
+`agentroles.mother` is being aligned as the preview Role for creating,
+ingesting, and auditing Agent Role source, including bounded public web
+research for skill construction tools and techniques. The local catalog
+contains `mother`, `role-mother`, `role-author`, and `role-auditor` aliases;
+README/i18n Published Roles sections list it as a preview Role; and the plan
+direction is captured in
 [topics/mother-role-creation-audit.md](topics/mother-role-creation-audit.md).
+The 2026-06-12 mounted `mother` session exposed the need for external
+skill/plugin repository ingestion with blueprint gates, deterministic scans,
+and draft-safety rules. The first P0 landing is now in `agentroles.mother`
+`0.2.1`: `role-source-ingest`, write-gate memory, external-source research
+workflow, local inventory script, README/i18n sync, and tests. The deeper
+capability target is now captured in
+[topics/mother-research-role-design-capability.md](topics/mother-research-role-design-capability.md):
+research brief, source discovery, candidate scoring, blueprint synthesis,
+write-gated scaffolding, and evaluation. The 2026-06-13 mother self-review
+accepted the direction but made enforceable artifacts the next gate. That gate
+landed in `agentroles.mother` `0.2.2` on 2026-06-14 with focused
+`role-research`, `role-candidate-score`, and `role-blueprint` skills,
+first-class artifact templates, four preview artifact schemas, hardened memory
+rules, README/i18n synchronization, and tests.
 
 Preview package-manager catalog semantics now separate the `agent-roles`
 npm/PyPI package version from GitHub-published Role catalog revisions. Roles
@@ -102,27 +118,25 @@ references should be treated as historical planning language until migrated.
 - 2026-06-09: Merged the boundary updates into `main`, released
   `agent-roles@0.1.2` through the npm trusted publishing workflow, and bumped
   `agentroles.archi` to `0.2.3`.
+- 2026-06-14: Landed `agentroles.mother` `0.2.2` first-class artifact gates:
+  research, candidate-score, and blueprint skills; research brief, scorecard,
+  Role blueprint, and evaluation report templates; research evidence,
+  candidate scorecard, Role blueprint, and evaluation report preview schemas;
+  hardened memory rules; README/i18n sync; and tests.
 
 ## Active TODO
 
-1. Keep translated README files under `docs/i18n/`; root `README.md` remains
-   the English authoritative entrypoint.
+1. Prepare `agentroles.mother` `0.3.0`: deterministic audit/score/draft-check
+   tools plus fixtures and golden examples for weak sources, runtime-state
+   repos, license uncertainty, multi-agent workflows, and incomplete drafts.
 2. Migrate specs, templates, conformance, and reference role wording from
    `RolePack` to `Role` where that reflects the current terminology decision;
-   apply the Role source / Project Binding / runtime state boundary from
-   Decision 003 while updating the specs.
-3. Review whether filenames such as `rolepack-v1.md` should remain historical
-   references or be renamed to `role-v1.md`.
-4. Align release checklist and roadmap with the new GitHub repository name.
-5. Configure PyPI Trusted Publishing for project `agent-roles` using
-   `.github/workflows/pypi.yml`, repository `SeemSeam/agent-roles-spec`, and
-   GitHub environment `pypi`.
-6. Publish the first PyPI preview only after the release workflow succeeds from
-   a GitHub Release or approved manual workflow dispatch.
-7. Continue hardening host adapter consumption of the preview CLI JSON contract.
-8. Decide whether `created_at` / `updated_at` become required for all preview
-   roles or remain "required for published catalog roles" guidance until schema
-   stabilization.
+   decide whether filenames such as `rolepack-v1.md` remain historical.
+3. Complete PyPI Trusted Publishing for project `agent-roles`, then publish the
+   first PyPI preview only after the GitHub workflow succeeds.
+4. Continue hardening host adapter consumption of the preview CLI JSON contract
+   and decide whether `created_at` / `updated_at` become required for all
+   preview roles or only published catalog roles.
 
 ## Last Verification
 
@@ -208,3 +222,39 @@ references should be treated as historical planning language until migrated.
   bounded network research for skill construction, added creation/audit prompt
   coverage and a skill-construction research reference, and updated tests to
   require that inventory.
+- On 2026-06-12, a mounted `mother` session attempting to package external
+  SU-CCB skills showed that the Role needs stronger source-ingestion behavior:
+  inventory and blueprint before writes, deterministic scans for provenance,
+  imports, runtime state, and forbidden content, explicit single-role versus
+  multi-role decisions, and a completion gate for partial drafts. The plan was
+  recorded in
+  [topics/mother-role-creation-audit.md](topics/mother-role-creation-audit.md).
+- On 2026-06-12, `agentroles.mother` was bumped to `0.2.1` with
+  `role-source-ingest`, source-ingest/write-gate memory, external-source
+  research guidance, local `scripts/inventory_external_source.py`, README/i18n
+  Published Roles synchronization, and tests for contents plus inventory-script
+  classification. Focused verification passed:
+  `python -m pytest tests/test_mother_role.py tests/test_su_ccb_role.py -q`
+  and `python -m py_compile roles/mother/scripts/inventory_external_source.py`.
+- On 2026-06-13, the deeper mother roadmap was split into
+  [topics/mother-research-role-design-capability.md](topics/mother-research-role-design-capability.md).
+  It defines `mother` as a research-to-role design operator, not merely a
+  browsing-capable role: research brief, source discovery, candidate scorecard,
+  source inventory, Role blueprint, write-gated scaffold, and evaluation report.
+- On 2026-06-13, mother self-review feedback was incorporated into the
+  planning tree. The accepted next gate is enforceability: add first-class
+  templates or schemas for research evidence, candidate scorecards, Role
+  blueprints, and evaluation reports before adding stronger scaffold
+  automation.
+- On 2026-06-14, `agentroles.mother` was bumped to `0.2.2` with
+  `role-research`, `role-candidate-score`, and `role-blueprint`; reusable
+  research brief, candidate scorecard, Role blueprint, and evaluation report
+  templates; research evidence, candidate scorecard, Role blueprint, and
+  evaluation report preview schemas; structured license/provenance fields;
+  hardened memory rules; prompt/reference/README/i18n sync; and expanded tests
+  with golden sample artifact schema checks. Focused and full verification
+  passed:
+  `python -m pytest tests/test_mother_role.py -q`, `python -m pytest -q`,
+  TOML/JSON parsing, `py_compile` for the inventory script, `git diff --check`,
+  and a temporary-store CLI `list/install/resolve` smoke test showing
+  `agentroles.mother` `0.2.2`.

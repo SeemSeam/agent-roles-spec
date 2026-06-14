@@ -100,12 +100,12 @@ diinstal melalui `agent-roles` dan dapat menyediakan adapter khusus host.
 <details>
 <summary><strong>agentroles.mother</strong> - Role Mother</summary>
 
-- **Versi**: `0.2.0`
+- **Versi**: `0.2.2`
 - **Level**: `preview`
-- **Tujuan**: Membuat dan mengaudit Agent Roles yang sesuai spec, termasuk riset web-backed untuk konstruksi skill saat berguna.
-- **Cocok untuk**: menyusun Roles baru, mengaudit Role source, memperbaiki memory, skills, dan prompts, memeriksa catalog readiness, serta meneliti tools dan teknik konstruksi skill.
+- **Tujuan**: Membuat, meneliti, membuat blueprint, mengingest, dan mengaudit Agent Roles yang sesuai spec dengan gate berbasis evidence.
+- **Cocok untuk**: menyusun Roles baru, mengaudit Role source, research briefs, candidate scorecards, blueprint gates, memeriksa catalog readiness, serta meneliti tools dan teknik konstruksi skill.
 - **Riset skill**: menggunakan riset web publik terbatas untuk tools dan teknik konstruksi skill terbaru, dengan prioritas pada docs resmi dan contoh yang dipelihara.
-- **Isi**: Role authoring memory, skill pembuatan dan audit Role, prompt pembuatan/audit reusable, referensi riset skill construction, catatan validasi, dan metadata tampilan host adapter.
+- **Isi**: Role authoring memory, skill pembuatan/audit, source-ingest, research, candidate-score, dan blueprint, prompt reusable, referensi riset skill construction, artifact templates, preview schemas, skrip inventory lokal, catatan validasi, dan metadata tampilan host adapter.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
 - **Instal**: `agent-roles install mother`
 - **Update**: `agent-roles update mother`

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-roles.local/schemas/mother/research-evidence.schema.json",
+  "title": "Mother Research Evidence",
+  "type": "object",
+  "required": ["schema", "request", "access_date", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "agent-roles/mother-research-evidence/v1"
+    },
+    "request": {
+      "type": "string",
+      "minLength": 1
+    },
+    "access_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "locator",
+          "access_date",
+          "authority",
+          "license",
+          "provenance",
+          "inspected",
+          "extracted_facts",
+          "confidence",
+          "design_impact"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": ["local_file", "url", "package", "repository", "test_artifact"]
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1
+          },
+          "access_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "authority": {
+            "enum": ["official", "maintained", "community", "stale", "unknown"]
+          },
+          "license": {
+            "type": "object",
+            "required": ["status", "value"],
+            "additionalProperties": false,
+            "properties": {
+              "status": {
+                "enum": ["known", "unknown", "incompatible", "not_applicable"]
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          "provenance": {
+            "type": "object",
+            "required": ["copy_treatment", "blocking_status"],
+            "additionalProperties": false,
+            "properties": {
+              "copy_treatment": {
+                "enum": ["copied", "synthesized", "referenced_only", "excluded"]
+              },
+              "blocking_status": {
+                "enum": ["clear", "blocked", "needs_user_decision"]
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          },
+          "inspected": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "extracted_facts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "confidence": {
+            "enum": ["high", "medium", "low", "unknown"]
+          },
+          "design_impact": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

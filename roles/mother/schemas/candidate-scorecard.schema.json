@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-roles.local/schemas/mother/candidate-scorecard.schema.json",
+  "title": "Mother Candidate Scorecard",
+  "type": "object",
+  "required": ["schema", "request", "access_date", "user_priorities", "candidates", "decisions"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "agent-roles/mother-candidate-scorecard/v1"
+    },
+    "request": {
+      "type": "string",
+      "minLength": 1
+    },
+    "access_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "user_priorities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "source_id",
+          "locator",
+          "hard_gates",
+          "scores",
+          "confidence",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1
+          },
+          "hard_gates": {
+            "type": "object",
+            "required": [
+              "license",
+              "secrets_runtime_state",
+              "maintenance",
+              "host_fit",
+              "testability",
+              "role_shape_fit"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "license": {
+                "enum": ["pass", "fail", "needs_user_decision", "unknown"]
+              },
+              "secrets_runtime_state": {
+                "enum": ["pass", "fail", "needs_user_decision", "unknown"]
+              },
+              "maintenance": {
+                "enum": ["pass", "fail", "needs_user_decision", "unknown"]
+              },
+              "host_fit": {
+                "enum": ["pass", "fail", "needs_user_decision", "unknown"]
+              },
+              "testability": {
+                "enum": ["pass", "fail", "needs_user_decision", "unknown"]
+              },
+              "role_shape_fit": {
+                "enum": ["pass", "fail", "needs_user_decision", "unknown"]
+              }
+            }
+          },
+          "scores": {
+            "type": "object",
+            "required": [
+              "relevance",
+              "authority",
+              "license",
+              "host_fit",
+              "runtime_boundary",
+              "dependency_risk",
+              "security",
+              "testability",
+              "role_shape_fit"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "relevance": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "authority": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "license": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "host_fit": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "runtime_boundary": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "dependency_risk": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "security": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "testability": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "role_shape_fit": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              }
+            }
+          },
+          "confidence": {
+            "enum": ["high", "medium", "low", "unknown"]
+          },
+          "status": {
+            "enum": ["recommended", "use_as_reference", "reject", "needs_user_decision"]
+          },
+          "reject_reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "required": ["recommended_candidate", "rejected_candidates", "next_action"],
+      "additionalProperties": false,
+      "properties": {
+        "recommended_candidate": {
+          "type": "string"
+        },
+        "rejected_candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "user_priority_overrides": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "next_action": {
+          "enum": ["inspect_source", "produce_blueprint", "ask_user", "stop"]
+        }
+      }
+    }
+  }
+}

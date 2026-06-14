@@ -42,6 +42,10 @@ remain CCB-owned runtime concerns.
   define the `agentroles.mother` preview Role for creating and auditing Role
   source, including aliases, workflow boundaries, validation, and promotion
   criteria.
+- [topics/mother-research-role-design-capability.md](topics/mother-research-role-design-capability.md):
+  define the deeper research-to-role pipeline for `agentroles.mother`,
+  including source discovery, candidate scoring, blueprint synthesis,
+  evaluation, and phased capability targets.
 - [decisions/001-spec-first-project.md](decisions/001-spec-first-project.md):
   Agent Roles starts as a specification project; CLI and runtime work follows.
 - [decisions/002-rolepack-contains-plugin-content.md](decisions/002-rolepack-contains-plugin-content.md):

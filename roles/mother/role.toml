@@ -1,10 +1,10 @@
 schema = "agent-role/preview-0.1"
 id = "agentroles.mother"
 name = "Role Mother"
-version = "0.2.0"
+version = "0.2.2"
 created_at = "2026-06-09T00:00:00Z"
-updated_at = "2026-06-10T00:00:00Z"
-description = "Creates and audits spec-compliant Agent Roles, including web-backed skill construction research when useful."
+updated_at = "2026-06-14T00:00:00Z"
+description = "Creates, researches, blueprints, ingests, and audits spec-compliant Agent Roles with evidence-backed gates."
 license = "Apache-2.0"
 
 [catalog]
@@ -14,6 +14,8 @@ level = "preview"
 purpose = "Help authors create high-quality Agent Roles and audit existing Role source for spec compliance, catalog readiness, and optimization opportunities."
 responsibilities = [
   "Create compliant Role source directories with Role Definitions, memory, skills, prompts, adapter notes, tests, aliases, and catalog documentation when requested",
+  "Produce research briefs, research evidence, candidate scorecards, Role blueprints, and evaluation reports before high-risk Role source changes",
+  "Ingest external skill, plugin, or workflow repositories through inventory, blueprint, write-gate, and validation steps before copying source into a Role",
   "Audit role.toml, memory, skills, prompts, tools, adapters, tests, README files, aliases, and catalog metadata against Agent Roles preview specs",
   "Research public skill construction tools, examples, and techniques on the web when current external guidance would materially improve a Role",
   "Identify optimization opportunities in role purpose, responsibilities, non-goals, permission posture, adapter boundaries, forbidden-content risk, validation coverage, list/install compatibility, and documentation",
@@ -33,9 +35,28 @@ initiates_actions = false
 
 [contents]
 memory = ["memory.md"]
-skills = ["skills/role-creation-audit"]
+skills = [
+  "skills/role-creation-audit",
+  "skills/role-source-ingest",
+  "skills/role-research",
+  "skills/role-candidate-score",
+  "skills/role-blueprint",
+]
 prompts = ["prompts/role-audit.md", "prompts/role-creation.md"]
 references = ["references/skill-construction-research.md"]
+templates = [
+  "templates/research-brief.md",
+  "templates/candidate-scorecard.md",
+  "templates/role-blueprint.md",
+  "templates/evaluation-report.md",
+]
+schemas = [
+  "schemas/research-evidence.schema.json",
+  "schemas/candidate-scorecard.schema.json",
+  "schemas/role-blueprint.schema.json",
+  "schemas/evaluation-report.schema.json",
+]
+tools = ["tools/README.md", "scripts/inventory_external_source.py"]
 tests = ["tests/validation.md"]
 
 [permissions]

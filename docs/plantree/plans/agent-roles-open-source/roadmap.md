@@ -36,11 +36,36 @@ Date: 2026-06-02
   skill, creation/audit prompts, bounded web-backed skill construction
   research, validation notes, and package-manager tests. See
   [topics/mother-role-creation-audit.md](topics/mother-role-creation-audit.md).
+- Landed the first `agentroles.mother` hardening slice in version `0.2.1`:
+  source-ingest skill, blueprint/write gates, local source inventory script,
+  external-source research workflow, README/i18n sync, and inventory-script
+  tests.
+- Landed `agentroles.mother` `0.2.2`: first-class artifact templates, four
+  preview artifact schemas, focused `role-research` / `role-candidate-score` /
+  `role-blueprint` skills, hardened memory rules, README/i18n sync, and tests.
 
 ## In Progress
 
 - Harden the preview package-management CLI while preparing the first PyPI and
   npm preview releases.
+- Harden `agentroles.mother` from a general role-authoring assistant into a
+  stronger external skill/plugin research, ingestion, blueprint, scaffold, and
+  validation operator. Next focus: deterministic candidate scoring,
+  forbidden-content audit, draft checks, fixtures, and golden-output tests. See
+  [topics/mother-role-creation-audit.md](topics/mother-role-creation-audit.md).
+
+## Mother Capability Track
+
+1. `0.2.2` landed: first-class artifact templates, lightweight schemas for all
+   four artifacts, focused `role-research` / `role-candidate-score` /
+   `role-blueprint` skills, and hardened memory rules.
+2. `0.3.0`: deterministic candidate scoring, forbidden-content audit, draft
+   checks, fixtures, and golden-output tests.
+3. `0.4.0`: `role-evaluate`, `role-scaffold`, `role-publish-readiness`,
+   forward-testing protocol, and catalog-readiness checks.
+4. `0.5.0`: publication-readiness workflow, preview-to-stable promotion
+   criteria, and only then consideration of package-manager scaffold/check
+   commands.
 
 ## Next
 

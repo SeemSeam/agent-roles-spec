@@ -100,12 +100,12 @@ instalada com `agent-roles` e pode expor adapters específicos de host.
 <details>
 <summary><strong>agentroles.mother</strong> - Role Mother</summary>
 
-- **Versão**: `0.2.0`
+- **Versão**: `0.2.2`
 - **Nível**: `preview`
-- **Propósito**: Cria e audita Agent Roles compatíveis com a spec, incluindo pesquisa web-backed sobre construção de skills quando for útil.
-- **Indicado para**: redigir novos Roles, auditar Role source, refinar memory, skills e prompts, checar catalog readiness e pesquisar ferramentas e técnicas de construção de skills.
+- **Propósito**: Cria, pesquisa, desenha blueprints, ingere e audita Agent Roles compatíveis com a spec usando gates baseados em evidência.
+- **Indicado para**: redigir novos Roles, auditar Role source, research briefs, candidate scorecards, blueprint gates, checar catalog readiness e pesquisar ferramentas e técnicas de construção de skills.
 - **Pesquisa de skills**: usa pesquisa web pública e limitada para ferramentas e técnicas atuais de construção de skills, priorizando docs oficiais e exemplos mantidos.
-- **Conteúdo**: memória de autoria de Roles, skill de criação e auditoria, prompts reutilizáveis de criação/auditoria, referência de pesquisa de skill construction, notas de validação e metadados de exibição para host adapters.
+- **Conteúdo**: memória de autoria de Roles, skills de criação/auditoria, source-ingest, research, candidate-score e blueprint, prompts reutilizáveis, referência de pesquisa de skill construction, artifact templates, preview schemas, script local de inventário, notas de validação e metadados de exibição para host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
 - **Instalar**: `agent-roles install mother`
 - **Atualizar**: `agent-roles update mother`

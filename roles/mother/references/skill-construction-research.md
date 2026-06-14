@@ -68,6 +68,58 @@ Accessed on 2026-06-10:
 6. Verify the skill with a realistic prompt, metadata/file checks, and any
    repository test harness.
 
+## External Source Research Workflow
+
+Use this workflow when converting an existing skill, plugin, prompt, tool, or
+workflow repository into Role source.
+
+1. Capture provenance: source URL or local path, ref/commit/tag, maintainer,
+   package names, license, and access date.
+2. Inventory the source before writing Role files. Prefer
+   `scripts/inventory_external_source.py` when a local checkout is available.
+3. Extract:
+   - skill names, trigger descriptions, and entry commands;
+   - progressive-disclosure references and examples;
+   - scripts, runtime libraries, templates, assets, hooks, and generated
+     validators;
+   - package metadata, dependency expectations, tests, and release notes;
+   - host-native plugin manifests and marketplace metadata;
+   - runtime state paths, project-binding assumptions, and write behavior.
+4. Classify each source item as Role memory, Role skill, Role reference,
+   tool/runtime support, plugin content, adapter note, validation fixture,
+   Project Binding, runtime state, or excluded material.
+5. Decide packaging shape:
+   - one Role when one specialist identity owns the workflow;
+   - multiple Roles when memory, providers, permissions, or lifecycle contracts
+     must differ;
+   - future team/topology recipe when the source is an agent network rather
+     than one Role identity.
+6. Produce a blueprint before copying files into `roles/<id>/`.
+
+## First-Class Artifacts
+
+For substantial Role design work, keep these artifacts explicit:
+
+- research brief: target domain, intended users, target hosts, non-goals,
+  publication target, user priorities, allowed research surfaces, and minimum
+  evidence.
+- research evidence: inspected source locator, access date, authority label,
+  license/provenance status, extracted facts, confidence, and design impact. Use
+  `schemas/research-evidence.schema.json` for checkable JSON when useful.
+- candidate scorecard: hard gates, 0 to 3 scoring dimensions, rejected
+  candidates, confidence, and user-priority overrides. Use
+  `schemas/candidate-scorecard.schema.json` for checkable JSON when useful.
+- Role blueprint: Role id, aliases, catalog level, single-role versus
+  multi-role/topology decision, contents map, permissions, adapters,
+  structured provenance, validation plan, write scope, and stop conditions. Use
+  `schemas/role-blueprint.schema.json` for checkable JSON when useful.
+- evaluation report: metadata checks, source-boundary checks, realistic
+  prompts, negative prompts, results, blockers, and residual risk. Use
+  `schemas/evaluation-report.schema.json` for checkable JSON when useful.
+
+Templates live under `templates/`. They are preferred when the artifact should
+be reviewed by a maintainer, attached to a plan, or reused during repair.
+
 ## Audit Questions
 
 - Is the skill name specific, lowercase/hyphenated when required by its host,

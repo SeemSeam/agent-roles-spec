@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-roles.local/schemas/mother/role-blueprint.schema.json",
+  "title": "Mother Role Blueprint",
+  "type": "object",
+  "required": [
+    "schema",
+    "role_id",
+    "name",
+    "aliases",
+    "catalog_level",
+    "version_strategy",
+    "purpose",
+    "responsibilities",
+    "non_goals",
+    "shape_decision",
+    "contents",
+    "permissions",
+    "adapters",
+    "provenance",
+    "validation_plan",
+    "write_scope"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "agent-roles/mother-role-blueprint/v1"
+    },
+    "role_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*\\.[a-z0-9][a-z0-9_-]*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "catalog_level": {
+      "enum": ["experimental", "preview", "stable", "deprecated"]
+    },
+    "version_strategy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "responsibilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "non_goals": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "shape_decision": {
+      "type": "object",
+      "required": ["decision", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "decision": {
+          "enum": ["single_role", "multiple_roles", "topology_recipe"]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unsupported_surfaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "contents": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "required": ["read_files", "write_files", "network", "secrets"],
+      "additionalProperties": true,
+      "properties": {
+        "read_files": {
+          "type": "boolean"
+        },
+        "write_files": {
+          "type": "boolean"
+        },
+        "network": {
+          "type": "boolean"
+        },
+        "secrets": {
+          "enum": ["none", "optional", "required"]
+        }
+      }
+    },
+    "adapters": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "locator",
+          "access_date",
+          "license",
+          "copy_treatment",
+          "confidence",
+          "blocking_status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1
+          },
+          "access_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "license": {
+            "type": "object",
+            "required": ["status", "value"],
+            "additionalProperties": false,
+            "properties": {
+              "status": {
+                "enum": ["known", "unknown", "incompatible", "not_applicable"]
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          "copy_treatment": {
+            "enum": ["copied", "synthesized", "referenced_only", "excluded"]
+          },
+          "confidence": {
+            "enum": ["high", "medium", "low", "unknown"]
+          },
+          "blocking_status": {
+            "enum": ["clear", "blocked", "needs_user_decision"]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "validation_plan": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "write_scope": {
+      "type": "object",
+      "required": ["create", "modify", "do_not_touch", "stop_conditions"],
+      "additionalProperties": false,
+      "properties": {
+        "create": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "modify": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "do_not_touch": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stop_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

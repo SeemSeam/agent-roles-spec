@@ -100,12 +100,12 @@ Host Adapter बताता है कि कोई Role किसी specific 
 <details>
 <summary><strong>agentroles.mother</strong> - Role Mother</summary>
 
-- **संस्करण**: `0.2.0`
+- **संस्करण**: `0.2.2`
 - **स्तर**: `preview`
-- **उद्देश्य**: spec-compliant Agent Roles बनाता और audit करता है, और उपयोगी होने पर skill construction के लिए web-backed research शामिल करता है।
-- **सबसे उपयुक्त**: नए Roles draft करना, Role source audit करना, memory, skills और prompts सुधारना, catalog readiness check करना, और skill construction tools व techniques शोध करना.
+- **उद्देश्य**: spec-compliant Agent Roles बनाता, research करता, blueprint करता, ingest करता और audit करता है, evidence-backed gates के साथ।
+- **सबसे उपयुक्त**: नए Roles draft करना, Role source audit करना, research briefs, candidate scorecards, blueprint gates, catalog readiness check करना, और skill construction tools व techniques शोध करना.
 - **स्किल रिसर्च**: current skill construction tools और techniques के लिए सीमित public web research करता है, official docs और maintained examples को प्राथमिकता देता है.
-- **सामग्री**: Role authoring memory, Role creation/audit skill, reusable creation/audit prompts, skill construction research reference, validation notes और host adapter display metadata.
+- **सामग्री**: Role authoring memory, creation/audit, source-ingest, research, candidate-score और blueprint skills, reusable prompts, skill construction research reference, artifact templates, preview schemas, local inventory script, validation notes और host adapter display metadata.
 - **एडेप्टर**: CCB, Claude Code, Codex, HIVE.
 - **इंस्टॉल**: `agent-roles install mother`
 - **अपडेट**: `agent-roles update mother`

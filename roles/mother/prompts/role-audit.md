@@ -14,6 +14,13 @@ Check:
   provider state, generated projection output, secrets, and task progress
 - purpose, responsibilities, non-goals, interaction mode, action posture, and
   permission minimization
+- research-backed design claims for inspected sources, access dates, authority
+  labels, confidence, and rejected candidates
+- for Roles derived from external source, provenance, inventory evidence,
+  source-boundary decisions, and single-role versus multi-role/topology
+  decisions
+- blueprint write scope and evaluation report coverage for realistic success
+  prompts and negative prompts
 - list/install compatibility and validation coverage
 
 Return findings first, ordered by severity. For each finding include severity,

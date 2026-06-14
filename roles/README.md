@@ -28,6 +28,8 @@ in `role.toml` so `agent-roles list` can display their maturity.
   maintenance and expert-reference role with bounded self-diagnosis, recovery,
   config, message-chain, source/manual, command, release, and test-evidence
   skills.
-- [mother](mother/) (`agentroles.mother`, `preview`): Role creation and audit
-  role for spec compliance, catalog readiness, source-boundary checks,
-  web-backed skill construction research, and optimization findings.
+- [mother](mother/) (`agentroles.mother`, `preview`): Role creation, research,
+  candidate scoring, blueprinting, external source ingestion, and audit role
+  for spec compliance, catalog readiness, source-boundary checks,
+  evidence-backed skill construction research, artifact templates, preview
+  schemas, inventory evidence, blueprint gates, and optimization findings.
