@@ -1,15 +1,20 @@
 # Private Tool Notes
 
-This template declares optional role-private tools. It does not install them by
-itself and does not grant permission for a host to run commands automatically.
+This template declares optional provider-shared tools. It does not install them
+by itself and does not grant permission for a host to run commands
+automatically.
 
 ## Lifecycle
 
-- Install: explicit host action or Project Binding approval only.
+- Install: explicit host action or Project Binding approval only; reusable
+  packages should be installed into the provider-shared runtime.
 - Doctor: check whether the Host Adapter projected the tool and whether
   required environment variables are supplied by runtime configuration.
 - Update: explicit host action only.
-- Uninstall: remove adapter-owned runtime files during unmount when supported.
+- Project activation: write the current project's enabled tools and resource
+  allowlists into Project Binding, not Role source.
+- Uninstall: manager-side unmount removes adapter-owned projection and binding
+  output when supported.
 
 ## Safety
 

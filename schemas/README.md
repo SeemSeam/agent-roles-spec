@@ -13,6 +13,6 @@ defaulting omitted levels to `preview`.
 Additional preview schemas:
 
 - [tool-manifest.schema.json](tool-manifest.schema.json): optional
-  role-contained tool/MCP manifest shape for hosts that support role-private
-  tool runtime projection. Older Roles and older hosts can ignore these
-  manifests.
+  role-contained tool/MCP manifest shape for hosts that support
+  provider-shared, role-private, or project-private tool runtime projection.
+  Older Roles and older hosts can ignore these manifests.

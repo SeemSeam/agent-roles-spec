@@ -55,12 +55,22 @@ host-generated projection output.
   Style Dictionary, and AGY are optional runtime capabilities, not guaranteed
   Role source.
 - Use `tools/mcp-tools.toml` as the reviewable declaration for optional MCP and
-  frontend tools when the Host Adapter supports role-private tool projection.
+  frontend tools when the Host Adapter supports provider-shared tool runtime
+  and project binding projection.
+- Use `role-setup` / `role_setup` when the user asks to activate, check,
+  plan, or repair role runtime tooling after the Role is loaded. Prefer
+  provider-shared runtime reuse plus project-private binding over repeated
+  per-project downloads.
 - Treat tool manifest install modes as explicit host actions, not automatic
   permission to install or run tools.
 - Never store MCP configuration, auth tokens, browser profiles, Figma files,
   screenshots, traces, local dev-server URLs, or AGY worktree state in Role
   source.
+- Do not uninstall role configuration or remove provider/runtime files from
+  inside the agent session. Refer uninstall to the `agent-roles` or Host
+  Adapter lifecycle that owns Project Binding and projection records.
+- Do not store project-specific Storybook URLs, dev-server URLs, selected
+  Figma files/frames, or permission grants in provider-shared runtime.
 - Treat AGY output as a candidate diff that must be reviewed before merge.
 - Treat extracted design tokens from public websites as runtime evidence, not
   Role source content.
@@ -77,6 +87,9 @@ host-generated projection output.
 - Use `responsive-accessibility` for accessibility and responsive review.
 - Use `browser-quality` for running UI verification, visual QA, console or
   network evidence, and performance checks.
+- Use `role-setup` for checking or planning role-scoped runtime setup,
+  provider-shared runtime reuse, project binding, provider bridge projection,
+  repair, or manager-side unmount handoff.
 - Use `agy-frontend-delegate` only for bounded Antigravity delegation.
 - Use `demo-kb-curation` for inspiration and link-only reference catalogs.
 

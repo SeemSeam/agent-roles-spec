@@ -35,6 +35,11 @@ remain CCB-owned runtime concerns.
 - [topics/package-manager-and-roles-store.md](topics/package-manager-and-roles-store.md):
   preview `agent-roles` package manager, `.roles` store, and host integration
   boundary.
+- [topics/role-runtime-setup-skill.md](topics/role-runtime-setup-skill.md):
+  design the `role_setup` / `role-setup` Role skill and script pattern for
+  in-agent provider-aware runtime setup checks, planning, and repair handoff
+  after a Role is loaded; role config uninstall belongs to `agent-roles` or
+  Host Adapter lifecycle.
 - [topics/archi-ccb-adapter-tooling-alignment.md](topics/archi-ccb-adapter-tooling-alignment.md):
   align the `agentroles.archi` CCB adapter with the npm `archi` CLI and retire
   stale `ccb-archi`/Python venv guidance.
@@ -54,6 +59,9 @@ remain CCB-owned runtime concerns.
 - [decisions/003-role-source-is-static-module.md](decisions/003-role-source-is-static-module.md):
   Role source is a static module definition; project binding and runtime state
   stay outside Role source.
+- [decisions/004-role-setup-not-uninstall-authority.md](decisions/004-role-setup-not-uninstall-authority.md):
+  Role runtime setup checks run inside the loaded agent/provider, while role
+  config uninstall belongs to the `agent-roles` or Host Adapter manager layer.
 
 ## Scope
 

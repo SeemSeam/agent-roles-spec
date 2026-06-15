@@ -18,7 +18,9 @@ output, and runtime behavior.
 
 - catalog discovery and sync
 - the `.roles` package store
-- `list`, `install`, `update`, `upgrade`, `sync`, `doctor`, and `resolve`
+- simple user commands: `list`, `add`, `check`, and `update`
+- compatibility/automation commands: `install`, `upgrade`, `sync`, `doctor`,
+  and `resolve`
 - role version, catalog level, revision timestamps, digest, update reason,
   source, provenance, and installed path metadata
 - aliases such as `ccb.archi -> agentroles.archi`
@@ -32,9 +34,10 @@ Hosts own:
 - human prompts and i18n
 - daemon, sidebar, ask, mailbox, and reload behavior
 
-## First CLI Slice
+## Command UX
 
-The first executable slice exposes JSON output:
+The first executable slice originally exposed JSON-first package-manager
+commands:
 
 ```bash
 agent-roles list --json
@@ -47,6 +50,19 @@ agent-roles doctor agentroles.archi --json
 agent-roles resolve agentroles.archi --json
 ```
 
+The user-facing command model should now be simpler:
+
+```bash
+agent-roles list
+agent-roles add frontend
+agent-roles check frontend
+agent-roles update frontend
+```
+
+`add` is the user-facing name for installing Role source into the local package
+store. `check` is the user-facing name for `doctor`. The older commands remain
+stable for scripts, Host Adapters, and compatibility.
+
 The repo-local `cli/agent-roles` wrapper calls the same Python module. Host
 adapters should consume the JSON form and ignore the human text form.
 
@@ -54,6 +70,11 @@ adapters should consume the JSON form and ignore the human text form.
 stricter: it refreshes one already installed Role and fails if the Role is not
 installed. `upgrade` is the user-facing update alias, and `upgrade --all`
 refreshes every installed Role.
+
+Role-private tool projection should not add a public `tools install/doctor`
+tree. Future Host Adapters should expose one provider-aware `setup` or mount
+step that reads Role tool manifests and one `check` step that reports missing
+tools, secrets, and unsupported provider capabilities.
 
 Role JSON payloads should expose `version`, `catalog_level`, content digest,
 `update_reason`, and source revision timestamps (`created_at` and `updated_at`)

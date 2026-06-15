@@ -3,8 +3,8 @@
 `frontend-engineer` is an experimental Role for designing, implementing,
 reviewing, and validating production frontend UI. It combines visual design
 judgment, design-system discipline, component implementation, accessibility,
-browser quality checks, optional private MCP tool declarations, and reviewed
-Google Antigravity CLI (`agy`) delegation.
+browser quality checks, provider-shared runtime setup, optional private MCP tool
+declarations, and reviewed Google Antigravity CLI (`agy`) delegation.
 
 ## Purpose
 
@@ -24,6 +24,9 @@ performance awareness, and browser-based verification.
   styling, component, and test patterns.
 - Validate responsive behavior, accessibility, browser rendering, visual
   polish, and frontend performance risks.
+- Run explicit setup checks for optional runtime tools, provider-shared tool
+  reuse, project binding, provider bridge projection, repair, and manager-side
+  unmount handoff.
 - Declare optional MCP and frontend tools through reviewable role-scoped tool
   manifests for compatible Host Adapters.
 - Use MCP tools and `agy` delegation only within explicit runtime and review
@@ -41,6 +44,8 @@ performance awareness, and browser-based verification.
   grants.
 - Install MCP servers, browser runtimes, or AGY tools silently without explicit
   host or user approval.
+- Uninstall role configuration or remove provider/runtime files from inside an
+  agent session.
 - Copy third-party skills, component libraries, demo source, or extracted
   live-site tokens wholesale into the Role.
 
@@ -59,6 +64,9 @@ performance awareness, and browser-based verification.
 - `skills/responsive-accessibility`: responsive and accessibility review.
 - `skills/browser-quality`: Playwright, DevTools, screenshot, and Web Vitals
   validation.
+- `skills/role-setup`: explicit runtime setup checks, provider-shared reuse,
+  project binding, provider bridge planning, repair handoff, and manager-side
+  unmount guidance.
 - `skills/agy-frontend-delegate`: bounded `agy` delegation and diff review.
 - `skills/demo-kb-curation`: link-only demo and inspiration catalog curation.
 - `references/`: long-form design-system, accessibility, browser, MCP, AGY,
@@ -66,8 +74,11 @@ performance awareness, and browser-based verification.
 - `tools/README.md`: tool and MCP runbook with source-boundary cautions.
 - `tools/mcp-tools.toml`: optional role-scoped MCP/tool manifest for
   compatible Host Adapters.
+- `tools/role_setup.py`: non-mutating setup and diagnostic script for Host
+  Adapters and loaded agents; mutation modes require approval and adapter
+  ownership.
 - `plugins/frontend-mcp-toolbox`: MCP configuration template content that a
-  Host Adapter may project into a private runtime.
+  Host Adapter may project into provider-shared runtime or bridge output.
 - `adapters/`: host-specific projection and Project Binding notes.
 - `tests/validation.md`: validation checklist and behavioral prompts.
 
@@ -90,13 +101,32 @@ Figma MCP, Storybook MCP, Playwright MCP, Chrome DevTools MCP, shadcn MCP,
 Context7, Dembrandt, Style Dictionary, and `agy` are referenced as optional or
 project-provided capabilities. This Role now also includes
 `tools/mcp-tools.toml`, a machine-readable declaration that compatible Host
-Adapters can use to install or project tools into a role-private runtime after
-explicit approval.
+Adapters can use to install or project tools into provider-shared managed
+runtime after
+explicit approval. The `role_setup` skill and `tools/role_setup.py` script
+provide a generic setup lifecycle for checking, planning, and handing off
+approved apply or repair work to the Host Adapter.
+
+The preferred setup model is provider-shared runtime plus project-private
+binding. MCP packages, wrappers, and browser/runtime tools may be installed
+once per provider and reused across projects. Project-specific values such as
+Storybook URL, local dev-server URL, selected Figma file/frame, and per-project
+permissions stay in Project Binding. A provider bridge should load the current
+project's binding instead of globally exposing every Role tool.
 
 The manifest is not an installer and not a permission grant. Credentials,
 selected Figma files, browser profiles, generated MCP configuration, local
 ports, screenshots, traces, package caches, AGY worktrees, and tool logs remain
 Project Binding or host runtime state.
+
+`role_setup` is not the same as `agent-roles add` or `agent-roles install`.
+Adding a Role copies source into the role store; setup runs later inside the
+loaded agent/provider. The bundled script should not mutate directly; approved
+apply or repair work is handed to the Host Adapter, which owns provider-shared
+runtime paths, project bindings, and adapter-owned projection output. Role
+config uninstall belongs
+to the `agent-roles` or Host Adapter layer that owns Project Binding,
+projection records, and mount/unmount state, not to an agent session.
 
 ## Naming Note
 

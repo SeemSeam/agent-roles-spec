@@ -100,7 +100,7 @@ through `agent-roles` and may expose host-specific adapters.
 - **Best for**: architecture reviews, dependency-boundary checks, coupling analysis, and practical next-step sequencing.
 - **Contents**: Role instructions, architecture review skills, reusable prompts, tool documentation, plugin content, and host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Install**: `agent-roles install archi`
+- **Add**: `agent-roles add archi`
 - **Update**: `agent-roles update archi`
 - **Source**: [`roles/archi`](roles/archi/)
 
@@ -109,13 +109,13 @@ through `agent-roles` and may expose host-specific adapters.
 <details>
 <summary><strong>agentroles.frontend_engineer</strong> - Frontend Design Engineer</summary>
 
-- **Version**: `0.2.0`
+- **Version**: `0.2.1`
 - **Level**: `experimental`
-- **Purpose**: Designs, implements, reviews, and validates production frontend interfaces with design-system, accessibility, browser QA, optional private MCP tools, and reviewed AGY delegation.
-- **Best for**: frontend briefs, visual direction, design-token and component-system work, Figma-to-code flows, responsive accessibility checks, browser quality validation, and reviewed Google Antigravity CLI (`agy`) delegation.
-- **Contents**: Frontend design-engineering memory, focused frontend skills, design-system and browser-quality references, MCP/AGY tool notes, a role-scoped MCP/tool manifest, frontend MCP toolbox template content, host adapter notes, and validation prompts.
+- **Purpose**: Designs, implements, reviews, and validates production frontend interfaces with design-system, accessibility, browser QA, role-scoped runtime setup, optional private MCP tools, and reviewed AGY delegation.
+- **Best for**: frontend briefs, visual direction, design-token and component-system work, Figma-to-code flows, responsive accessibility checks, browser quality validation, role runtime setup checks, and reviewed Google Antigravity CLI (`agy`) delegation.
+- **Contents**: Frontend design-engineering memory, focused frontend skills, design-system and browser-quality references, MCP/AGY tool notes, `role_setup` runtime setup guidance, a role-scoped MCP/tool manifest, frontend MCP toolbox template content, host adapter notes, and validation prompts.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Install**: `agent-roles install frontend`
+- **Add**: `agent-roles add frontend`
 - **Update**: `agent-roles update frontend`
 - **Source**: [`roles/frontend-engineer`](roles/frontend-engineer/)
 
@@ -131,7 +131,7 @@ through `agent-roles` and may expose host-specific adapters.
 - **Skill research**: Uses bounded public web research, preferring official docs and maintained examples, and records sources when research affects the design.
 - **Contents**: Role authoring memory, creation/audit, source-ingest, research, candidate-score, and blueprint skills, reusable prompts, skill-construction research reference, artifact templates, preview schemas, local inventory script, validation notes, and host adapter display metadata.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Install**: `agent-roles install mother`
+- **Add**: `agent-roles add mother`
 - **Update**: `agent-roles update mother`
 - **Source**: [`roles/mother`](roles/mother/)
 
@@ -163,17 +163,28 @@ The npm package does not bundle the installable `roles/` catalog. Role catalog
 changes are published through the GitHub catalog, so adding or updating Roles
 does not require an `agent-roles` npm/PyPI package release. Use
 `agent-roles list` to discover available Roles from the configured catalog and
-`agent-roles install <role>` to install only the Roles you need. Role aliases
+`agent-roles add <role>` to add only the Roles you need. Role aliases
 such as `archi` resolve to their canonical catalog IDs, such as
 `agentroles.archi`.
 
-Preview commands:
+Daily commands:
 
 ```bash
 agent-roles list
+agent-roles add frontend
+agent-roles check frontend
+agent-roles update archi
+```
+
+`add` installs Role source into the local `.roles/installed` store. `check`
+reports whether a Role is available and installed. `update` refreshes an
+already installed Role and will not silently install a missing Role.
+
+Advanced compatibility commands:
+
+```bash
 agent-roles install archi
 agent-roles install --all
-agent-roles update archi
 agent-roles upgrade archi
 agent-roles upgrade --all
 agent-roles sync .
@@ -181,15 +192,31 @@ agent-roles doctor archi
 agent-roles resolve archi
 ```
 
-`install` is a package-store operation, not a runtime mount. `update` refreshes
-one already installed Role and will not silently install a missing Role.
-`upgrade` is the user-facing update alias, with `upgrade --all` for every
-installed Role. `install --all` installs all currently discoverable catalog
-Roles. Add `--json` when an adapter or automation flow needs machine-readable
-output; JSON includes the Role `version`, `catalog_level`, digest,
-`update_reason`, and available revision timestamps when the source Role
-provides them. Same-version content patches can be represented by digest
-changes without publishing a new `agent-roles` package version.
+`install` and `doctor` remain stable compatibility names for scripts and Host
+Adapters; `add` and `check` are the simpler user-facing names. `upgrade --all`
+refreshes every installed Role, and `install --all` installs every currently
+discoverable catalog Role. Add `--json` when an adapter or automation flow
+needs machine-readable output; JSON includes the Role `version`,
+`catalog_level`, digest, `update_reason`, and available revision timestamps
+when the source Role provides them. Same-version content patches can be
+represented by digest changes without publishing a new `agent-roles` package
+version.
+
+Role-private runtime setup should be exposed as one future `setup` or provider
+mount action, not as a nested `tools install/doctor/uninstall` command tree.
+Role-carried setup skills should use broad lifecycle names such as
+`role_setup` when they cover MCP, plugin projection, provider config, repair,
+or setup diagnostics. Role config uninstall should be owned by `agent-roles`
+or the Host Adapter layer, not by an in-agent setup script. Tool manifests
+remain declarations until a Host Adapter explicitly projects them.
+
+For reusable MCP tools, the preferred model is provider-shared runtime plus
+project-private binding. A provider can install the MCP packages and wrapper
+commands once, then a lightweight project binding decides which Role tools are
+enabled for the current project and supplies project-specific values such as
+Figma frames, Storybook URLs, or local app URLs. When the provider supports it,
+one `agent-roles` bridge/router should be projected into provider config so new
+projects can reuse downloaded tools without globally exposing every Role tool.
 
 By default, the CLI discovers Roles from the current catalog-like directory and
 from the public `agent-roles-spec` catalog cloned into `~/.roles/catalogs`.

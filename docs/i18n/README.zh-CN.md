@@ -99,7 +99,7 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 - **适合场景**: 架构评审、依赖边界检查、耦合分析，以及实用的后续步骤排序。
 - **包含内容**: Role instructions、架构评审 skills、可复用 prompt、工具文档、plugin 内容和 host adapters。
 - **Adapters**: CCB、Claude Code、Codex、HIVE。
-- **安装**: `agent-roles install archi`
+- **添加**: `agent-roles add archi`
 - **更新**: `agent-roles update archi`
 - **源码**: [`roles/archi`](../../roles/archi/)
 
@@ -108,13 +108,13 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 <details>
 <summary><strong>agentroles.frontend_engineer</strong> - Frontend Design Engineer（前端设计工程师）</summary>
 
-- **版本**: `0.2.0`
+- **版本**: `0.2.1`
 - **等级**: `experimental`
-- **用途**: 设计、实现、评审并验证生产级前端界面，覆盖设计系统、可访问性、浏览器质量检查、可选私有 MCP 工具和经过 review 的 AGY 委托。
-- **适合场景**: 前端 brief、视觉方向、design tokens 与组件系统、Figma-to-code、响应式可访问性检查、浏览器质量验证，以及经过 diff review 的 Google Antigravity CLI (`agy`) 委托。
-- **包含内容**: 前端设计工程 memory、聚焦的前端 skills、设计系统与浏览器质量 references、MCP/AGY 工具说明、role-scoped MCP/tool manifest、前端 MCP toolbox 模板、host adapter notes 和验证 prompts。
+- **用途**: 设计、实现、评审并验证生产级前端界面，覆盖设计系统、可访问性、浏览器质量检查、role-scoped runtime setup、可选私有 MCP 工具和经过 review 的 AGY 委托。
+- **适合场景**: 前端 brief、视觉方向、design tokens 与组件系统、Figma-to-code、响应式可访问性检查、浏览器质量验证、role runtime setup 检查，以及经过 diff review 的 Google Antigravity CLI (`agy`) 委托。
+- **包含内容**: 前端设计工程 memory、聚焦的前端 skills、设计系统与浏览器质量 references、MCP/AGY 工具说明、`role_setup` runtime setup 指引、role-scoped MCP/tool manifest、前端 MCP toolbox 模板、host adapter notes 和验证 prompts。
 - **Adapters**: CCB、Claude Code、Codex、HIVE。
-- **安装**: `agent-roles install frontend`
+- **添加**: `agent-roles add frontend`
 - **更新**: `agent-roles update frontend`
 - **源码**: [`roles/frontend-engineer`](../../roles/frontend-engineer/)
 
@@ -130,7 +130,7 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 - **技能研究**: 使用受限的公开网络研究，优先参考官方文档和维护中的示例，并在研究影响设计时记录来源。
 - **包含内容**: Role authoring memory、角色创建/审计、source-ingest、research、candidate-score 和 blueprint skills、可复用 prompts、skill 构造研究参考、artifact templates、preview schemas、本地 inventory 脚本、验证说明和 host adapter display metadata。
 - **Adapters**: CCB、Claude Code、Codex、HIVE。
-- **安装**: `agent-roles install mother`
+- **添加**: `agent-roles add mother`
 - **更新**: `agent-roles update mother`
 - **源码**: [`roles/mother`](../../roles/mother/)
 
@@ -157,16 +157,27 @@ trusted publishing 配置完成；正式上线后，`pipx install agent-roles` �
 npm 包不会内置可安装的 `roles/` catalog。Role catalog 变更通过 GitHub
 catalog 发布，所以新增或更新 Role 不要求同步发布 `agent-roles` npm/PyPI 包。
 请用 `agent-roles list` 从已配置 catalog 发现可用 Roles，再用
-`agent-roles install <role>` 按需安装。`archi` 这类短名 alias 会解析到
+`agent-roles add <role>` 按需添加。`archi` 这类短名 alias 会解析到
 `agentroles.archi` 这样的 canonical catalog ID。
 
-预览命令：
+日常命令：
 
 ```bash
 agent-roles list
+agent-roles add frontend
+agent-roles check frontend
+agent-roles update archi
+```
+
+`add` 会把 Role source 安装到本地 `.roles/installed` store。`check` 检查
+Role 是否可发现、是否已安装。`update` 只刷新已经安装的 Role，不会在缺失时
+静默变成安装。
+
+兼容/自动化命令：
+
+```bash
 agent-roles install archi
 agent-roles install --all
-agent-roles update archi
 agent-roles upgrade archi
 agent-roles upgrade --all
 agent-roles sync .
@@ -174,13 +185,26 @@ agent-roles doctor archi
 agent-roles resolve archi
 ```
 
-`install` 是包 store 操作，不是运行时挂载。`update` 只刷新已经安装的单个
-Role，不会在缺失时静默变成安装。`upgrade` 是面向用户的 update 同义命令，
-`upgrade --all` 会刷新所有已安装 Role。`install --all` 会安装当前可发现的
-所有 catalog Roles。Adapter 或自动化流程需要机器可读输出时再添加 `--json`；
-JSON 输出会包含 Role `version`、`catalog_level`、digest、`update_reason`，
-以及源 Role 提供的修订时间戳。同版本内容补丁可以只通过 digest 变化表达，
-不需要发布新的 `agent-roles` 包版本。
+`install` 和 `doctor` 保留给脚本与 Host Adapter 兼容；普通用户优先使用
+`add` 和 `check`。`upgrade --all` 会刷新所有已安装 Role，`install --all`
+会安装当前可发现的所有 catalog Roles。Adapter 或自动化流程需要机器可读输出时
+再添加 `--json`；JSON 输出会包含 Role `version`、`catalog_level`、digest、
+`update_reason`，以及源 Role 提供的修订时间戳。同版本内容补丁可以只通过 digest
+变化表达，不需要发布新的 `agent-roles` 包版本。
+
+Role-private runtime setup 应该收敛到未来单一 `setup` 或 provider mount 动作，
+不要展开成 `tools install/doctor/uninstall` 这类多层命令树。如果 Role-carried
+setup skill 覆盖 MCP、plugin projection、provider config、repair 或 setup
+diagnostics，应使用 `role_setup` 这类更宽的生命周期命名。Role config uninstall
+应由 `agent-roles` 或 Host Adapter 层负责，而不是由 agent 内的 setup script
+执行。Tool manifest 在 Host Adapter 显式投影前仍然只是声明。
+
+对于可复用 MCP 工具，推荐模型是 provider-shared runtime 加 project-private
+binding。Provider 可以只安装一次 MCP packages 和 wrapper commands，然后由轻量
+project binding 决定当前项目启用哪些 Role tools，并保存 Figma frame、Storybook
+URL、本地 app URL 等项目特有值。Provider 支持时，应优先投影一个
+`agent-roles` bridge/router 到 provider config，让新项目复用已下载工具，同时
+避免把所有 Role tools 全局暴露给每个项目。
 
 默认情况下，CLI 会从当前 catalog-like 目录发现 Roles，也会把公开
 `agent-roles-spec` catalog clone 到 `~/.roles/catalogs` 后读取。可以通过

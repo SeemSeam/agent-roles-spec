@@ -186,7 +186,7 @@
     <li>优先复用项目已有组件、Storybook 文档、design tokens 和设计系统约定。</li>
     <li>按仓库已有框架、样式体系、组件 API 和测试习惯实现前端代码。</li>
     <li>验证响应式、可访问性、浏览器渲染、视觉质量和关键性能风险。</li>
-    <li>通过 <code>tools/mcp-tools.toml</code> 声明可选 MCP 和前端工具，供兼容 Host Adapter 显式投影到 role-private runtime。</li>
+    <li>通过 <code>tools/mcp-tools.toml</code> 声明可选 MCP 和前端工具，供兼容 Host Adapter 显式投影到 provider-shared runtime，并通过 project-private binding 激活。</li>
     <li>在明确边界内使用 MCP 工具和 <code>agy</code> 委托，但不把委托结果直接当作可合并事实。</li>
   </ul>
 

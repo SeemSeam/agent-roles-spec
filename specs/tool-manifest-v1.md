@@ -10,8 +10,9 @@ host-native wrappers.
 
 The manifest makes a Role more self-describing without making installation
 implicit. It describes what the Role needs, how a compatible Host Adapter can
-install or project it into a role-private runtime, how to diagnose it, and what
-must stay outside Role source.
+install or project it into a provider-shared, role-private, project-private, or
+host-provided runtime surface, how to diagnose it, and what must stay outside
+Role source.
 
 This is a backwards-compatible extension. Existing Roles that only document
 tools in `tools/README.md` remain valid. Hosts that do not understand tool
@@ -55,12 +56,12 @@ Preview tool manifests use TOML:
 schema = "agent-role/tool-manifest/preview-0.1"
 name = "Example MCP Tool Manifest"
 version = "0.1.0"
-description = "Optional role-private MCP tools for this Role."
+description = "Optional provider-shared MCP tools for this Role."
 
 [runtime]
-scope = "role-private"
+scope = "provider-shared"
 install_policy = "explicit"
-store_hint = "{role_runtime}/tools"
+store_hint = "{provider_runtime}/tools/example-role"
 secrets = "external"
 cleanup = "unmount-owned"
 
@@ -78,7 +79,7 @@ notes = "The Host Adapter chooses the concrete package or command."
 
 [tools.doctor]
 checks = [
-  "server is configured in the role-private runtime",
+  "server is configured in the provider-shared runtime",
   "required environment variables are supplied by Project Binding",
 ]
 ```
@@ -96,7 +97,9 @@ Recommended top-level fields:
 Recommended `runtime` fields:
 
 - `scope`: one of `role-private`, `project-private`, `host-provided`, or
-  `documentation-only`.
+  `documentation-only`. Roles may also use `provider-shared` when tools should
+  be installed once per provider and reused across projects through project
+  bindings.
 - `install_policy`: one of `explicit`, `manual`, `host-managed`, or `none`.
 - `store_hint`: advisory runtime location template. It must not be an actual
   write grant.
@@ -126,10 +129,27 @@ Tool manifests are declarations, not executable grants.
 Compatible Host Adapters may use a tool manifest to:
 
 - ask the user whether to install optional tools;
-- install tools into a role-private or project-private runtime store;
+- install tools into a provider-shared, role-private, or project-private
+  runtime store;
 - generate MCP configuration fragments as projection output;
 - run documented doctor checks;
-- remove adapter-owned projection output during unmount.
+- write adapter-owned projection records for generated runtime/projection
+  output;
+- remove adapter-owned projection output during manager-side unmount.
+
+User-facing command surfaces should stay shallow. A Host Adapter should prefer
+one provider-aware `setup` or mount action that reads the tool manifest,
+projects approved tools, and reports next steps, plus one `check` action for
+diagnostics. For tools shared across projects, setup should install the runtime
+once per provider, then create or update project-private bindings. Provider
+global config should prefer one agent-roles bridge/router that reads the
+current project binding, instead of globally exposing every declared MCP
+server. Role-carried skills or scripts should use broad setup names such as
+`role_setup` rather than MCP-specific installer names when they also cover
+plugin projection, provider config, or repair. Role config uninstall should be
+owned by the agent-roles or Host Adapter layer, not by an in-agent setup
+script. Avoid exposing separate public `tools install`, `tools doctor`, and
+`tools uninstall` command trees unless a host has a strong reason.
 
 They must not:
 
@@ -138,6 +158,8 @@ They must not:
 - store credentials, tokens, browser profiles, Figma files, traces, screenshots,
   AGY worktrees, package caches, or provider sessions in Role source;
 - treat advisory `permissions` or `store_hint` values as authorization grants;
+- ask a Role-carried in-agent setup script to delete runtime or provider
+  configuration;
 - project unsupported content into the wrong host surface.
 
 ## Role-Private Tools
@@ -154,13 +176,33 @@ The exact location is Host Adapter behavior, not core Role source format. Role
 source may include wrapper scripts, templates, manifests, and plugin content,
 but runtime caches and generated config remain projection output.
 
+## Provider-Shared Tools
+
+Provider-shared tools are installed once for a provider and reused across
+projects. Example locations:
+
+```text
+~/.roles/providers/<provider>/tools/<tool-id>/<version>/
+~/.local/state/agent-roles/providers/<provider>/tools/<role-id>/<version>/
+```
+
+Provider-shared runtime may contain downloaded MCP packages, wrapper commands,
+browser runtimes, and package caches. It must not contain project-specific
+resources such as selected Figma files, Storybook URLs, local dev-server URLs,
+permission grants, traces, screenshots, or browser profiles.
+
+Project-specific activation belongs to Project Binding. A provider bridge may
+be projected once into the provider config; it should read the current project
+binding and expose only the tools enabled for that project.
+
 ## MCP Notes
 
 MCP servers fit the tool-manifest model well, but they are still runtime
 capabilities:
 
-- MCP server packages may be installed in a role-private runtime when the Host
-  Adapter supports it.
+- MCP server packages may be installed in a provider-shared runtime when the
+  Host Adapter supports reusable tools, or in a role-private runtime for hosts
+  that need stricter role isolation.
 - MCP config fragments may be generated from Role-contained templates.
 - Credentials and selected resources belong to Project Binding or host runtime
   configuration.

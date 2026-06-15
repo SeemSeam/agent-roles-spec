@@ -1,7 +1,8 @@
 # Frontend MCP Toolbox
 
 This directory contains template content that compatible Host Adapters may use
-when projecting frontend MCP tools into a role-private runtime.
+when projecting frontend MCP tools through provider-shared runtime and
+project-private binding.
 
 It is not a live MCP configuration directory. Do not store installed packages,
 generated MCP config, auth tokens, selected Figma files, browser profiles,

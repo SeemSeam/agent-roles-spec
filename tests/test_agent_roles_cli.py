@@ -100,6 +100,26 @@ def test_install_and_resolve_from_catalog(tmp_path: Path, monkeypatch, capsys) -
     assert role.is_dir()
 
 
+def test_add_and_check_are_user_facing_aliases(tmp_path: Path, monkeypatch, capsys) -> None:
+    catalog = tmp_path / "catalog"
+    _write_role(catalog)
+    monkeypatch.setenv("AGENT_ROLES_SPEC_HOME", str(catalog))
+    monkeypatch.setenv("AGENT_ROLES_NO_REMOTE", "1")
+
+    add = _run_json(["add", "agentroles.demo"], tmp_path, monkeypatch, capsys)
+    assert add["schema"] == "agent-roles/install/v1"
+    assert add["command"] == "add"
+    assert add["role_status"] == "installed"
+    assert add["role_id"] == "agentroles.demo"
+
+    check = _run_json(["check", "agentroles.demo"], tmp_path, monkeypatch, capsys)
+    assert check["schema"] == "agent-roles/doctor/v1"
+    assert check["command"] == "check"
+    assert check["status"] == "ok"
+    assert check["available"] is True
+    assert check["installed"] is True
+
+
 def test_update_requires_existing_install(tmp_path: Path, monkeypatch, capsys) -> None:
     catalog = tmp_path / "catalog"
     _write_role(catalog)

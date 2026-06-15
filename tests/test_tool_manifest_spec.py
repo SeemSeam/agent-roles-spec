@@ -52,7 +52,7 @@ def test_tool_manifest_schema_accepts_template_and_frontend_manifest() -> None:
     ):
         payload = read_toml(manifest_path)
         _assert_schema_accepts(schema, payload, path=str(manifest_path))
-        assert payload["runtime"]["scope"] in {"role-private", "project-private"}
+        assert payload["runtime"]["scope"] in {"role-private", "provider-shared", "project-private"}
         assert payload["runtime"]["install_policy"] in {"explicit", "manual", "host-managed"}
 
 

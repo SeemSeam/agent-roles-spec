@@ -16,12 +16,17 @@ The `frontend-engineer` Role should be validated with:
   task progress, or copied third-party source.
 - Prompt coverage for frontend brief, visual direction, design-system tokens,
   component composition, Figma-to-code, responsive accessibility,
-  browser-quality validation, AGY delegation, and demo catalog curation.
+  browser-quality validation, role setup checks, AGY delegation, and demo
+  catalog curation.
 - Tool-manifest coverage for `tools/mcp-tools.toml`, confirming optional MCP
   tools are declared without credentials, installed packages, generated config,
   screenshots, traces, browser profiles, AGY worktrees, or runtime state.
+- Role setup coverage for `tools/role_setup.py`, confirming `check` mode is
+  non-mutating, reports provider/runtime targets, lists required secret names
+  without values, and does not expose an in-agent uninstall mode.
 - Negative prompts asking the Role to store tokens, copy third-party source,
-  invent component props, skip accessibility, or merge AGY output blindly.
+  invent component props, skip accessibility, delete provider config from
+  inside the agent, or merge AGY output blindly.
 
 The Role source is original synthesized content. External tools and projects
 are referenced only as provenance or optional workflow notes.

@@ -33,21 +33,56 @@ into Role source.
 - `agy-frontend-mcp` is not a core dependency. Use it only when the host wants
   MCP-based Antigravity delegation; otherwise document direct `agy` usage.
 
-## Role-Private Tool Manifest
+## Provider-Shared Tool Manifest
 
 The 2026-06-15 upgrade chooses a self-describing but source-safe model:
 
 - Role source may contain `tools/mcp-tools.toml` as a machine-readable manifest.
 - Role source may contain `plugins/frontend-mcp-toolbox/` with MCP config
   templates or wrapper source that Host Adapters can project.
+- Reusable MCP packages, wrappers, and browser/runtime dependencies should use
+  provider-shared managed runtime so another project using the same provider
+  does not redownload tools.
+- Project-specific selected Figma files/frames, Storybook URLs, local dev
+  server URLs, enabled tools, and permission choices stay in Project Binding.
+- Provider config should prefer one agent-roles bridge/router that reads the
+  current project binding instead of globally exposing every frontend MCP
+  server.
 - Runtime installs, generated MCP config, tokens, browser profiles, selected
   Figma files, screenshots, traces, package caches, AGY worktrees, and logs
   stay outside Role source.
 - Compatible Host Adapters may install or project declared tools into a
-  role-private runtime only through explicit host action, user approval, or
+  provider-shared runtime only through explicit host action, user approval, or
   Project Binding policy.
 - Hosts that do not support tool manifests fall back to the human-readable
   tool runbook and should report missing capabilities clearly.
+
+## `role_setup` Runtime Setup
+
+The frontend Role should eventually carry a reusable setup entrypoint:
+
+- skill path: `skills/role-setup/SKILL.md`;
+- user-facing trigger alias: `role_setup`;
+- optional script: `tools/role_setup.py` or `tools/role_setup.mjs`;
+- default mode: `check` or `plan`;
+- mutation modes: `apply` and `repair`, only with explicit approval or Project
+  Binding policy.
+
+This setup runs after the Role is loaded inside the current agent/provider
+window, because only that environment can reliably identify whether MCP config
+belongs to Codex global config, CCB provider-state Codex config, Claude project
+config, VS Code MCP config, or another Host Adapter surface.
+
+The setup must not write to `~/.codex/config.toml`, `~/.config/claude/*`, or
+any global package manager location directly. The preferred target is a
+provider-shared runtime plus project-private binding and adapter-owned provider
+bridge projection.
+
+`role_setup` is intentionally broader than MCP. It may also cover plugin
+projection, private wrapper commands, browser runtime checks, AGY availability
+checks, and repair handoff for adapter-owned projection output. Role config
+uninstall must not run inside the agent; it belongs to the `agent-roles` or
+Host Adapter manager layer that owns Project Binding and projection records.
 
 ## AGY Delegation Model
 

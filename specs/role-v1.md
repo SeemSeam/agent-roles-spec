@@ -85,12 +85,22 @@ diagnostic commands. See [tool-manifest-v1.md](tool-manifest-v1.md).
 
 Tool manifests are source declarations. They are not execution manifests and do
 not grant permission to install or run tools automatically. A compatible Host
-Adapter may project declared tools into a role-private runtime store only when
-the install policy, Project Binding, and user or host approval allow it.
+Adapter may project declared tools into a provider-shared, role-private, or
+project-private runtime store only when the install policy, Project Binding,
+and user or host approval allow it.
 
-Role-private tool installs, package caches, generated MCP configs, local ports,
-browser profiles, traces, screenshots, and tool logs are runtime or projection
-output. They must not be written back into the Role source directory.
+Provider-shared or role-private tool installs, package caches, generated MCP
+configs, local ports, browser profiles, traces, screenshots, and tool logs are
+runtime or projection output. They must not be written back into the Role
+source directory.
+
+A Role may carry a reviewable setup skill or script such as `role-setup` /
+`tools/role_setup.py` to help a Host Adapter check or plan runtime projection
+from inside the loaded provider environment. Such content is still Role
+source: it must default to non-mutating checks, require approval or Project
+Binding policy before setup handoff, and leave actual mutation plus role
+config uninstall to the agent-roles or Host Adapter layer that owns Project
+Binding and projection records.
 
 ## Source And Projection Boundary
 
@@ -113,8 +123,12 @@ Examples of projection output may include:
 - memory bundles
 - command wrappers
 - MCP configuration fragments
+- provider bridge or router configuration that loads project bindings
 - role-contained plugin content copied or linked into a managed location
 - role-private tool directories created from declared tool manifests
+- provider-shared tool directories reused across projects
+- projection records used by agent-roles or Host Adapters to repair or unmount
+  role-owned projection output
 
 The preview spec does not define a runtime implementation for projection or
 cleanup. Host adapters own that behavior.

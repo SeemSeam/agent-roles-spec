@@ -12,3 +12,8 @@ belong in Project Binding, not Role source.
 
 Generated Hive-native assets are projection output and must not be written
 back into this Role source directory.
+
+The `role-setup` skill is available as a generic lifecycle entrypoint, but Hive
+support should be advertised only after a Hive adapter defines provider config,
+provider-shared runtime, project binding, bridge projection records, repair,
+and manager-side unmount semantics.

@@ -4,20 +4,22 @@ name = "Role With Private Tools"
 version = "0.1.0"
 created_at = "2026-06-15T00:00:00Z"
 updated_at = "2026-06-15T00:00:00Z"
-description = "a role template that declares optional role-private MCP tools."
+description = "a role template that declares optional provider-shared MCP tools with project-private binding."
 license = "Apache-2.0"
 
 [catalog]
 level = "preview"
 
 [identity]
-purpose = "Show how a Role can carry private-tool declarations without hiding installer behavior."
+purpose = "Show how a Role can carry reusable tool declarations without hiding installer or binding behavior."
 responsibilities = [
   "Declare optional tools in reviewable source",
-  "Use Host Adapter support for role-private runtime projection"
+  "Use Host Adapter support for provider-shared runtime projection",
+  "Keep current-project activation in Project Binding"
 ]
 non_goals = [
   "Install global tools automatically",
+  "Expose provider-shared tools to every project without an active Project Binding",
   "Store credentials, generated MCP configuration, caches, logs, or runtime state in Role source"
 ]
 interaction_mode = "interactive"

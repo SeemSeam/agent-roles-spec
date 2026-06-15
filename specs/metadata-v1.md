@@ -203,8 +203,8 @@ tool semantics are future work.
 
 `contents.tool_manifests` is optional and additive. It indexes
 machine-readable tool declarations, usually TOML files under `tools/`, for Host
-Adapters that support role-private tool or MCP runtime projection. Older Roles
-that only use `contents.tools` remain valid, and older hosts may ignore
+Adapters that support provider-shared, role-private, or project-private tool
+and MCP runtime projection. Older Roles that only use `contents.tools` remain valid, and older hosts may ignore
 `contents.tool_manifests` while still reading human-facing tool documentation.
 
 Tool manifests must not be treated as permission grants. Concrete install

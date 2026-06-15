@@ -1,12 +1,12 @@
 schema = "agent-role/tool-manifest/preview-0.1"
 name = "Frontend MCP Tool Manifest"
 version = "0.1.0"
-description = "Optional MCP and frontend tools for role-private runtime projection."
+description = "Optional MCP and frontend tools for provider-shared runtime projection."
 
 [runtime]
-scope = "role-private"
+scope = "provider-shared"
 install_policy = "explicit"
-store_hint = "{role_runtime}/tools/frontend"
+store_hint = "{provider_runtime}/tools/agentroles.frontend_engineer"
 secrets = "external"
 cleanup = "unmount-owned"
 network = "install-and-docs"

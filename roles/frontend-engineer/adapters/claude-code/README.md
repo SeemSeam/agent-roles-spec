@@ -13,6 +13,17 @@ If a Claude Code adapter supports role-contained plugin content and
 projection input. Generated `.mcp.json` files remain host-owned projection
 output and must be removable on unmount.
 
+The `role-setup` skill and `tools/role_setup.py` script may be used after mount
+to check or plan Claude project MCP projection. Mutation requires adapter
+ownership tracking; global Claude user config should not be changed when a
+project `.mcp.json` target is available. Role config uninstall belongs to the
+`agent-roles` or Claude Code adapter layer that owns the project binding.
+
+If Claude Code supports a stable bridge command, prefer projecting one bridge
+that reads project binding and uses provider-shared tools. If only project
+`.mcp.json` is supported, keep that projection project-private while reusing
+the provider-shared downloaded tool runtime.
+
 If a Claude Code adapter mounts this Role, project-specific instance naming,
 scope, permissions, team topology, and prompt additions belong outside Role
 source.

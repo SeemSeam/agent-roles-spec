@@ -29,7 +29,8 @@ An adapter document should describe:
 - whether role-scoped isolation is possible
 - whether mount/unmount cleanup is supported
 - which generated files are owned by the role projection
-- whether tool manifests and role-private tool installs are supported
+- whether tool manifests, provider-shared installs, and role-private installs
+  are supported
 - what behavior is deferred
 
 ## Project Binding
@@ -71,12 +72,15 @@ capability profile that states:
 
 - whether MCP server declarations are supported;
 - whether role-private tool installation is supported;
+- whether provider-shared tool installation is supported;
 - where role-private runtime files are stored;
 - when user or host approval is required before install/update/uninstall;
 - which projection outputs are owned by the mounted Role;
 - how doctor checks report missing tools, missing secrets, and unsupported
   declarations;
 - how unmount removes generated config and adapter-owned runtime files.
+- how setup ownership is recorded for later repair and manager-side unmount
+  cleanup.
 
 Adapters must preserve the source/projection boundary. A tool manifest may
 produce host-native MCP configuration fragments, wrapper commands, or plugin
@@ -84,6 +88,27 @@ projection output, but those generated files remain host-owned and removable.
 Credentials, browser profiles, selected Figma files, local dev-server URLs,
 package caches, AGY worktrees, screenshots, traces, and logs remain Project
 Binding or runtime concerns.
+
+Adapters should separate provider-shared runtime from project binding. MCP
+packages, wrappers, and reusable browser/runtime dependencies may be installed
+once per provider and reused across projects. Project-specific selected files,
+URLs, permissions, and enabled-tool lists belong to Project Binding. When a
+provider supports it, prefer projecting one agent-roles bridge/router into the
+provider config; the bridge reads the current project binding and exposes only
+the tools enabled for that project.
+
+Adapters should keep user-facing commands simple: prefer a single
+provider-aware setup or mount step for projection and a single check step for
+diagnostics. More granular lifecycle operations may exist internally, but they
+should not be the primary command model.
+
+When a Role carries a `role-setup` skill or `tools/role_setup.*` script, the
+adapter may use it as the in-provider check/plan entrypoint. Mutating
+`apply` and `repair` behavior remains adapter-owned and should write or
+consume projection records outside Role source. Role config uninstall should
+not be delegated to the in-agent script; it belongs to the agent-roles or Host
+Adapter layer that can see Project Binding, mounted instances, other active
+windows, and projection ownership.
 
 ## Planned Hosts
 

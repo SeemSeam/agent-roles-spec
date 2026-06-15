@@ -1,0 +1,4 @@
+interface:
+  display_name: "Role Setup"
+  short_description: "Check and plan role-scoped runtime setup"
+  default_prompt: "Check this role's runtime setup and show the safe setup plan."

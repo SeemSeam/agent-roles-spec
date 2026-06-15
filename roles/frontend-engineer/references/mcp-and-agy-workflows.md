@@ -5,7 +5,10 @@ configuration and does not grant permissions.
 
 The Role also includes `tools/mcp-tools.toml` as a role-scoped manifest for
 compatible Host Adapters. The manifest is a declaration for optional private
-tool projection; it is not an installer and it does not carry credentials.
+tool projection; it is not an installer and it does not carry credentials. Use
+`role_setup` for the broader runtime setup lifecycle when a loaded Role needs
+provider-aware checks, projection planning, repair handoff, or manager-side
+unmount guidance.
 
 ## Recommended Core Tools
 
@@ -30,8 +33,14 @@ tool projection; it is not an installer and it does not carry credentials.
 - Treat MCP and AGY tools as optional runtime capabilities.
 - Install or project them only through explicit host action, user approval, or
   Project Binding policy.
-- Prefer role-private runtime paths for installed packages and generated MCP
-  config.
+- Prefer provider-shared managed runtime paths for installed packages and
+  wrappers so projects using the same provider do not redownload tools.
+- Keep project-specific resources such as Storybook URLs, local dev-server
+  URLs, selected Figma files/frames, and permission grants in Project Binding.
+- Use a provider bridge to read the current project binding and expose only
+  that project's enabled tools.
+- Keep setup ownership in agent-roles or Host Adapter projection records so
+  role config uninstall can run outside the agent session.
 - Keep real tokens, selected Figma files, browser profiles, screenshots,
   traces, AGY worktrees, local dev-server URLs, and tool logs outside Role
   source.

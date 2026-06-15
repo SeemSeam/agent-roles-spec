@@ -62,6 +62,12 @@ def build_parser() -> argparse.ArgumentParser:
     install.add_argument("--path", default=None)
     install.add_argument("--json", action="store_true", default=False)
 
+    add = sub.add_parser("add")
+    add.add_argument("role_id", nargs="?")
+    add.add_argument("--all", action="store_true", default=False)
+    add.add_argument("--path", default=None)
+    add.add_argument("--json", action="store_true", default=False)
+
     update = sub.add_parser("update")
     update.add_argument("role_id")
     update.add_argument("--json", action="store_true", default=False)
@@ -79,6 +85,10 @@ def build_parser() -> argparse.ArgumentParser:
     doctor.add_argument("role_id")
     doctor.add_argument("--json", action="store_true", default=False)
 
+    check = sub.add_parser("check")
+    check.add_argument("role_id")
+    check.add_argument("--json", action="store_true", default=False)
+
     resolve = sub.add_parser("resolve")
     resolve.add_argument("role_id")
     resolve.add_argument("--json", action="store_true", default=False)
@@ -90,6 +100,10 @@ def dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return cmd_list(refresh=bool(args.refresh))
     if args.command == "install":
         return cmd_install(args.role_id, source_path=Path(args.path) if args.path else None, all_roles=bool(args.all))
+    if args.command == "add":
+        payload = cmd_install(args.role_id, source_path=Path(args.path) if args.path else None, all_roles=bool(args.all))
+        payload["command"] = "add"
+        return payload
     if args.command == "update":
         return cmd_update(args.role_id)
     if args.command == "upgrade":
@@ -98,6 +112,10 @@ def dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return cmd_sync(Path(args.path))
     if args.command == "doctor":
         return cmd_doctor(args.role_id)
+    if args.command == "check":
+        payload = cmd_doctor(args.role_id)
+        payload["command"] = "check"
+        return payload
     if args.command == "resolve":
         return cmd_resolve(args.role_id)
     raise AgentRolesError(f"unknown command: {args.command}")

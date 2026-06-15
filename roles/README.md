@@ -32,8 +32,9 @@ in `role.toml` so `agent-roles list` can display their maturity.
   `experimental`): frontend design engineering role with focused skills for
   briefs, visual direction, design tokens, component composition,
   Figma-to-code, responsive accessibility, browser quality, optional AGY
-  delegation, demo knowledge-base curation, and optional role-scoped MCP/tool
-  manifest declarations for compatible Host Adapters.
+  delegation, provider-shared runtime setup checks, project binding guidance,
+  demo knowledge-base curation, and optional role-scoped MCP/tool manifest
+  declarations for compatible Host Adapters.
 - [mother](mother/) (`agentroles.mother`, `preview`): Role creation, research,
   candidate scoring, blueprinting, external source ingestion, and audit role
   for spec compliance, catalog readiness, source-boundary checks,

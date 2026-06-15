@@ -25,7 +25,13 @@
       "properties": {
         "scope": {
           "type": "string",
-          "enum": ["role-private", "project-private", "host-provided", "documentation-only"]
+          "enum": [
+            "role-private",
+            "provider-shared",
+            "project-private",
+            "host-provided",
+            "documentation-only"
+          ]
         },
         "install_policy": {
           "type": "string",

@@ -10,6 +10,10 @@
 # CCB internal config and runtime
 .ccb/
 
+# Role source may carry hidden template directories as source content.
+!roles/**/templates/**/.ccb/
+!roles/**/templates/**/.ccb/**
+
 # OS/editor
 .DS_Store
 Thumbs.db

@@ -129,6 +129,23 @@ references should be treated as historical planning language until migrated.
   `role-with-private-tools` template, and an upgraded
   `agentroles.frontend_engineer` `0.2.0` example with `tools/mcp-tools.toml`
   and `plugins/frontend-mcp-toolbox/`.
+- 2026-06-15: Accepted the CLI command simplification direction: keep
+  user-facing commands to `list`, `add`, `check`, and `update`; retain
+  `install`, `upgrade`, `sync`, `doctor`, and `resolve` for compatibility and
+  automation; and avoid a public `tools install/doctor/uninstall` command tree
+  in favor of a future provider-aware `setup` or mount action.
+- 2026-06-15: Superseded the MCP-specific `mcp_install` setup direction with
+  a broader `role_setup` in-agent setup entrypoint. A Role may carry a
+  `role-setup` skill with `role_setup` trigger alias and a reviewable
+  `tools/role_setup.*` script. It should run inside the loaded agent/provider,
+  default to `check` or `plan`, and require explicit approval or Project
+  Binding policy before `apply` or `repair` handoff. Role config uninstall
+  should not run inside the agent session; it belongs to the `agent-roles` or
+  Host Adapter manager layer that owns Project Binding and projection records.
+  The preferred setup model is now provider-shared runtime plus project-private
+  binding and a provider bridge/router, so another project using the same
+  provider can reuse downloaded MCP tools without inheriting project-specific
+  resources or permissions.
 
 ## Active TODO
 

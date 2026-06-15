@@ -43,11 +43,20 @@ Date: 2026-06-02
 - Landed `agentroles.mother` `0.2.2`: first-class artifact templates, four
   preview artifact schemas, focused `role-research` / `role-candidate-score` /
   `role-blueprint` skills, hardened memory rules, README/i18n sync, and tests.
+- Accepted the `role_setup` direction: role runtime setup checks should run
+  inside the loaded agent/provider as an explicit check/plan/apply/repair
+  skill or script, not as a hidden side effect of adding Role source. Role
+  config uninstall belongs to the `agent-roles` or Host Adapter manager layer.
+  Provider-shared runtime plus project-private binding is the preferred model
+  for avoiding repeated MCP downloads across projects.
 
 ## In Progress
 
 - Harden the preview package-management CLI while preparing the first PyPI and
   npm preview releases.
+- Shape the `role-setup` skill/script contract, a future shallow
+  provider-aware `setup` action, and a separate manager-side role config
+  uninstall/unmount design for Roles with runtime setup needs.
 - Harden `agentroles.mother` from a general role-authoring assistant into a
   stronger external skill/plugin research, ingestion, blueprint, scaffold, and
   validation operator. Next focus: deterministic candidate scoring,
@@ -101,6 +110,7 @@ Date: 2026-06-02
 - Permission enforcement beyond declarations and adapter guidance.
 - Dependency solving across conflicting tools or plugin content.
 - Multi-role composition on one mounted agent instance.
+- Hidden or automatic MCP installation during `agent-roles add`.
 - Programmatic role scaffolding commands such as `agent-roles new` or
   `agent-roles scaffold`; `agentroles.mother` may guide authoring first, while
   CLI scaffolding remains later package-manager work.
