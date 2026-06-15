@@ -64,7 +64,7 @@ Preview roles may add sections for:
 - `created_at`: original role publication timestamp.
 - `updated_at`: latest role content revision timestamp.
 - `contents`: role-contained memory, skills, prompts, references, tools,
-  plugin content, and tests.
+  optional tool manifests, plugin content, and tests.
 - `catalog.level`: catalog maturity level. Allowed values are `experimental`,
   `preview`, `stable`, and `deprecated`. If omitted, package-manager tooling
   should treat the Role as `preview`.
@@ -155,7 +155,8 @@ memory  = ["memory.md"]
 skills  = ["skills/architecture-review"]
 prompts = ["prompts/architecture-review.md"]
 references = ["references/domain-guide.md"]
-tools   = ["tools/README.md"]
+tools   = ["tools/README.md", "tools/mcp-tools.toml"]
+tool_manifests = ["tools/mcp-tools.toml"]
 plugins = ["plugins/archi-workbench"]
 
 [permissions]
@@ -197,3 +198,15 @@ adapters understand what a Role expects, but they are not automatic grants.
 Keep v0.1 permission fields high-level. Do not use paths, commands, or tool
 names as if they were executable authorization rules. Fine-grained effect and
 tool semantics are future work.
+
+## Tool Manifest Compatibility
+
+`contents.tool_manifests` is optional and additive. It indexes
+machine-readable tool declarations, usually TOML files under `tools/`, for Host
+Adapters that support role-private tool or MCP runtime projection. Older Roles
+that only use `contents.tools` remain valid, and older hosts may ignore
+`contents.tool_manifests` while still reading human-facing tool documentation.
+
+Tool manifests must not be treated as permission grants. Concrete install
+approval, project scope, selected files, credentials, local ports, and generated
+MCP configuration belong to Project Binding or host runtime state.

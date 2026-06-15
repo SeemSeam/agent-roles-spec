@@ -9,3 +9,10 @@ requires `version` and validates optional `created_at` / `updated_at` timestamp
 fields when they appear in `role.toml`. It also exposes optional
 `catalog.level` metadata as `catalog_level` in list/resolve/install payloads,
 defaulting omitted levels to `preview`.
+
+Additional preview schemas:
+
+- [tool-manifest.schema.json](tool-manifest.schema.json): optional
+  role-contained tool/MCP manifest shape for hosts that support role-private
+  tool runtime projection. Older Roles and older hosts can ignore these
+  manifests.

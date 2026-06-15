@@ -1,0 +1,34 @@
+schema = "agent-role/tool-manifest/preview-0.1"
+name = "Example Private MCP Tool Manifest"
+version = "0.1.0"
+description = "Example optional MCP tools for role-private runtime projection."
+
+[runtime]
+scope = "role-private"
+install_policy = "explicit"
+store_hint = "{role_runtime}/tools"
+secrets = "external"
+cleanup = "unmount-owned"
+network = "install-only"
+
+[[tools]]
+id = "example-mcp"
+kind = "mcp-server"
+optional = true
+adapter_targets = ["codex", "claude-code"]
+description = "Example MCP server declaration consumed by compatible Host Adapters."
+requires_secrets = ["EXAMPLE_API_TOKEN"]
+
+[tools.install]
+mode = "host-provided"
+notes = "The Host Adapter chooses the concrete package, command, and private runtime path."
+
+[tools.doctor]
+checks = [
+  "MCP server is installed or available in the role-private runtime",
+  "EXAMPLE_API_TOKEN is supplied by Project Binding or host runtime",
+]
+
+[tools.projection]
+template = "plugins/private-toolbox/mcp.json.template"
+notes = "The template is projection input; generated MCP config is host-owned runtime output."

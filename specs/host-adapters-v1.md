@@ -29,6 +29,7 @@ An adapter document should describe:
 - whether role-scoped isolation is possible
 - whether mount/unmount cleanup is supported
 - which generated files are owned by the role projection
+- whether tool manifests and role-private tool installs are supported
 - what behavior is deferred
 
 ## Project Binding
@@ -62,6 +63,27 @@ projection output, not Role source.
 Adapters should keep projection output traceable to the mounted Role and
 removable during unmount. Adapter-generated output must not be written back
 into the Role source directory.
+
+## Tool Manifest Projection
+
+If a Host Adapter supports `contents.tool_manifests`, it should publish a
+capability profile that states:
+
+- whether MCP server declarations are supported;
+- whether role-private tool installation is supported;
+- where role-private runtime files are stored;
+- when user or host approval is required before install/update/uninstall;
+- which projection outputs are owned by the mounted Role;
+- how doctor checks report missing tools, missing secrets, and unsupported
+  declarations;
+- how unmount removes generated config and adapter-owned runtime files.
+
+Adapters must preserve the source/projection boundary. A tool manifest may
+produce host-native MCP configuration fragments, wrapper commands, or plugin
+projection output, but those generated files remain host-owned and removable.
+Credentials, browser profiles, selected Figma files, local dev-server URLs,
+package caches, AGY worktrees, screenshots, traces, and logs remain Project
+Binding or runtime concerns.
 
 ## Planned Hosts
 
@@ -99,6 +121,7 @@ Future adapter docs should be able to state whether a host supports:
 - role-contained plugin content
 - MCP
 - role-scoped tools
+- tool manifests
 - memory projection
 - isolated mount
 - hot reload

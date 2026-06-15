@@ -1,6 +1,6 @@
 {
   "name": "agent-roles",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Host-neutral role package management preview for Agent Roles.",
   "license": "Apache-2.0",
   "author": "SeemSeam",
@@ -36,10 +36,12 @@
     "reference_roles/**/*.py",
     "reference_roles/**/*.toml",
     "reference_roles/**/SKILL.md",
+    "schemas/**/*.json",
     "schemas/**/*.md",
     "specs/**/*.md",
     "templates/**/*.md",
     "templates/**/*.toml",
+    "templates/**/*.json.template",
     "templates/**/SKILL.md"
   ],
   "engines": {

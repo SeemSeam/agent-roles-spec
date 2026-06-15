@@ -45,8 +45,9 @@ expected in the preview. A minimal role can contain only metadata and memory.
 - `prompts/`: prompt fragments, examples, and reusable task templates.
 - `references/`: longer reference material that role memory or skills can load
   only when needed.
-- `tools/`: tool documentation, runbooks, scripts, and explicit lifecycle
-  notes. The preview spec does not imply that hosts execute these files.
+- `tools/`: tool documentation, runbooks, scripts, explicit lifecycle notes,
+  and optional tool manifests. The preview spec does not imply that hosts
+  execute these files.
 - `plugins/`: host-native plugin files bundled with the role.
 - `adapters/`: host-specific notes or metadata for this role.
 - `tests/`: validation notes, fixtures, or conformance examples.
@@ -75,6 +76,22 @@ environment.
 The preview spec does not require a global plugin manager, plugin marketplace,
 or external plugin dependency resolver.
 
+## Tool Manifests And Private Tools
+
+A Role may carry optional machine-readable tool manifests under `tools/`,
+declared from `contents.tool_manifests` in `role.toml`. Tool manifests describe
+role-scoped tools such as MCP servers, CLIs, browser runtimes, wrappers, and
+diagnostic commands. See [tool-manifest-v1.md](tool-manifest-v1.md).
+
+Tool manifests are source declarations. They are not execution manifests and do
+not grant permission to install or run tools automatically. A compatible Host
+Adapter may project declared tools into a role-private runtime store only when
+the install policy, Project Binding, and user or host approval allow it.
+
+Role-private tool installs, package caches, generated MCP configs, local ports,
+browser profiles, traces, screenshots, and tool logs are runtime or projection
+output. They must not be written back into the Role source directory.
+
 ## Source And Projection Boundary
 
 Role files are source content. Source content is reviewable and versioned with
@@ -97,6 +114,7 @@ Examples of projection output may include:
 - command wrappers
 - MCP configuration fragments
 - role-contained plugin content copied or linked into a managed location
+- role-private tool directories created from declared tool manifests
 
 The preview spec does not define a runtime implementation for projection or
 cleanup. Host adapters own that behavior.
@@ -133,6 +151,11 @@ A Role must not contain:
 Tool installation, update, and diagnostic behavior must be declared in metadata
 or documented under `tools/`. Hidden installer behavior embedded in memory or
 prompt text is forbidden.
+
+If a Role includes a tool manifest, the manifest must remain reviewable source:
+reference environment variable names only, never secret values; describe install
+and doctor behavior explicitly; and keep generated runtime state outside Role
+source.
 
 ## Permission Declarations
 

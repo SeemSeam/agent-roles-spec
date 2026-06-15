@@ -107,6 +107,21 @@ through `agent-roles` and may expose host-specific adapters.
 </details>
 
 <details>
+<summary><strong>agentroles.frontend_engineer</strong> - Frontend Design Engineer</summary>
+
+- **Version**: `0.2.0`
+- **Level**: `experimental`
+- **Purpose**: Designs, implements, reviews, and validates production frontend interfaces with design-system, accessibility, browser QA, optional private MCP tools, and reviewed AGY delegation.
+- **Best for**: frontend briefs, visual direction, design-token and component-system work, Figma-to-code flows, responsive accessibility checks, browser quality validation, and reviewed Google Antigravity CLI (`agy`) delegation.
+- **Contents**: Frontend design-engineering memory, focused frontend skills, design-system and browser-quality references, MCP/AGY tool notes, a role-scoped MCP/tool manifest, frontend MCP toolbox template content, host adapter notes, and validation prompts.
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **Install**: `agent-roles install frontend`
+- **Update**: `agent-roles update frontend`
+- **Source**: [`roles/frontend-engineer`](roles/frontend-engineer/)
+
+</details>
+
+<details>
 <summary><strong>agentroles.mother</strong> - Role Mother</summary>
 
 - **Version**: `0.2.2`

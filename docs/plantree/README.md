@@ -29,6 +29,7 @@ host-adapter work.
 | Plan | Status | Scope |
 | :--- | :--- | :--- |
 | [agent-roles-open-source](plans/agent-roles-open-source/README.md) | In progress | Public `agent-roles-spec` GitHub project as a spec-first Agent Roles standard with templates, reference roles, and future host adapters. |
+| [frontend-engineer-role](plans/frontend-engineer-role/README.md) | Planning | Design a research-backed advanced frontend engineer Role with design-system, MCP, browser QA, and Google Antigravity CLI (`agy`) delegation guidance. |
 
 ## Migration Notes
 

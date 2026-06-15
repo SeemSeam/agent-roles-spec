@@ -123,6 +123,12 @@ references should be treated as historical planning language until migrated.
   Role blueprint, and evaluation report templates; research evidence,
   candidate scorecard, Role blueprint, and evaluation report preview schemas;
   hardened memory rules; README/i18n sync; and tests.
+- 2026-06-15: Added a backwards-compatible tool-manifest preview extension for
+  role-private MCP/tool declarations: `specs/tool-manifest-v1.md`,
+  `schemas/tool-manifest.schema.json`, Host Adapter guidance, a
+  `role-with-private-tools` template, and an upgraded
+  `agentroles.frontend_engineer` `0.2.0` example with `tools/mcp-tools.toml`
+  and `plugins/frontend-mcp-toolbox/`.
 
 ## Active TODO
 
@@ -258,3 +264,10 @@ references should be treated as historical planning language until migrated.
   TOML/JSON parsing, `py_compile` for the inventory script, `git diff --check`,
   and a temporary-store CLI `list/install/resolve` smoke test showing
   `agentroles.mother` `0.2.2`.
+- On 2026-06-15, the backwards-compatible tool-manifest preview extension and
+  `agentroles.frontend_engineer` `0.2.0` upgrade were verified with:
+  `python -m pytest tests/test_frontend_engineer_role.py tests/test_tool_manifest_spec.py -q`
+  passing 6 tests, full `python -m pytest -q` passing 45 tests,
+  `git diff --check`, and a temporary-store CLI smoke where
+  `list`, `install frontend`, and `resolve frontend` returned
+  `agentroles.frontend_engineer` `0.2.0`.

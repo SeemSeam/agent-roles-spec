@@ -97,6 +97,30 @@ Target package: `agent-roles` `0.1.2`
   local npm publish.
 - [x] Confirm npm registry reports `agent-roles@0.1.2` as latest after publish.
 
+## Tool Manifest + Frontend Role Preview Release
+
+Target package: `agent-roles` `0.2.0`
+
+- [x] Confirm npm registry reports `agent-roles@0.1.2` as latest before the
+  `0.2.0` release.
+- [x] Add backwards-compatible `contents.tool_manifests` preview guidance in
+  specs, schemas, host-adapter notes, and templates.
+- [x] Add `agentroles.frontend_engineer` `0.2.0` with focused frontend skills,
+  references, host-adapter notes, validation prompts, and an optional role
+  scoped tool manifest.
+- [x] Keep installable catalog Role content under `roles/` out of the npm
+  package while retaining templates, reference roles, specs, schemas, and
+  conformance fixtures.
+- [x] Verify targeted frontend/tool-manifest tests, full pytest, TOML/JSON
+  parsing, `git diff --check`, npm dry-run payload, and temporary-store CLI
+  smoke before tagging.
+- [ ] Publish `agent-roles@0.2.0` through GitHub Release-triggered trusted
+  publishing.
+- [ ] Confirm npm registry reports `agent-roles@0.2.0` as latest after publish.
+- [ ] Confirm PyPI trusted publishing state before publishing a Python package;
+  PyPI did not have an `agent-roles` release at the time this checklist was
+  updated.
+
 ## Explicitly Deferred
 
 - registry or marketplace

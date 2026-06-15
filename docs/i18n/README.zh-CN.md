@@ -106,6 +106,21 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 </details>
 
 <details>
+<summary><strong>agentroles.frontend_engineer</strong> - Frontend Design Engineer（前端设计工程师）</summary>
+
+- **版本**: `0.2.0`
+- **等级**: `experimental`
+- **用途**: 设计、实现、评审并验证生产级前端界面，覆盖设计系统、可访问性、浏览器质量检查、可选私有 MCP 工具和经过 review 的 AGY 委托。
+- **适合场景**: 前端 brief、视觉方向、design tokens 与组件系统、Figma-to-code、响应式可访问性检查、浏览器质量验证，以及经过 diff review 的 Google Antigravity CLI (`agy`) 委托。
+- **包含内容**: 前端设计工程 memory、聚焦的前端 skills、设计系统与浏览器质量 references、MCP/AGY 工具说明、role-scoped MCP/tool manifest、前端 MCP toolbox 模板、host adapter notes 和验证 prompts。
+- **Adapters**: CCB、Claude Code、Codex、HIVE。
+- **安装**: `agent-roles install frontend`
+- **更新**: `agent-roles update frontend`
+- **源码**: [`roles/frontend-engineer`](../../roles/frontend-engineer/)
+
+</details>
+
+<details>
 <summary><strong>agentroles.mother</strong> - Role Mother（角色创建与审计）</summary>
 
 - **版本**: `0.2.2`

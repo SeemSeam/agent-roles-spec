@@ -1,0 +1,37 @@
+schema = "agent-role/preview-0.1"
+id = "example.with-private-tools"
+name = "Role With Private Tools"
+version = "0.1.0"
+created_at = "2026-06-15T00:00:00Z"
+updated_at = "2026-06-15T00:00:00Z"
+description = "a role template that declares optional role-private MCP tools."
+license = "Apache-2.0"
+
+[catalog]
+level = "preview"
+
+[identity]
+purpose = "Show how a Role can carry private-tool declarations without hiding installer behavior."
+responsibilities = [
+  "Declare optional tools in reviewable source",
+  "Use Host Adapter support for role-private runtime projection"
+]
+non_goals = [
+  "Install global tools automatically",
+  "Store credentials, generated MCP configuration, caches, logs, or runtime state in Role source"
+]
+interaction_mode = "interactive"
+initiates_actions = false
+
+[contents]
+memory = ["memory.md"]
+tools = ["tools/README.md", "tools/mcp-tools.toml"]
+tool_manifests = ["tools/mcp-tools.toml"]
+plugins = ["plugins/private-toolbox"]
+tests = ["tests/README.md"]
+
+[permissions]
+read_files = false
+write_files = false
+network = true
+secrets = "none"

@@ -10,3 +10,4 @@ Current preview documents:
 - [role-v1.md](role-v1.md)
 - [metadata-v1.md](metadata-v1.md)
 - [host-adapters-v1.md](host-adapters-v1.md)
+- [tool-manifest-v1.md](tool-manifest-v1.md)

@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Frontend Design Engineer Role 概览</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: #17202a;
+      background: #ffffff;
+      font-family: "Noto Sans CJK SC", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+      font-size: 10.8pt;
+      line-height: 1.58;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.25;
+      color: #101820;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      font-size: 28pt;
+      letter-spacing: 0;
+      margin-bottom: 6mm;
+    }
+
+    h2 {
+      font-size: 15.5pt;
+      margin-top: 9mm;
+      margin-bottom: 3mm;
+      padding-bottom: 1.5mm;
+      border-bottom: 1px solid #d5dce3;
+    }
+
+    h3 {
+      font-size: 12.5pt;
+      margin-top: 5mm;
+      margin-bottom: 2mm;
+    }
+
+    p {
+      margin: 0 0 3mm;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 4mm 5mm;
+      padding-left: 5mm;
+    }
+
+    li {
+      margin-bottom: 1.4mm;
+    }
+
+    code {
+      font-family: "Noto Sans Mono CJK SC", "Noto Sans Mono", "DejaVu Sans Mono", monospace;
+      font-size: 9.6pt;
+      color: #0f3a5f;
+      background: #eef4f8;
+      border-radius: 3px;
+      padding: 0.2mm 1mm;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 3mm 0 5mm;
+      page-break-inside: avoid;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      border: 1px solid #d9e0e7;
+      padding: 2.2mm 2.6mm;
+    }
+
+    th {
+      color: #0f2537;
+      background: #edf2f6;
+      font-weight: 700;
+    }
+
+    .cover {
+      padding: 7mm 0 4mm;
+      border-bottom: 2px solid #101820;
+      margin-bottom: 7mm;
+    }
+
+    .subtitle {
+      max-width: 168mm;
+      color: #3b4b59;
+      font-size: 12.3pt;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 35mm 1fr 35mm 1fr;
+      gap: 2mm 4mm;
+      margin: 5mm 0 0;
+      padding: 4mm;
+      background: #f5f7f9;
+      border: 1px solid #dce3ea;
+    }
+
+    .meta-label {
+      color: #607080;
+      font-weight: 700;
+    }
+
+    .callout {
+      margin: 4mm 0;
+      padding: 3.5mm 4mm;
+      border-left: 3px solid #146c94;
+      background: #f2f8fb;
+      page-break-inside: avoid;
+    }
+
+    .warning {
+      border-left-color: #a04f00;
+      background: #fff6e8;
+    }
+
+    .compact-list {
+      columns: 2;
+      column-gap: 10mm;
+    }
+
+    .footer-note {
+      margin-top: 8mm;
+      padding-top: 3mm;
+      border-top: 1px solid #d5dce3;
+      color: #526270;
+      font-size: 9.5pt;
+    }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <h1>Frontend Design Engineer Role 概览</h1>
+    <p class="subtitle">
+      面向 Agent Roles Spec 的前端设计工程师 Role 说明：把设计判断、组件系统、可访问性、浏览器验证、私有 MCP/tool manifest、MCP 工具流和 Google Antigravity CLI <code>agy</code> 受控委托串成一个可复用的高级前端角色。
+    </p>
+    <div class="meta-grid">
+      <div class="meta-label">Role ID</div>
+      <div><code>agentroles.frontend_engineer</code></div>
+      <div class="meta-label">名称</div>
+      <div><code>Frontend Design Engineer</code></div>
+      <div class="meta-label">目录</div>
+      <div><code>roles/frontend-engineer/</code></div>
+      <div class="meta-label">级别</div>
+      <div><code>experimental</code></div>
+      <div class="meta-label">版本</div>
+      <div><code>0.2.0</code></div>
+      <div class="meta-label">生成日期</div>
+      <div>2026-06-15</div>
+    </div>
+  </section>
+
+  <h2>1. 核心定位</h2>
+  <p>
+    这个 Role 不是只负责“写页面”的通用前端助手，而是一个生产级前端设计工程师：先理解产品表面、目标用户、工作流、技术栈和设计系统，再选择视觉方向、组件策略、实现路径和验证方式。
+  </p>
+  <div class="callout">
+    <strong>一句话定义：</strong>它负责设计、实现、评审和验证前端 UI，并要求输出能落到代码、组件、浏览器证据和可访问性结果上。
+  </div>
+
+  <h2>2. 主要职责</h2>
+  <ul>
+    <li>把产品需求、截图、Figma 上下文或现有 UI 转成可执行的前端实现 brief。</li>
+    <li>建立视觉方向：布局、字体、颜色、节奏、密度、动效、状态和响应式行为。</li>
+    <li>优先复用项目已有组件、Storybook 文档、design tokens 和设计系统约定。</li>
+    <li>按仓库已有框架、样式体系、组件 API 和测试习惯实现前端代码。</li>
+    <li>验证响应式、可访问性、浏览器渲染、视觉质量和关键性能风险。</li>
+    <li>通过 <code>tools/mcp-tools.toml</code> 声明可选 MCP 和前端工具，供兼容 Host Adapter 显式投影到 role-private runtime。</li>
+    <li>在明确边界内使用 MCP 工具和 <code>agy</code> 委托，但不把委托结果直接当作可合并事实。</li>
+  </ul>
+
+  <h2>3. 非目标和边界</h2>
+  <ul>
+    <li>不负责后端架构、完整产品战略或完整品牌战略，只处理它们对前端体验的影响。</li>
+    <li>不擅自覆盖设计系统 source of truth；遇到 Figma、Storybook、tokens、组件实现冲突时先显式报告。</li>
+    <li>不在 Role source 中保存凭证、Figma 文件、浏览器 profile、provider session、截图、trace、AGY worktree、运行日志、任务进度或 host 生成的 projection output。</li>
+    <li>不复制第三方组件库、demo 源码、外部 skill 或公共网站提取的 tokens 到 Role source。</li>
+    <li>不把 MCP 示例配置、advisory permissions 或工具说明当作真实运行时授权。</li>
+    <li>不把已安装 MCP 包、浏览器 runtime、AGY 登录态、package cache、生成的 MCP config 或凭证预装进 Role source。</li>
+  </ul>
+
+  <h2>4. Memory 的主要内容</h2>
+  <p>
+    <code>memory.md</code> 是这个 Role 的长期操作记忆，不是临时任务记录。它的作用是让 Agent 在每次前端任务中保持稳定的判断方式、边界意识和 skill 路由习惯。
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>类别</th>
+        <th>Memory 中应保留的内容</th>
+        <th>不应写入 Memory 的内容</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>操作姿态</td>
+        <td>先确认产品表面、用户、流程、框架、组件系统和验收标准；优先使用本地约定。</td>
+        <td>某个项目的一次性需求、当前端口、临时分支、运行日志。</td>
+      </tr>
+      <tr>
+        <td>设计标准</td>
+        <td>避免普通 AI 页面；关注布局、字体、颜色、状态、密度、动效、响应式和可访问性。</td>
+        <td>具体截图、Figma token、真实品牌私有资产、外部网站提取内容。</td>
+      </tr>
+      <tr>
+        <td>工具边界</td>
+        <td>Figma、Storybook、Playwright、Chrome DevTools、Style Dictionary、<code>agy</code> 等是可选运行能力；<code>tools/mcp-tools.toml</code> 只声明工具，不自动安装。</td>
+        <td>MCP 配置、账号、浏览器 profile、AGY worktree、生成文件和 host runtime 状态。</td>
+      </tr>
+      <tr>
+        <td>Skill 路由</td>
+        <td>说明什么场景使用哪个 skill，帮助 Agent 按需触发合适流程。</td>
+        <td>把所有 skill 内容重复塞进 memory，或写成隐藏安装器、隐藏权限授权。</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <strong>结论：</strong>Memory 需要写 skill 路由说明，但不需要把每个 skill 的完整步骤重复进去。真正的细节放在各自 <code>SKILL.md</code> 和 references 中，Agent 按任务触发后再逐步读取。
+  </div>
+
+  <h2>5. Skill 体系</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 32mm;">Skill</th>
+        <th>使用场景</th>
+        <th>主要输出</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>frontend-brief</code></td>
+        <td>需求模糊、只有截图、只有一句 UI 目标，或需要先收敛前端工作范围。</td>
+        <td>产品表面、用户、工作流、约束、组件策略、验收标准。</td>
+      </tr>
+      <tr>
+        <td><code>visual-direction</code></td>
+        <td>视觉质量、品牌贴合、反普通 AI 页面、状态设计或信息层级是重点。</td>
+        <td>布局、字体、色彩、节奏、密度、动效、状态和反模式清单。</td>
+      </tr>
+      <tr>
+        <td><code>design-system-tokens</code></td>
+        <td>涉及 design tokens、主题、Figma variables、Tailwind/CSS variables、Style Dictionary 或系统漂移。</td>
+        <td>token 来源、映射、冲突、迁移路径和漂移风险。</td>
+      </tr>
+      <tr>
+        <td><code>component-composition</code></td>
+        <td>需要复用或组合已有组件，或评估 Storybook、shadcn、Radix、私有组件库。</td>
+        <td>组件选择、props 证据、组合方式、避免新增 primitive 的理由。</td>
+      </tr>
+      <tr>
+        <td><code>figma-to-code</code></td>
+        <td>用户提供 Figma frame、变量、组件或 MCP 上下文，需要映射到本地代码。</td>
+        <td>Figma 结构到本地组件、tokens、layout 和状态的实现映射。</td>
+      </tr>
+      <tr>
+        <td><code>responsive-accessibility</code></td>
+        <td>需要检查响应式、键盘、focus、contrast、labels、reflow、reduced motion。</td>
+        <td>可访问性和断点问题清单、修复建议、剩余风险。</td>
+      </tr>
+      <tr>
+        <td><code>browser-quality</code></td>
+        <td>需要浏览器级验证：截图、viewport、console/network、accessibility snapshot、Web Vitals 风险。</td>
+        <td>浏览器证据、渲染问题、控制台/网络异常和性能风险。</td>
+      </tr>
+      <tr>
+        <td><code>agy-frontend-delegate</code></td>
+        <td>需要把明确的前端子任务委托给 Google Antigravity CLI <code>agy</code>。</td>
+        <td>受控 brief、隔离 worktree 结果、diff review、merge/revise/discard 建议。</td>
+      </tr>
+      <tr>
+        <td><code>demo-kb-curation</code></td>
+        <td>需要整理高质量前端 demo、灵感、组件示例、设计系统案例，但只做 link-only catalog。</td>
+        <td>分类 demo 知识库、适用场景、采纳理由和禁止复制源码提醒。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>6. MCP 和工具策略</h2>
+  <div class="callout">
+    <strong>0.2.0 更新：</strong>Role source 现在包含 <code>tools/mcp-tools.toml</code> 和 <code>plugins/frontend-mcp-toolbox/</code>。它们是可审查的声明和模板；真正的安装、生成配置、凭证和缓存仍属于 Host Adapter runtime 或 Project Binding。
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 34mm;">工具</th>
+        <th>角色中的用途</th>
+        <th>边界</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Figma MCP</td>
+        <td>读取设计上下文、frame、变量、组件关系，辅助从设计到实现映射。</td>
+        <td>不保存 Figma 凭证、文件或运行态选择。</td>
+      </tr>
+      <tr>
+        <td>Storybook MCP</td>
+        <td>查组件文档、stories、props 和状态，避免凭空发明组件 API。</td>
+        <td>以项目 Storybook 为证据，不把示例当作全局规范。</td>
+      </tr>
+      <tr>
+        <td>Playwright MCP</td>
+        <td>浏览器交互、截图、viewport 验证、accessibility snapshot。</td>
+        <td>截图、trace、profile 和端口属于运行态，不进 Role source。</td>
+      </tr>
+      <tr>
+        <td>Chrome DevTools MCP</td>
+        <td>console、network、性能 trace、渲染证据和 Web Vitals 风险检查。</td>
+        <td>只记录结论和必要证据，不提交浏览器运行状态。</td>
+      </tr>
+      <tr>
+        <td>shadcn MCP / Context7</td>
+        <td>辅助查询当前库文档、registry 组件和框架用法。</td>
+        <td>只在项目匹配时使用，不强行引入新栈。</td>
+      </tr>
+      <tr>
+        <td>Dembrandt / Style Dictionary</td>
+        <td>辅助审计公共站点视觉系统或转换项目 design tokens。</td>
+        <td>提取结果是运行证据，不是可复制资产。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>7. AGY 受控委托模型</h2>
+  <p>
+    <code>agy</code> 被设计为高级前端实现的候选生成器，而不是自动合并器。Role 可以把明确、边界清楚的任务委托给 Google Antigravity CLI，但必须保留本地 review 权。
+  </p>
+  <ol>
+    <li>先写清楚任务 brief：目标、文件范围、组件系统、验收标准、禁止事项。</li>
+    <li>在隔离 worktree 或分支中运行 <code>agy</code>，避免污染主工作区。</li>
+    <li>把输出视为 candidate diff，而不是默认正确的实现。</li>
+    <li>检查 changed files、diffstat、代码 diff、测试结果、浏览器行为和可访问性影响。</li>
+    <li>给出 <code>merge</code>、<code>revise</code> 或 <code>discard</code> 建议。</li>
+    <li>没有明确批准时，不自动合并 AGY 结果。</li>
+  </ol>
+
+  <h2>8. Role 文件结构</h2>
+  <ul class="compact-list">
+    <li><code>role.toml</code>：Role Definition、身份、内容、权限姿态、adapter 显示名。</li>
+    <li><code>README.md</code>：用途、职责、非目标、内容和 source boundary。</li>
+    <li><code>memory.md</code>：长期操作姿态、设计标准、流程和 skill 路由。</li>
+    <li><code>skills/*/SKILL.md</code>：9 个可按需触发的前端专业流程。</li>
+    <li><code>references/</code>：tokens、可访问性、浏览器质量、MCP、AGY、demo catalog 的长文档。</li>
+    <li><code>tools/README.md</code>：工具和 MCP runbook。</li>
+    <li><code>tools/mcp-tools.toml</code>：可选 role-scoped MCP/tool manifest。</li>
+    <li><code>plugins/frontend-mcp-toolbox/</code>：可被 Host Adapter 投影的 MCP 配置模板。</li>
+    <li><code>adapters/</code>：Codex、Claude Code、CCB、Hive 的 host-specific note。</li>
+    <li><code>tests/validation.md</code>：元数据、别名、CLI、source-boundary 和行为 prompt 验证计划。</li>
+  </ul>
+
+  <h2>9. 别名和发现方式</h2>
+  <p>
+    当前已为这个 Role 增加了面向使用者的别名，方便在 list、install、resolve 或 host adapter 中发现。
+  </p>
+  <ul>
+    <li><code>frontend</code> → <code>agentroles.frontend_engineer</code></li>
+    <li><code>frontend-engineer</code> → <code>agentroles.frontend_engineer</code></li>
+    <li><code>frontend-designer</code> → <code>agentroles.frontend_engineer</code></li>
+    <li><code>ui-engineer</code> → <code>agentroles.frontend_engineer</code></li>
+  </ul>
+  <div class="callout warning">
+    <strong>List 说明：</strong>新增 Role 时，除了 Role source 本身，通常还需要补充 catalog/list 发现所需的元数据和别名说明。这个 Role 已在 <code>aliases.toml</code> 中加入别名，README 和 validation notes 也记录了发现与解析检查。
+  </div>
+
+  <h2>10. 当前验证状态</h2>
+  <ul>
+    <li><code>python -m pytest tests/test_frontend_engineer_role.py tests/test_tool_manifest_spec.py -q</code>：6 passed。</li>
+    <li><code>python -m pytest -q</code>：45 passed。</li>
+    <li><code>git diff --check</code>：通过。</li>
+    <li>临时 <code>AGENT_ROLES_STORE</code> 下的 CLI smoke：<code>list</code>、<code>install frontend</code>、<code>resolve frontend</code> 均解析到 <code>agentroles.frontend_engineer</code> <code>0.2.0</code>。</li>
+  </ul>
+
+  <h2>11. 当前状态</h2>
+  <p>
+    这个前端 Role 已在本地仓库落地为静态、可审查的 Role source。PDF 记录的是截至 2026-06-15 的当前设计说明；它不代表已经推送远端，也不包含任何运行时授权、凭证或项目私有状态。
+  </p>
+
+  <p class="footer-note">
+    来源：<code>roles/frontend-engineer/role.toml</code>、<code>roles/frontend-engineer/README.md</code>、<code>roles/frontend-engineer/memory.md</code>、<code>roles/frontend-engineer/tools/README.md</code>、<code>roles/frontend-engineer/tests/validation.md</code>、<code>aliases.toml</code>。
+  </p>
+</body>
+</html>

@@ -1,0 +1,161 @@
+schema = "agent-role/tool-manifest/preview-0.1"
+name = "Frontend MCP Tool Manifest"
+version = "0.1.0"
+description = "Optional MCP and frontend tools for role-private runtime projection."
+
+[runtime]
+scope = "role-private"
+install_policy = "explicit"
+store_hint = "{role_runtime}/tools/frontend"
+secrets = "external"
+cleanup = "unmount-owned"
+network = "install-and-docs"
+
+[[tools]]
+id = "figma-mcp"
+kind = "mcp-server"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Read Figma design context, variables, components, and selected frames when the project supplies access."
+requires_secrets = ["FIGMA_ACCESS_TOKEN"]
+requires_project = ["selected Figma file or frame supplied by Project Binding"]
+
+[tools.install]
+mode = "host-provided"
+notes = "Use the host-supported Figma MCP setup; do not store tokens or selected files in Role source."
+
+[tools.doctor]
+checks = [
+  "Figma MCP is configured by the host",
+  "FIGMA_ACCESS_TOKEN or equivalent host credential is available at runtime",
+  "selected file or frame is supplied outside Role source",
+]
+
+[tools.projection]
+template = "plugins/frontend-mcp-toolbox/mcp.json.template"
+notes = "Template only; generated MCP config is projection output."
+
+[[tools]]
+id = "storybook-mcp"
+kind = "mcp-server"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Read component documentation, stories, props, and state examples from a project Storybook."
+requires_project = ["project Storybook or static Storybook URL supplied by Project Binding"]
+
+[tools.install]
+mode = "host-provided"
+notes = "Use only when the target project has Storybook or compatible component docs."
+
+[tools.doctor]
+checks = [
+  "Storybook source or URL is reachable from the host runtime",
+  "component docs match the target project framework",
+]
+
+[[tools]]
+id = "playwright-mcp"
+kind = "mcp-server"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Interact with running frontend surfaces, collect accessibility snapshots, and verify responsive behavior."
+requires_project = ["running app URL supplied by Project Binding when browser QA is requested"]
+
+[tools.install]
+mode = "host-provided"
+notes = "Keep browser downloads, traces, videos, and screenshots outside Role source."
+
+[tools.doctor]
+checks = [
+  "browser runtime is available",
+  "target app URL is supplied outside Role source",
+]
+
+[[tools]]
+id = "chrome-devtools-mcp"
+kind = "mcp-server"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Inspect console, network, screenshots, performance traces, and Web Vitals risk in Chrome."
+requires_project = ["target app URL or browser target supplied by Project Binding"]
+
+[tools.install]
+mode = "host-provided"
+notes = "Keep browser profiles, traces, screenshots, and local targets outside Role source."
+
+[tools.doctor]
+checks = [
+  "Chrome or compatible browser is available",
+  "DevTools connection is host-approved",
+]
+
+[[tools]]
+id = "context-docs-mcp"
+kind = "mcp-server"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Fetch current frontend library and framework docs when local context is insufficient."
+
+[tools.install]
+mode = "host-provided"
+notes = "Use as an anti-staleness aid; prefer official docs and project-local source when available."
+
+[tools.doctor]
+checks = [
+  "docs MCP server is available if current library lookup is requested",
+]
+
+[[tools]]
+id = "shadcn-mcp"
+kind = "mcp-server"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Inspect or acquire shadcn-compatible registry components for matching React/Tailwind projects."
+requires_project = ["compatible React/Tailwind project and registry policy"]
+
+[tools.install]
+mode = "host-provided"
+notes = "Do not introduce shadcn into projects with an incompatible or stronger existing design system."
+
+[tools.doctor]
+checks = [
+  "target project uses compatible React/Tailwind conventions",
+  "registry access is approved by the project",
+]
+
+[[tools]]
+id = "style-dictionary"
+kind = "cli"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Transform design tokens when the project already uses Style Dictionary or compatible token pipelines."
+requires_project = ["project token source and transform policy"]
+
+[tools.install]
+mode = "host-provided"
+notes = "Use project-local token tooling when present; do not overwrite source-of-truth tokens silently."
+
+[tools.doctor]
+checks = [
+  "project token source is identified",
+  "token transform command is project-approved",
+]
+
+[[tools]]
+id = "agy"
+kind = "cli"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Delegate bounded frontend implementation tasks to Google Antigravity CLI and review the resulting diff."
+requires_project = ["isolated worktree or branch", "explicit task brief", "diff review policy"]
+
+[tools.install]
+mode = "manual"
+notes = "AGY account state, login, quota, worktrees, and generated branches are host runtime concerns."
+
+[tools.doctor]
+checks = [
+  "agy command is available when delegation is requested",
+  "isolated worktree or branch policy is available",
+  "merge requires explicit approval",
+]
