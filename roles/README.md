@@ -27,7 +27,8 @@ in `role.toml` so `agent-roles list` can display their maturity.
 - [ccb-self](ccb-self/) (`agentroles.ccb_self`, `preview`): CCB runtime
   maintenance and expert-reference role with bounded self-diagnosis, recovery,
   config, message-chain, source/manual, command, release, and test-evidence
-  skills.
+  skills, plus dynamic workflow orchestration for analysis, execution, review,
+  mounted-agent memory overlays, dispatch, and guarded refresh.
 - [frontend-engineer](frontend-engineer/) (`agentroles.frontend_engineer`,
   `experimental`): frontend design engineering role with focused skills for
   briefs, visual direction, design tokens, component composition,

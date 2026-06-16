@@ -41,6 +41,9 @@ Forbidden:
 - Do not edit `.ccb/ccb_memory.md`, `.ccb/agents/<agent>/memory.md`, provider
   homes, installed role stores, generated memory, lifecycle, lease, runtime,
   mailbox, provider session, or tmux state.
+- If the user asks for dynamic workflow roles, task lanes, or mounted-agent
+  memory overlays, route to `ccb-workflow-orchestrate`; this skill still owns
+  only `.ccb/ccb.config` and reload-readiness.
 - Do not execute `ccb restart`, `ccb kill`, `ccb clear`, or `ccb repair` from
   this skill.
 - Do not run raw tmux commands.

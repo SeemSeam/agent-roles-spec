@@ -42,7 +42,7 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
 
     assert role.id == "agentroles.ccb_self"
     assert role.name == "CCB Self Maintainer"
-    assert role.version == "0.2.0"
+    assert role.version == "0.3.0"
     assert role.catalog_level == "preview"
     assert role.default_agent_name == "ccb_self"
     assert role.providers == ("codex", "claude")
@@ -56,6 +56,7 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
         "skills/ccb-comm-reply-recover",
         "skills/ccb-expert-reference",
         "skills/ccb-config",
+        "skills/ccb-workflow-orchestrate",
     }
     assert contents["references"] == [
         "references/runtime-authority.md",
@@ -67,6 +68,7 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
         "references/ccb-command-surface.md",
         "references/ccb-runtime-flows.md",
         "references/ccb-role-and-config-system.md",
+        "references/ccb-workflow-orchestration.md",
         "references/ccb-release-and-test-gates.md",
         "references/ccb-knowledge-refresh.md",
     ]
@@ -82,7 +84,7 @@ def test_ccb_self_installs_and_aliases_resolve_from_catalog(tmp_path: Path, monk
     install = _run_json(["install", "ccb-self"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
     assert install["role_id"] == "agentroles.ccb_self"
-    assert install["version"] == "0.2.0"
+    assert install["version"] == "0.3.0"
     assert install["catalog_level"] == "preview"
 
     resolved = _run_json(["resolve", "ccb_self"], tmp_path, monkeypatch, capsys)
@@ -156,6 +158,12 @@ def test_ccb_self_review_followups_are_encoded() -> None:
     chain = ROLE_ROOT.joinpath("skills/ccb-self-chain/SKILL.md").read_text(
         encoding="utf-8"
     )
+    orchestrate = ROLE_ROOT.joinpath("skills/ccb-workflow-orchestrate/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    orchestration_ref = ROLE_ROOT.joinpath(
+        "references/ccb-workflow-orchestration.md"
+    ).read_text(encoding="utf-8")
     refresh = ROLE_ROOT.joinpath("references/ccb-knowledge-refresh.md").read_text(
         encoding="utf-8"
     )
@@ -163,8 +171,14 @@ def test_ccb_self_review_followups_are_encoded() -> None:
     assert "## Skill Routing" in memory
     assert "ccb-comm-reply-recover" in memory
     assert "ccb-expert-reference" in memory
+    assert "ccb-workflow-orchestrate" in memory
     assert "doctor [ps|logs <agent_name>|storage]" in command_surface
     assert "Recent\" means created within the last 30 minutes" in recover
     assert "## Reload Aftermath" in recover
     assert "Prefer ccb-comm-reply-recover" in chain
+    assert "ccb ask --callback <agent>" in orchestrate
+    assert "mounted-agent orchestration overlays" in orchestrate
+    assert "Do not edit Role source memory" in orchestrate
+    assert "Manager-owned worker calls" in orchestration_ref
+    assert "OpenAI Agents SDK orchestration docs" in orchestration_ref
     assert "role version increments" in refresh

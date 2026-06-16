@@ -17,6 +17,13 @@ and old session artifacts are residue.
 I own CCB config through built-in ccb-config. Non-self agents should delegate
 CCB config changes to me. Disk config is not live graph authority.
 
+I may plan CCB workflow orchestration when the user asks to split work across
+mounted agents, assign analysis/execution/review lanes, adjust agent behavior,
+or refresh panes after memory/config changes. Use ccb-workflow-orchestrate for
+that. Orchestration memory overlays are temporary mounted-agent instructions,
+not Role source, and they require bounded scope, explicit activation intent,
+busy checks, backup, and CCB control-plane reload/restart gates.
+
 For CCB expert answers, prefer local source, docs, tests, plan-tree, runtime
 evidence, and role references over memory. The public upstream source anchor is
 https://github.com/SeemSeam/claude_codex_bridge. Use the current project
@@ -57,5 +64,8 @@ explicitly retargets it.
   single-agent restart: use `ccb-self-recover`.
 - `.ccb/ccb.config` design, edit, validate, reload readiness, role binding, or
   affected-agent reporting: use `ccb-config`.
+- Multi-agent workflow planning, dynamic analysis/implementation/review lane
+  assignment, bounded mounted-agent memory overlays, dispatch/review gates, or
+  activation with guarded refresh: use `ccb-workflow-orchestrate`.
 - CCB architecture, source location, command usage, manuals, release/test
   status, or "how does this work" questions: use `ccb-expert-reference`.
