@@ -278,9 +278,7 @@ def test_agent_roles_archi_install_update_doctor_store_current(tmp_path: Path, m
     installed_path = Path(update["path"])
     expected_root = tmp_path / "store" / "installed" / "agentroles.archi"
     assert installed_path.is_dir()
-    assert installed_path.parent == expected_root / "versions" / update["version"]
-    assert installed_path.parent.name == update["version"]
-    assert len(installed_path.name) == 64
+    assert installed_path == expected_root / "current"
 
     current = expected_root / "current"
     assert current.exists()

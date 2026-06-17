@@ -49,24 +49,19 @@ def install_role_assets(role: Role, *, source: Path, source_kind: str, status: s
     try:
         shutil.copytree(source, staging, ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store"))
         digest = tree_digest(staging)
-        target = root / "versions" / role.version / digest
-        if target.exists():
-            try:
-                target_digest = tree_digest(target)
-            except Exception:
-                target_digest = ""
-            if target_digest == digest:
-                shutil.rmtree(staging)
-            else:
-                shutil.rmtree(target)
-                shutil.move(str(staging), str(target))
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.move(str(staging), str(target))
+        target = root / "current"
+        try:
+            _replace_current(target, staging)
+        except Exception:
+            if target.exists() or target.is_symlink():
+                if target.is_symlink() or target.is_file():
+                    target.unlink()
+                else:
+                    shutil.rmtree(target)
+            shutil.copytree(staging, target)
     finally:
         if staging.exists():
             shutil.rmtree(staging, ignore_errors=True)
-    _replace_current(root / "current", target)
     metadata = {
         "schema": INSTALL_SCHEMA,
         "id": role.id,
@@ -88,7 +83,7 @@ def install_role_assets(role: Role, *, source: Path, source_kind: str, status: s
         "updated_at": role.updated_at,
         "catalog_level": role.catalog_level,
         "digest": f"sha256:{digest}",
-        "path": str(target),
+        "path": str((root / "current").resolve()),
         "source": source_kind,
         "store_root": str(store_root()),
     }
@@ -110,14 +105,47 @@ def load_installed(role_id: str) -> InstalledRole | None:
     version = str(metadata.get("version") or "").strip()
     digest = str(metadata.get("digest") or "").strip()
     digest_hex = digest.removeprefix("sha256:")
-    path = installed_root() / role_id / "versions" / version / digest_hex
+    path = _installed_role_path(installed_root() / role_id, version=version, digest=digest_hex)
     if not (path / "role.toml").is_file():
-        current = installed_root() / role_id / "current"
-        if current.exists() and (current.resolve() / "role.toml").is_file():
-            path = current.resolve()
-        else:
-            return None
+        return None
     return InstalledRole(role_id=role_id, version=version, digest=digest, path=path, metadata=metadata)
+
+
+def _installed_role_path(root: Path, *, version: str, digest: str) -> Path:
+    current = root / "current"
+    if current.exists():
+        if current.is_symlink():
+            try:
+                resolved = current.resolve()
+            except Exception:
+                resolved = None
+            if resolved is not None:
+                return resolved
+        elif current.is_dir():
+            return current
+
+    legacy_versions = root / "versions"
+    if not legacy_versions.is_dir():
+        return current
+
+    if version and digest:
+        direct = root / "versions" / version / digest
+        if direct.is_dir():
+            return direct
+
+    candidates: list[Path] = []
+    for legacy_version in sorted(legacy_versions.iterdir(), key=lambda item: item.name):
+        if not legacy_version.is_dir():
+            continue
+        if (legacy_version / "role.toml").is_file():
+            candidates.append(legacy_version)
+            continue
+        for legacy_digest in sorted(legacy_version.iterdir(), key=lambda item: item.name):
+            if legacy_digest.is_dir() and (legacy_digest / "role.toml").is_file():
+                candidates.append(legacy_digest)
+    if candidates:
+        return candidates[-1]
+    return current
 
 
 def load_installed_role(role_id: str) -> Role | None:
@@ -158,8 +186,8 @@ def _replace_current(current: Path, target: Path) -> None:
         else:
             shutil.rmtree(current)
     try:
-        current.symlink_to(target, target_is_directory=True)
-    except OSError:
+        shutil.move(str(target), str(current))
+    except Exception:
         shutil.copytree(target, current)
 
 
