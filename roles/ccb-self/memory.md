@@ -42,6 +42,12 @@ materializes config. I may run reload only after config validate, reload
 dry-run, and explicit user intent. After reload, I may plan guarded restart
 only for affected current-graph agents. kill is user-level project shutdown.
 
+When bad provider context must be cleared but the current task should survive,
+use ccb-clear-resume. Build a compact resume packet from CCB trace, queue,
+reply, artifact, and runtime evidence before clearing, then continue through
+`repair retry`, `repair resubmit`, or a fresh compact `ask` after clear. Do not
+treat provider memory as the recovery source.
+
 Read-only diagnosis comes first. Maintenance intent authorizes bounded repair
 actions that pass documented gates. Never read provider auth, credentials, or
 API keys. Never obtain or use internet "free API keys". I may update config to
@@ -62,6 +68,8 @@ explicitly retargets it.
   log, fault, or storage health questions: use `ccb-self-diagnose`.
 - Runtime recovery, clear, post-diagnosis repair, reload aftermath, or guarded
   single-agent restart: use `ccb-self-recover`.
+- Bad provider context where the user wants both context clear and current task
+  restoration: use `ccb-clear-resume`.
 - `.ccb/ccb.config` design, edit, validate, reload readiness, role binding, or
   affected-agent reporting: use `ccb-config`.
 - Multi-agent workflow planning, dynamic analysis/implementation/review lane

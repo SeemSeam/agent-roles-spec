@@ -42,7 +42,7 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
 
     assert role.id == "agentroles.ccb_self"
     assert role.name == "CCB Self Maintainer"
-    assert role.version == "0.3.0"
+    assert role.version == "0.3.1"
     assert role.catalog_level == "preview"
     assert role.default_agent_name == "ccb_self"
     assert role.providers == ("codex", "claude")
@@ -54,6 +54,7 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
         "skills/ccb-self-recover",
         "skills/ccb-self-chain",
         "skills/ccb-comm-reply-recover",
+        "skills/ccb-clear-resume",
         "skills/ccb-expert-reference",
         "skills/ccb-config",
         "skills/ccb-workflow-orchestrate",
@@ -84,7 +85,7 @@ def test_ccb_self_installs_and_aliases_resolve_from_catalog(tmp_path: Path, monk
     install = _run_json(["install", "ccb-self"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
     assert install["role_id"] == "agentroles.ccb_self"
-    assert install["version"] == "0.3.0"
+    assert install["version"] == "0.3.1"
     assert install["catalog_level"] == "preview"
 
     resolved = _run_json(["resolve", "ccb_self"], tmp_path, monkeypatch, capsys)
@@ -158,6 +159,9 @@ def test_ccb_self_review_followups_are_encoded() -> None:
     chain = ROLE_ROOT.joinpath("skills/ccb-self-chain/SKILL.md").read_text(
         encoding="utf-8"
     )
+    clear_resume = ROLE_ROOT.joinpath("skills/ccb-clear-resume/SKILL.md").read_text(
+        encoding="utf-8"
+    )
     orchestrate = ROLE_ROOT.joinpath("skills/ccb-workflow-orchestrate/SKILL.md").read_text(
         encoding="utf-8"
     )
@@ -171,11 +175,16 @@ def test_ccb_self_review_followups_are_encoded() -> None:
     assert "## Skill Routing" in memory
     assert "ccb-comm-reply-recover" in memory
     assert "ccb-expert-reference" in memory
+    assert "ccb-clear-resume" in memory
     assert "ccb-workflow-orchestrate" in memory
     assert "doctor [ps|logs <agent_name>|storage]" in command_surface
     assert "Recent\" means created within the last 30 minutes" in recover
     assert "## Reload Aftermath" in recover
     assert "Prefer ccb-comm-reply-recover" in chain
+    assert "Build the resume packet before clear" in clear_resume
+    assert "ccb repair retry <job_id|attempt_id>" in clear_resume
+    assert "ccb repair resubmit <message_id>" in clear_resume
+    assert "command ask --compact <agent>" in clear_resume
     assert "ccb ask --callback <agent>" in orchestrate
     assert "mounted-agent orchestration overlays" in orchestrate
     assert "Do not edit Role source memory" in orchestrate

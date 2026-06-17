@@ -1,22 +1,22 @@
 # CCB Self Validation Notes
 
-Date: 2026-06-16
+Date: 2026-06-17
 
 ## Static Role Checks
 
 - `agentroles.ccb_self` loads through the Agent Roles preview manifest loader.
 - CCB adapter metadata declares `default_agent_name = "ccb_self"` and supports
   `codex` plus `claude`.
-- The Role contains seven generic skills:
+- The Role contains eight generic skills:
   `ccb-self-diagnose`, `ccb-self-recover`, `ccb-self-chain`,
-  `ccb-comm-reply-recover`, `ccb-expert-reference`, `ccb-config`, and
-  `ccb-workflow-orchestrate`.
+  `ccb-comm-reply-recover`, `ccb-clear-resume`, `ccb-expert-reference`,
+  `ccb-config`, and `ccb-workflow-orchestrate`.
 - The Role declares CCB expert references for source, GitHub, talk1 manuals,
   command/config, runtime flows, role/config system, release/test gates, and
   knowledge refresh, plus workflow orchestration pattern evidence.
 - The Role memory includes symptom-to-skill routing for expert answers,
   config work, diagnosis, recovery, lineage repair, and user-visible reply
-  stalls, plus dynamic workflow orchestration.
+  stalls, context-clear task restoration, plus dynamic workflow orchestration.
 - The full private `ccb-config` skill is source content for this Role only.
   Common inherited skill folders must not contain or install it for non-self
   agents.
@@ -71,3 +71,19 @@ After adding `ccb-workflow-orchestrate`:
     source;
   - `ccb ask --callback` is used when a result is needed;
   - `ccb restart <agent>` is guarded, single-agent, and never raw tmux.
+
+## V0.3.1 Clear-Resume Validation
+
+After adding `ccb-clear-resume`:
+
+- `python -m pytest -q tests/test_ccb_self_role.py`: `6 passed`.
+- `python -m pytest -q`: `51 passed`.
+- `git diff --check`: passed.
+- Skill Creator `quick_validate.py roles/ccb-self/skills/ccb-clear-resume`:
+  `Skill is valid!`.
+- Static checks should confirm the new skill says:
+  - build the resume packet before `ccb clear <agent>`;
+  - use durable CCB trace, queue, reply, artifact, and runtime evidence;
+  - resume through `ccb repair retry`, `ccb repair resubmit`, or fresh compact
+    `ask`;
+  - do not clear active work or duplicate active jobs.

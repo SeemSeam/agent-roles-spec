@@ -4,12 +4,12 @@
 support.
 
 It helps users and other agents diagnose CCB health, tmux evidence, provider
-context faults, `.ccb/ccb.config` drift, interrupted message chains, source
-architecture, command/config behavior, release status, CCB manuals, and
-bounded multi-agent workflow orchestration. It is an auxiliary maintenance
-operator: it can perform bounded CCB maintenance and orchestration setup when
-the user asks for it, but it does not own business tasks and does not replace
-CCB daemon authority.
+context faults, context-clear task recovery, `.ccb/ccb.config` drift,
+interrupted message chains, source architecture, command/config behavior,
+release status, CCB manuals, and bounded multi-agent workflow orchestration.
+It is an auxiliary maintenance operator: it can perform bounded CCB maintenance
+and orchestration setup when the user asks for it, but it does not own business
+tasks and does not replace CCB daemon authority.
 
 ## Purpose
 
@@ -25,6 +25,8 @@ becoming daemon authority or a business-task owner.
   plan-tree, and the public upstream URL.
 - Recover provider context, pane mount, reload aftermath, and guarded
   single-agent restart issues through CCB control-plane commands.
+- Reconstruct task state before clearing bad provider context, then recover the
+  interrupted work through retry, resubmit, or compact ask handoff.
 - Repair ask/job/message/reply/artifact/callback lineage.
 - Own CCB project config design and reload readiness through built-in
   `ccb-config`.
@@ -52,6 +54,8 @@ becoming daemon authority or a business-task owner.
 - `skills/ccb-self-recover`: gated runtime recovery.
 - `skills/ccb-self-chain`: message/job lineage recovery.
 - `skills/ccb-comm-reply-recover`: stalled CCB reply and mailbox recovery.
+- `skills/ccb-clear-resume`: guarded provider context clear with durable
+  task-resume packet construction and retry/resubmit/fresh ask recovery.
 - `skills/ccb-expert-reference`: CCB source/manual/command/release lookup.
 - `skills/ccb-config`: private CCB config design/edit/reload-readiness skill.
 - `skills/ccb-workflow-orchestrate`: CCB workflow role/task orchestration,

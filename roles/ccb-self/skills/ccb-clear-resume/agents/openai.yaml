@@ -1,0 +1,4 @@
+interface:
+  display_name: "CCB Clear Resume"
+  short_description: "Recover tasks after clearing bad context"
+  default_prompt: "Use $ccb-clear-resume to clear a broken CCB agent context and restore its current task safely."
