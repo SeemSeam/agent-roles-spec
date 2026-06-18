@@ -30,7 +30,7 @@ def test_frontend_engineer_role_loads_with_expected_inventory() -> None:
 
     assert role.id == "agentroles.frontend_engineer"
     assert role.name == "Frontend Design Engineer"
-    assert role.version == "0.2.1"
+    assert role.version == "0.3.0"
     assert role.catalog_level == "experimental"
 
     identity = role.table("identity")
@@ -46,6 +46,7 @@ def test_frontend_engineer_role_loads_with_expected_inventory() -> None:
     assert contents["memory"] == ["memory.md"]
     assert contents["skills"] == [
         "skills/frontend-brief",
+        "skills/ui-ux-pro-max",
         "skills/visual-direction",
         "skills/design-system-tokens",
         "skills/component-composition",
@@ -61,6 +62,7 @@ def test_frontend_engineer_role_loads_with_expected_inventory() -> None:
         "references/accessibility-and-browser-quality.md",
         "references/mcp-and-agy-workflows.md",
         "references/demo-catalog.md",
+        "references/ui-ux-pro-max-provenance.md",
     ]
     assert contents["tools"] == ["tools/README.md", "tools/mcp-tools.toml", "tools/role_setup.py"]
     assert contents["tool_manifests"] == ["tools/mcp-tools.toml"]
@@ -82,6 +84,10 @@ def test_frontend_engineer_role_loads_with_expected_inventory() -> None:
         "README.md",
         "memory.md",
         "skills/frontend-brief/SKILL.md",
+        "skills/ui-ux-pro-max/SKILL.md",
+        "skills/ui-ux-pro-max/scripts/search.py",
+        "skills/ui-ux-pro-max/data/colors.csv",
+        "skills/ui-ux-pro-max/LICENSE",
         "skills/visual-direction/SKILL.md",
         "skills/design-system-tokens/SKILL.md",
         "skills/component-composition/SKILL.md",
@@ -95,6 +101,7 @@ def test_frontend_engineer_role_loads_with_expected_inventory() -> None:
         "references/accessibility-and-browser-quality.md",
         "references/mcp-and-agy-workflows.md",
         "references/demo-catalog.md",
+        "references/ui-ux-pro-max-provenance.md",
         "tools/README.md",
         "tools/mcp-tools.toml",
         "tools/role_setup.py",
@@ -111,6 +118,12 @@ def test_frontend_engineer_role_loads_with_expected_inventory() -> None:
     memory = ROLE_ROOT.joinpath("memory.md").read_text(encoding="utf-8")
     assert "Treat AGY output as a candidate diff" in memory
     assert "Do not invent component props" in memory
+    assert "vendored `ui-ux-pro-max` skill" in memory
+
+    provenance = ROLE_ROOT.joinpath("references/ui-ux-pro-max-provenance.md").read_text(encoding="utf-8")
+    assert "nextlevelbuilder/ui-ux-pro-max-skill" in provenance
+    assert "b7e3af80f6e331f6fb456667b82b12cade7c9d35" in provenance
+    assert "Treatment: `vendored_intact`" in provenance
 
     tools = ROLE_ROOT.joinpath("tools/README.md").read_text(encoding="utf-8")
     assert "does not install tools by itself" in tools
@@ -146,6 +159,12 @@ def test_frontend_engineer_skills_have_yaml_frontmatter() -> None:
         frontmatter = text[4:closing]
         assert "\nname:" in f"\n{frontmatter}", skill_path
         assert "\ndescription:" in f"\n{frontmatter}", skill_path
+        for line in frontmatter.splitlines():
+            if ": " not in line:
+                continue
+            _, value = line.split(": ", 1)
+            if ": " in value:
+                assert value.startswith(('"', "'", "|", ">")), skill_path
 
 
 def test_frontend_engineer_installs_and_aliases_resolve_from_catalog(
@@ -165,7 +184,7 @@ def test_frontend_engineer_installs_and_aliases_resolve_from_catalog(
     install = _run_json(["install", "frontend"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
     assert install["role_id"] == "agentroles.frontend_engineer"
-    assert install["version"] == "0.2.1"
+    assert install["version"] == "0.3.0"
     assert install["catalog_level"] == "experimental"
 
     resolved = _run_json(["resolve", "ui-engineer"], tmp_path, monkeypatch, capsys)
@@ -183,7 +202,7 @@ def test_frontend_engineer_list_discovers_role_from_clean_store(
 
     assert "agentroles.frontend_engineer" in rows
     row = rows["agentroles.frontend_engineer"]
-    assert row["version"] == "0.2.1"
+    assert row["version"] == "0.3.0"
     assert row["catalog_level"] == "experimental"
     assert row["status"] == "available"
     assert row["update_reason"] == "not_installed"
@@ -239,7 +258,7 @@ def test_frontend_role_setup_check_is_non_mutating(tmp_path: Path) -> None:
     assert payload["status"] == "ok"
     assert payload["mutated"] is False
     assert payload["role_id"] == "agentroles.frontend_engineer"
-    assert payload["role_version"] == "0.2.1"
+    assert payload["role_version"] == "0.3.0"
     assert payload["provider"]["detected"] == "codex"
     assert payload["runtime_scope"] == "provider-shared"
     assert payload["provider_runtime_root"].startswith(str(tmp_path / "runtime"))

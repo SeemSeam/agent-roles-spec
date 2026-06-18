@@ -109,15 +109,30 @@ through `agent-roles` and may expose host-specific adapters.
 <details>
 <summary><strong>agentroles.frontend_engineer</strong> - Frontend Design Engineer</summary>
 
-- **Version**: `0.2.1`
+- **Version**: `0.3.0`
 - **Level**: `experimental`
-- **Purpose**: Designs, implements, reviews, and validates production frontend interfaces with design-system, accessibility, browser QA, role-scoped runtime setup, optional private MCP tools, and reviewed AGY delegation.
+- **Purpose**: Designs, implements, reviews, and validates production frontend interfaces with design-system, vendored UI/UX Pro Max intelligence, accessibility, browser QA, role-scoped runtime setup, optional private MCP tools, and reviewed AGY delegation.
 - **Best for**: frontend briefs, visual direction, design-token and component-system work, Figma-to-code flows, responsive accessibility checks, browser quality validation, role runtime setup checks, and reviewed Google Antigravity CLI (`agy`) delegation.
 - **Contents**: Frontend design-engineering memory, focused frontend skills, design-system and browser-quality references, MCP/AGY tool notes, `role_setup` runtime setup guidance, a role-scoped MCP/tool manifest, frontend MCP toolbox template content, host adapter notes, and validation prompts.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
 - **Add**: `agent-roles add frontend`
 - **Update**: `agent-roles update frontend`
 - **Source**: [`roles/frontend-engineer`](roles/frontend-engineer/)
+
+</details>
+
+<details>
+<summary><strong>agentroles.mobile_app_engineer</strong> - Mobile App Engineer</summary>
+
+- **Version**: `0.1.0`
+- **Level**: `experimental`
+- **Purpose**: Designs, implements, reviews, and validates production mobile apps across iOS, Android, React Native, Expo, Flutter, SwiftUI, and Jetpack Compose.
+- **Best for**: mobile app briefs, platform and stack selection, native-feeling flows, mobile component systems, icon/animation/material library curation, simulator/device QA, accessibility, performance, and App Store or Google Play readiness.
+- **Contents**: Mobile app engineering memory, focused mobile skills, vendored UI/UX Pro Max design intelligence, platform and stack references, public skill and asset-library catalog, quality/release guidance, reusable prompt, tool notes, host adapter notes, and validation notes.
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **Add**: `agent-roles add mobile`
+- **Update**: `agent-roles update mobile`
+- **Source**: [`roles/mobile-app-engineer`](roles/mobile-app-engineer/)
 
 </details>
 

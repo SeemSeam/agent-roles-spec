@@ -108,15 +108,30 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 <details>
 <summary><strong>agentroles.frontend_engineer</strong> - Frontend Design Engineer（前端设计工程师）</summary>
 
-- **版本**: `0.2.1`
+- **版本**: `0.3.0`
 - **等级**: `experimental`
-- **用途**: 设计、实现、评审并验证生产级前端界面，覆盖设计系统、可访问性、浏览器质量检查、role-scoped runtime setup、可选私有 MCP 工具和经过 review 的 AGY 委托。
+- **用途**: 设计、实现、评审并验证生产级前端界面，覆盖设计系统、内置 UI/UX Pro Max 设计智能、可访问性、浏览器质量检查、role-scoped runtime setup、可选私有 MCP 工具和经过 review 的 AGY 委托。
 - **适合场景**: 前端 brief、视觉方向、design tokens 与组件系统、Figma-to-code、响应式可访问性检查、浏览器质量验证、role runtime setup 检查，以及经过 diff review 的 Google Antigravity CLI (`agy`) 委托。
 - **包含内容**: 前端设计工程 memory、聚焦的前端 skills、设计系统与浏览器质量 references、MCP/AGY 工具说明、`role_setup` runtime setup 指引、role-scoped MCP/tool manifest、前端 MCP toolbox 模板、host adapter notes 和验证 prompts。
 - **Adapters**: CCB、Claude Code、Codex、HIVE。
 - **添加**: `agent-roles add frontend`
 - **更新**: `agent-roles update frontend`
 - **源码**: [`roles/frontend-engineer`](../../roles/frontend-engineer/)
+
+</details>
+
+<details>
+<summary><strong>agentroles.mobile_app_engineer</strong> - Mobile App Engineer（移动 App 工程师）</summary>
+
+- **版本**: `0.1.0`
+- **等级**: `experimental`
+- **用途**: 设计、实现、评审并验证生产级移动 App，覆盖 iOS、Android、React Native、Expo、Flutter、SwiftUI 和 Jetpack Compose。
+- **适合场景**: 移动 App brief、平台和技术栈选择、原生体验流程、移动组件系统、图标/动画/素材库选择、模拟器/真机 QA、可访问性、性能，以及 App Store 或 Google Play 发布准备。
+- **包含内容**: 移动 App 工程 memory、聚焦的 mobile skills、内置 UI/UX Pro Max 设计智能、平台与技术栈 references、公开 skill 与素材库目录、质量/发布指引、可复用 prompt、工具说明、host adapter notes 和验证说明。
+- **Adapters**: CCB、Claude Code、Codex、HIVE。
+- **添加**: `agent-roles add mobile`
+- **更新**: `agent-roles update mobile`
+- **源码**: [`roles/mobile-app-engineer`](../../roles/mobile-app-engineer/)
 
 </details>
 

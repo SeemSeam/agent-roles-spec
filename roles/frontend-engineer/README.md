@@ -2,9 +2,10 @@
 
 `frontend-engineer` is an experimental Role for designing, implementing,
 reviewing, and validating production frontend UI. It combines visual design
-judgment, design-system discipline, component implementation, accessibility,
-browser quality checks, provider-shared runtime setup, optional private MCP tool
-declarations, and reviewed Google Antigravity CLI (`agy`) delegation.
+judgment, vendored UI/UX Pro Max design intelligence, design-system
+discipline, component implementation, accessibility, browser quality checks,
+provider-shared runtime setup, optional private MCP tool declarations, and
+reviewed Google Antigravity CLI (`agy`) delegation.
 
 ## Purpose
 
@@ -18,6 +19,9 @@ performance awareness, and browser-based verification.
   frontend implementation briefs.
 - Establish visual direction through layout, typography, color, rhythm, motion,
   density, and state design.
+- Use the vendored `ui-ux-pro-max` skill for design-system recommendations,
+  palettes, font pairings, UX rules, chart patterns, and stack-specific UI
+  guidance.
 - Reuse project-local components, Storybook docs, design tokens, and
   design-system conventions before introducing new UI primitives.
 - Implement frontend code when asked, following the repository's framework,
@@ -46,8 +50,9 @@ performance awareness, and browser-based verification.
   host or user approval.
 - Uninstall role configuration or remove provider/runtime files from inside an
   agent session.
-- Copy third-party skills, component libraries, demo source, or extracted
-  live-site tokens wholesale into the Role.
+- Copy license-unclear, incompatible, private, or runtime-state skills,
+  component libraries, demo source, extracted live-site tokens, screenshots, or
+  brand assets into the Role.
 
 ## Contents
 
@@ -56,6 +61,8 @@ performance awareness, and browser-based verification.
 - `memory.md`: durable frontend design-engineering posture and boundaries.
 - `skills/frontend-brief`: product surface, audience, workflow, constraints,
   and acceptance criteria.
+- `skills/ui-ux-pro-max`: vendored MIT UI/UX Pro Max skill with design
+  intelligence data, search scripts, and templates.
 - `skills/visual-direction`: visual quality, anti-generic UI, and state design.
 - `skills/design-system-tokens`: design-token, theming, and drift workflow.
 - `skills/component-composition`: local component, Storybook, and registry
@@ -70,7 +77,7 @@ performance awareness, and browser-based verification.
 - `skills/agy-frontend-delegate`: bounded `agy` delegation and diff review.
 - `skills/demo-kb-curation`: link-only demo and inspiration catalog curation.
 - `references/`: long-form design-system, accessibility, browser, MCP, AGY,
-  and demo-catalog guidance.
+  demo-catalog, and vendored-skill provenance guidance.
 - `tools/README.md`: tool and MCP runbook with source-boundary cautions.
 - `tools/mcp-tools.toml`: optional role-scoped MCP/tool manifest for
   compatible Host Adapters.
@@ -118,6 +125,12 @@ The manifest is not an installer and not a permission grant. Credentials,
 selected Figma files, browser profiles, generated MCP configuration, local
 ports, screenshots, traces, package caches, AGY worktrees, and tool logs remain
 Project Binding or host runtime state.
+
+The Role directly vendors `ui-ux-pro-max` from
+`nextlevelbuilder/ui-ux-pro-max-skill` under `skills/ui-ux-pro-max/`. Its
+`scripts/search.py` helper can generate design recommendations from bundled
+CSV data. Generated `design-system/` output belongs to the target project or
+host runtime, not this Role source.
 
 `role_setup` is not the same as `agent-roles add` or `agent-roles install`.
 Adding a Role copies source into the role store; setup runs later inside the

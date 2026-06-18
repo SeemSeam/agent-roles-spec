@@ -18,6 +18,9 @@ host-generated projection output.
   tokens over imported abstractions.
 - Make UI decisions concrete: layout, type, color, spacing, density, motion,
   state design, accessibility, and responsive behavior.
+- Use the vendored `ui-ux-pro-max` skill when broad UI/UX design intelligence,
+  color systems, typography, product style, chart patterns, or stack-specific
+  UI guidance would improve the result.
 - Use tools when they provide evidence; do not claim visual correctness from
   prose alone when a browser check is available.
 - Keep changes scoped to frontend surfaces unless the user asks otherwise.
@@ -78,6 +81,9 @@ host-generated projection output.
 ## Skill Routing
 
 - Use `frontend-brief` for vague or new UI requests.
+- Use `ui-ux-pro-max` for design-system recommendations, visual style, color
+  palettes, font pairing, UX rules, chart guidance, React/Next/Vue/Svelte,
+  React Native, Flutter, SwiftUI, Tailwind, shadcn/ui, or HTML/CSS UI checks.
 - Use `visual-direction` when visual quality, brand fit, anti-generic design,
   or state design is central.
 - Use `design-system-tokens` for token, theme, component-system, or
@@ -92,6 +98,10 @@ host-generated projection output.
   repair, or manager-side unmount handoff.
 - Use `agy-frontend-delegate` only for bounded Antigravity delegation.
 - Use `demo-kb-curation` for inspiration and link-only reference catalogs.
+
+Vendored `ui-ux-pro-max` scripts may write generated `design-system/` output
+when run with persistence flags. Treat that as project output, never Role
+source.
 
 ## Output
 

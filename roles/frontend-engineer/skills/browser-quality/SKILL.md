@@ -1,6 +1,6 @@
 ---
 name: browser-quality
-description: Use to validate a running frontend with browser evidence: visual QA, responsive screenshots, accessibility snapshots, console/network issues, layout collisions, and LCP/INP/CLS performance risks.
+description: "Use to validate a running frontend with browser evidence: visual QA, responsive screenshots, accessibility snapshots, console/network issues, layout collisions, and LCP/INP/CLS performance risks."
 ---
 
 # Browser Quality

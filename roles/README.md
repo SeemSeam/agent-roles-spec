@@ -35,7 +35,13 @@ in `role.toml` so `agent-roles list` can display their maturity.
   Figma-to-code, responsive accessibility, browser quality, optional AGY
   delegation, provider-shared runtime setup checks, project binding guidance,
   demo knowledge-base curation, and optional role-scoped MCP/tool manifest
-  declarations for compatible Host Adapters.
+  declarations for compatible Host Adapters, plus vendored UI/UX Pro Max
+  design intelligence.
+- [mobile-app-engineer](mobile-app-engineer/) (`agentroles.mobile_app_engineer`,
+  `experimental`): mobile app engineering role for iOS, Android, React Native,
+  Expo, Flutter, SwiftUI, and Jetpack Compose with mobile UX, platform stack
+  guidance, component and asset-library curation, vendored UI/UX Pro Max
+  design intelligence, device QA, performance, and store-readiness skills.
 - [mother](mother/) (`agentroles.mother`, `preview`): Role creation, research,
   candidate scoring, blueprinting, external source ingestion, and audit role
   for spec compliance, catalog readiness, source-boundary checks,

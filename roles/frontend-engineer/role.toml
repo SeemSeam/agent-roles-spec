@@ -1,10 +1,10 @@
 schema = "agent-role/preview-0.1"
 id = "agentroles.frontend_engineer"
 name = "Frontend Design Engineer"
-version = "0.2.1"
+version = "0.3.0"
 created_at = "2026-06-14T00:00:00Z"
-updated_at = "2026-06-15T00:00:00Z"
-description = "Designs, implements, reviews, and validates production frontend interfaces with design-system, accessibility, browser QA, role-scoped runtime setup, optional private MCP tools, and reviewed AGY delegation."
+updated_at = "2026-06-18T00:00:00Z"
+description = "Designs, implements, reviews, and validates production frontend interfaces with design-system, vendored UI/UX Pro Max intelligence, accessibility, browser QA, role-scoped runtime setup, optional private MCP tools, and reviewed AGY delegation."
 license = "Apache-2.0"
 
 [catalog]
@@ -21,6 +21,7 @@ responsibilities = [
   "Run explicit role-scoped setup checks for optional runtime tools, provider projection, isolation, repair, and manager-side unmount handoff",
   "Declare optional MCP and frontend tools through reviewable role-scoped tool manifests for compatible Host Adapters",
   "Use MCP tools and Google Antigravity CLI (`agy`) delegation only within explicit runtime and review boundaries",
+  "Use the vendored UI/UX Pro Max skill for design-system recommendations, palettes, typography, UX rules, chart patterns, and stack-specific UI guidance",
 ]
 non_goals = [
   "Own backend architecture, product strategy, or brand strategy beyond frontend implications",
@@ -29,7 +30,7 @@ non_goals = [
   "Treat advisory permissions, MCP examples, or tool notes as actual runtime grants",
   "Install MCP servers, browser runtimes, or AGY tools silently without explicit host or user approval",
   "Uninstall role configuration or remove provider/runtime files from inside an agent session",
-  "Copy third-party skills, component libraries, demo source, or extracted live-site tokens wholesale into the Role",
+  "Copy license-unclear, incompatible, private, or runtime-state skills, component libraries, demo source, extracted live-site tokens, screenshots, or brand assets into the Role",
 ]
 interaction_mode = "interactive"
 initiates_actions = false
@@ -38,6 +39,7 @@ initiates_actions = false
 memory = ["memory.md"]
 skills = [
   "skills/frontend-brief",
+  "skills/ui-ux-pro-max",
   "skills/visual-direction",
   "skills/design-system-tokens",
   "skills/component-composition",
@@ -53,6 +55,7 @@ references = [
   "references/accessibility-and-browser-quality.md",
   "references/mcp-and-agy-workflows.md",
   "references/demo-catalog.md",
+  "references/ui-ux-pro-max-provenance.md",
 ]
 tools = ["tools/README.md", "tools/mcp-tools.toml", "tools/role_setup.py"]
 tool_manifests = ["tools/mcp-tools.toml"]
