@@ -31,7 +31,7 @@ Schema: `agent-roles/mother-role-blueprint/v1`
 
 | Source | Role path | Type | Treatment | Notes |
 | --- | --- | --- | --- | --- |
-|  |  | memory/skill/reference/prompt/tool/plugin/adapter/test/template/schema | copied/synthesized/referenced/excluded |  |
+|  |  | memory/skill/reference/prompt/tool/plugin/adapter/test/template/schema | vendored_intact/vendored_modified/synthesized/referenced_only/excluded |  |
 
 ## Boundaries
 
@@ -43,9 +43,9 @@ Schema: `agent-roles/mother-role-blueprint/v1`
 
 ## Provenance
 
-| Source id | Locator | Access date | License status/value | Copy treatment | Confidence | Blocking status | Notes |
+| Source id | Locator | Access date | License status/value | Copy treatment | Confidence | Blocking status | Notices/modifications/notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-|  |  |  | known/unknown/incompatible/not_applicable + value | copied/synthesized/referenced_only/excluded | high/medium/low/unknown | clear/blocked/needs_user_decision |  |
+|  |  |  | known/unknown/incompatible/not_applicable + value | vendored_intact/vendored_modified/synthesized/referenced_only/excluded | high/medium/low/unknown | clear/blocked/needs_user_decision |  |
 
 ## Permissions And Adapters
 

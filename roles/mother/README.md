@@ -20,8 +20,8 @@ spec compliance, catalog readiness, and optimization opportunities.
 - Produce research briefs, research evidence, candidate scorecards, Role
   blueprints, and evaluation reports before high-risk Role source changes.
 - Ingest external skill, plugin, or workflow repositories through an inventory,
-  blueprint, write-gate, and validation workflow before copying source into a
-  Role.
+  blueprint, write-gate, and validation workflow before vendoring, adapting, or
+  synthesizing source into a Role.
 - Audit `role.toml`, memory, skills, prompts, tools, adapters, tests, README
   files, aliases, and catalog metadata.
 - Research public skill construction tools, examples, and techniques when local
@@ -42,8 +42,8 @@ spec compliance, catalog readiness, and optimization opportunities.
 - Embed credentials, provider sessions, project-private state, task progress,
   or hidden installer behavior.
 - Treat advisory permission metadata as actual runtime authorization.
-- Copy third-party skill examples wholesale or treat unverified web content as
-  authoritative.
+- Copy license-unclear, incompatible, private, or runtime-state external
+  content, or treat unverified web content as authoritative.
 - Rewrite unrelated project files while creating or auditing a Role.
 
 ## Contents
@@ -94,6 +94,13 @@ with the Role id, aliases, single-role versus multi-role decision, contents
 map, permission posture, provenance notes, validation plan, and unresolved
 risks. Partial mounts or host-specific projections belong in adapter notes or
 Project Binding, not generic Role memory.
+
+Directly carrying public/open-source skills is allowed when the blueprint marks
+the source as `vendored_intact` or `vendored_modified`, records the upstream
+URL/ref and license, preserves required notices, excludes runtime/provider
+state, and keeps the copied content reviewable in the Role package. Synthesis
+remains the default when license, provenance, host fit, or maintenance quality
+is uncertain.
 
 ## Research And Blueprint Gates
 

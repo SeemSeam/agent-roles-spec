@@ -11,11 +11,19 @@ Use this skill for change-scoped architecture review.
 
 1. Inspect the available architecture-analysis command shape before assuming
    flags.
-2. Run or read incremental architecture review evidence.
-3. Read `.architec/architec-summary.md` first when present.
-4. Use `.architec/architec-analysis.json` for exact scores, concerns, signals,
+2. Use `archi-evidence-map` first when the evidence source is unclear or when
+   tools are unavailable.
+3. Run or read incremental architecture review evidence only when available or
+   requested.
+4. Read changed source files and nearby ownership boundaries directly.
+5. Use vendored `code-review-and-quality` when the diff needs broad quality
+   coverage beyond architecture-only findings.
+6. Use vendored `requesting-code-review` when the user wants an independent
+   review lane or review handoff.
+7. Read `.architec/architec-summary.md` first when present.
+8. Use `.architec/architec-analysis.json` for exact scores, concerns, signals,
    hotspots, and artifact paths.
-5. Focus on changed-component concerns, boundary pressure, duplication,
+9. Focus on changed-component concerns, boundary pressure, duplication,
    hotspots, and recommendations.
 
 ## Output
@@ -39,3 +47,6 @@ Required Changes
 
 Do not paste raw JSON. Use direct code references for findings that need
 engineering action.
+
+If no architecture-analysis tool is available, continue with direct diff and
+source review, and state the missing evidence as residual risk.

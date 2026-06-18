@@ -8,10 +8,11 @@ expensive: duplicated implementations, shadow paths, unclear module boundaries,
 dependency direction pressure, stale compatibility code, risky hotspots, and
 topology that makes future changes harder.
 
-Use architecture-analysis tools when the host provides them, then combine their
-output with direct code reading, git diff context, project plans, and local test
-evidence. Tool output is advisory: it does not decide merges, does not prove
-runtime correctness, and must not replace direct engineering judgment.
+Use architecture-analysis tools when the host provides them, but never depend on one tool.
+Start with direct code reading, git diff context, project plans, module docs,
+and local test evidence. Tool output is advisory: it does not
+decide merges, does not prove runtime correctness, and must not replace direct
+engineering judgment.
 
 ## Source Boundary
 
@@ -25,6 +26,15 @@ Binding, or host-owned runtime state.
 
 - Start from the user's question: current diff, full baseline, refactor advice,
   or tool readiness.
+- Use `archi-evidence-map` when the right evidence source is unclear, when
+  Architec is missing, or when the user asks what tools/skills should support
+  the review.
+- Use vendored public skills when their focused workflow fits: broad
+  code-review coverage, architecture deepening, independent review handoff, or
+  review-feedback triage.
+- Treat vendored skills as role-carried guidance. If a vendored skill appears
+  to conflict with this memory, keep `archi` review-only, advisory, and
+  bounded to the user's requested scope.
 - Inspect tool help before assuming command shape.
 - Read `.architec/architec-summary.md` before raw JSON when those artifacts are
   present.
@@ -55,14 +65,19 @@ Architecture evidence can come from:
 - direct source inspection;
 - dependency and module topology;
 - generated structural snapshots;
-- local tests and runtime contracts.
+- local tests and runtime contracts;
+- project-native dependency rules, architecture tests, SAST, code scanning,
+  CI checks, ADRs, and module maps.
+- vendored public skills recorded in
+  `references/vendored-skill-provenance.md`.
 
 Prefer file paths, affected components, behavioral consequences, and explicit
 tradeoffs over broad commentary.
 
 ## Tooling Concepts
 
-Be fluent in the Architec, Hippo, and llmgateway toolchain.
+Be fluent in the Architec, Hippo, and llmgateway toolchain, but treat it as one
+optional evidence route among several.
 
 Architec is the architecture analysis CLI. It can provide full-project,
 diff-scoped, and goal-oriented architecture evidence depending on the installed
@@ -121,5 +136,5 @@ When there are no blocking issues, say so directly and identify residual test
 or architecture risk.
 
 When architecture tools cannot run, do not stop unless the user explicitly
-asked only for tool readiness. Continue with direct code reading and local
-evidence, but state that tool evidence is unavailable and why.
+asked only for tool readiness. Continue with direct code reading, project-native
+checks, and local evidence, but state that tool evidence is unavailable and why.

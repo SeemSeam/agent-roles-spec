@@ -93,11 +93,11 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer（架构评审）</summary>
 
-- **版本**: `0.2.3`
+- **版本**: `0.4.0`
 - **等级**: `stable`
-- **用途**: 评审架构漂移、边界、耦合、可维护性和结构风险。
-- **适合场景**: 架构评审、依赖边界检查、耦合分析，以及实用的后续步骤排序。
-- **包含内容**: Role instructions、架构评审 skills、可复用 prompt、工具文档、plugin 内容和 host adapters。
+- **用途**: 在不依赖单一工具的前提下，评审架构漂移、边界、耦合、可维护性、代码评审证据和结构风险。
+- **适合场景**: 架构评审、依赖边界检查、耦合分析、可选 Architec/Hippo 证据、项目原生架构检查、内置公开 review skills，以及实用的后续步骤排序。
+- **包含内容**: Role instructions、架构评审 skills、evidence-map 路由、内置公开 code-review skills、架构 toolbox 与 provenance references、可复用 prompt、工具文档、plugin 内容和 host adapters。
 - **Adapters**: CCB、Claude Code、Codex、HIVE。
 - **添加**: `agent-roles add archi`
 - **更新**: `agent-roles update archi`
@@ -138,12 +138,12 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 <details>
 <summary><strong>agentroles.mother</strong> - Role Mother（角色创建与审计）</summary>
 
-- **版本**: `0.2.2`
+- **版本**: `0.2.3`
 - **等级**: `preview`
 - **用途**: 创建、调研、蓝图设计、摄取和审计符合规范的 Agent Roles，并使用证据门禁约束产出。
-- **适合场景**: 起草新 Role、审计 Role source、研究简报、候选源打分、蓝图门禁、检查 catalog readiness，以及研究 skill 构造工具和技巧。
+- **适合场景**: 起草新 Role、审计 Role source、研究简报、候选源打分、蓝图门禁、source-ingest copy-treatment 决策、检查 catalog readiness，以及研究 skill 构造工具和技巧。
 - **技能研究**: 使用受限的公开网络研究，优先参考官方文档和维护中的示例，并在研究影响设计时记录来源。
-- **包含内容**: Role authoring memory、角色创建/审计、source-ingest、research、candidate-score 和 blueprint skills、可复用 prompts、skill 构造研究参考、artifact templates、preview schemas、本地 inventory 脚本、验证说明和 host adapter display metadata。
+- **包含内容**: Role authoring memory、角色创建/审计、source-ingest、research、candidate-score 和 blueprint skills、可复用 prompts、skill 构造研究参考、artifact templates、支持 vendoring 的 preview schemas、本地 inventory 脚本、验证说明和 host adapter display metadata。
 - **Adapters**: CCB、Claude Code、Codex、HIVE。
 - **添加**: `agent-roles add mother`
 - **更新**: `agent-roles update mother`

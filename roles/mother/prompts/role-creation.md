@@ -22,6 +22,8 @@ as applicable:
 - classify each source area as Role memory, skill, reference, tool/runtime
   support, plugin content, adapter note, validation fixture, Project Binding,
   runtime state, or excluded material
+- decide copy treatment for each source area: `vendored_intact`,
+  `vendored_modified`, `synthesized`, `referenced_only`, or `excluded`
 - produce a blueprint gate before writing into `roles/<id>/`
 
 Design:
@@ -41,8 +43,10 @@ Design:
 
 If current external skill-construction guidance would materially improve the
 skill design, perform public web research first. Prefer official docs and
-maintained examples, cite source URLs and access date, and synthesize the
-guidance instead of copying examples wholesale.
+maintained examples, cite source URLs and access date, and synthesize by
+default. Directly vendor public/open-source skills only when the license and
+provenance are clear, the user wants reusable upstream behavior carried, and
+the blueprint records the copied paths and modification status.
 
 Return:
 1. proposed file tree

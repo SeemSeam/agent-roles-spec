@@ -72,7 +72,7 @@ def test_mother_role_loads_with_expected_source_inventory() -> None:
 
     assert role.id == "agentroles.mother"
     assert role.name == "Role Mother"
-    assert role.version == "0.2.2"
+    assert role.version == "0.2.3"
     assert role.catalog_level == "preview"
     assert role.default_agent_name == "mother"
 
@@ -84,6 +84,8 @@ def test_mother_role_loads_with_expected_source_inventory() -> None:
     assert any("Research public skill construction" in item for item in identity["responsibilities"])
     assert any("Ingest external skill" in item for item in identity["responsibilities"])
     assert any("candidate scorecards" in item for item in identity["responsibilities"])
+    assert any("vendoring" in item for item in identity["responsibilities"])
+    assert not any("Copy third-party skill examples wholesale" in item for item in identity["non_goals"])
 
     contents = role.table("contents")
     assert contents["memory"] == ["memory.md"]
@@ -148,12 +150,15 @@ def test_mother_role_loads_with_expected_source_inventory() -> None:
     research = ROLE_ROOT.joinpath("references/skill-construction-research.md").read_text(encoding="utf-8")
     assert "OpenAI Codex Agent Skills" in research
     assert "Claude skill authoring best practices" in research
-    assert "Do not copy third-party examples wholesale" in research
+    assert "Directly vendor public/open-source" in research
+    assert "vendored_intact" in research
     assert "External Source Research Workflow" in research
     assert "First-Class Artifacts" in research
 
     ingest = ROLE_ROOT.joinpath("skills/role-source-ingest/SKILL.md").read_text(encoding="utf-8")
     assert "Inventory before writing" in ingest
+    assert "Decide copy treatment" in ingest
+    assert "vendored_intact" in ingest
     assert "blueprint gate" in ingest
     assert "Do not create or modify `roles/<id>/` before the blueprint exists" in ingest
 
@@ -168,6 +173,7 @@ def test_mother_role_loads_with_expected_source_inventory() -> None:
     blueprint = ROLE_ROOT.joinpath("skills/role-blueprint/SKILL.md").read_text(encoding="utf-8")
     assert "write gate" in blueprint
     assert "single_role" in blueprint
+    assert "vendored_modified" in blueprint
 
     evidence_schema = json.loads(
         ROLE_ROOT.joinpath("schemas/research-evidence.schema.json").read_text(encoding="utf-8")
@@ -232,6 +238,23 @@ def test_mother_artifact_schemas_accept_golden_samples() -> None:
                 "extracted_facts": ["The tool supports explain-plan capture."],
                 "confidence": "high",
                 "design_impact": "Use a deterministic explain-plan checklist.",
+            },
+            {
+                "id": "public-skill",
+                "kind": "repository",
+                "locator": "https://example.invalid/public-skill",
+                "access_date": "2026-06-14",
+                "authority": "maintained",
+                "license": {"status": "known", "value": "MIT"},
+                "provenance": {
+                    "copy_treatment": "vendored_intact",
+                    "blocking_status": "clear",
+                    "notes": "Carry upstream SKILL.md unchanged with license notice.",
+                },
+                "inspected": ["skills/query-review/SKILL.md", "LICENSE"],
+                "extracted_facts": ["The source is a focused query review skill."],
+                "confidence": "high",
+                "design_impact": "Vendor the focused public skill unchanged.",
             }
         ],
     }
@@ -335,10 +358,10 @@ def test_mother_artifact_schemas_accept_golden_samples() -> None:
                 "locator": "https://example.invalid/docs",
                 "access_date": "2026-06-14",
                 "license": {"status": "known", "value": "Apache-2.0"},
-                "copy_treatment": "synthesized",
+                "copy_treatment": "vendored_intact",
                 "confidence": "high",
                 "blocking_status": "clear",
-                "notes": "No copied examples.",
+                "notes": "Carry source skill unchanged and preserve required notice.",
             }
         ],
         "validation_plan": ["Parse TOML.", "Run list/resolve."],
@@ -391,7 +414,7 @@ def test_mother_installs_and_aliases_resolve_from_catalog(tmp_path: Path, monkey
     install = _run_json(["install", "role-author"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
     assert install["role_id"] == "agentroles.mother"
-    assert install["version"] == "0.2.2"
+    assert install["version"] == "0.2.3"
     assert install["catalog_level"] == "preview"
 
     resolved = _run_json(["resolve", "role-auditor"], tmp_path, monkeypatch, capsys)
@@ -407,7 +430,7 @@ def test_mother_list_discovers_role_from_clean_store(tmp_path: Path, monkeypatch
 
     assert "agentroles.mother" in rows
     row = rows["agentroles.mother"]
-    assert row["version"] == "0.2.2"
+    assert row["version"] == "0.2.3"
     assert row["catalog_level"] == "preview"
     assert row["status"] == "available"
     assert row["update_reason"] == "not_installed"

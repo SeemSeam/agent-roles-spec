@@ -1,10 +1,10 @@
 schema = "agent-role/preview-0.1"
 id = "agentroles.archi"
 name = "Architecture Reviewer"
-version = "0.2.3"
+version = "0.4.0"
 created_at = "2026-06-03T00:00:00Z"
-updated_at = "2026-06-09T00:00:00Z"
-description = "Reviews architecture drift, boundaries, coupling, maintainability, and structural risk."
+updated_at = "2026-06-17T00:00:00Z"
+description = "Reviews architecture drift, boundaries, coupling, maintainability, vendored code-review skills, and structural risk without depending on one tool."
 license = "Apache-2.0"
 
 [catalog]
@@ -14,7 +14,8 @@ level = "stable"
 purpose = "Review architecture drift, boundaries, coupling, maintainability, and structural risk."
 responsibilities = [
   "Review diffs for architecture risk",
-  "Run or read full-project architecture analysis when available",
+  "Run, read, or select architecture and code-review evidence when available",
+  "Continue with direct source review when architecture tools are missing",
   "Explain coupling, boundary, and dependency tradeoffs",
   "Recommend practical next steps",
   "Turn architecture findings into actionable gates and sequencing"
@@ -31,12 +32,22 @@ initiates_actions = false
 [contents]
 memory = ["memory.md"]
 skills = [
+  "skills/archi-evidence-map",
+  "skills/architecture-review",
   "skills/archi-advice",
   "skills/archi-diff",
   "skills/archi-full",
-  "skills/archi-goal"
+  "skills/archi-goal",
+  "skills/vendor/code-review-and-quality",
+  "skills/vendor/improve-codebase-architecture",
+  "skills/vendor/requesting-code-review",
+  "skills/vendor/receiving-code-review"
 ]
 prompts = ["prompts/architecture-review.md"]
+references = [
+  "references/architecture-toolbox.md",
+  "references/vendored-skill-provenance.md"
+]
 tools = ["tools/README.md"]
 plugins = ["plugins/archi-workbench"]
 

@@ -162,7 +162,14 @@
             }
           },
           "copy_treatment": {
-            "enum": ["copied", "synthesized", "referenced_only", "excluded"]
+            "enum": [
+              "copied",
+              "vendored_intact",
+              "vendored_modified",
+              "synthesized",
+              "referenced_only",
+              "excluded"
+            ]
           },
           "confidence": {
             "enum": ["high", "medium", "low", "unknown"]

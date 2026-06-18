@@ -74,7 +74,14 @@
             "additionalProperties": false,
             "properties": {
               "copy_treatment": {
-                "enum": ["copied", "synthesized", "referenced_only", "excluded"]
+                "enum": [
+                  "copied",
+                  "vendored_intact",
+                  "vendored_modified",
+                  "synthesized",
+                  "referenced_only",
+                  "excluded"
+                ]
               },
               "blocking_status": {
                 "enum": ["clear", "blocked", "needs_user_decision"]

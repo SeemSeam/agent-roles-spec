@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 from agent_roles.cli import run
+from agent_roles.manifest import load_role
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +17,11 @@ ROLE_TOOL = ROLE_ROOT / "adapters" / "ccb" / "tools" / "architec_tool.py"
 REFERENCE_TOOL = REFERENCE_ROOT / "adapters" / "ccb" / "tools" / "architec_tool.py"
 SYNCED_FILES = (
     "role.toml",
+    "README.md",
+    "memory.md",
+    "references/architecture-toolbox.md",
+    "references/vendored-skill-provenance.md",
+    "skills/archi-evidence-map/SKILL.md",
     "adapters/ccb/README.md",
     "adapters/ccb/adapter.toml",
     "adapters/ccb/memory.md",
@@ -58,6 +64,84 @@ def test_archi_role_and_reference_role_stay_in_sync() -> None:
         assert ROLE_ROOT.joinpath(rel).read_text(encoding="utf-8") == REFERENCE_ROOT.joinpath(rel).read_text(
             encoding="utf-8"
         )
+    role_vendor_files = {
+        path.relative_to(ROLE_ROOT).as_posix()
+        for path in ROLE_ROOT.joinpath("skills/vendor").rglob("*")
+        if path.is_file()
+    }
+    reference_vendor_files = {
+        path.relative_to(REFERENCE_ROOT).as_posix()
+        for path in REFERENCE_ROOT.joinpath("skills/vendor").rglob("*")
+        if path.is_file()
+    }
+    assert role_vendor_files == reference_vendor_files
+    for rel in sorted(role_vendor_files):
+        assert ROLE_ROOT.joinpath(rel).read_text(encoding="utf-8") == REFERENCE_ROOT.joinpath(rel).read_text(
+            encoding="utf-8"
+        )
+
+
+def test_archi_role_declares_tool_independent_evidence_design() -> None:
+    role = load_role(ROLE_ROOT)
+
+    assert role.id == "agentroles.archi"
+    assert role.version == "0.4.0"
+    assert "without depending on one tool" in role.description
+
+    identity = role.table("identity")
+    assert any("direct source review" in item for item in identity["responsibilities"])
+
+    contents = role.table("contents")
+    assert "skills/archi-evidence-map" in contents["skills"]
+    assert "skills/architecture-review" in contents["skills"]
+    assert "skills/vendor/code-review-and-quality" in contents["skills"]
+    assert "skills/vendor/improve-codebase-architecture" in contents["skills"]
+    assert "skills/vendor/requesting-code-review" in contents["skills"]
+    assert "skills/vendor/receiving-code-review" in contents["skills"]
+    assert contents["references"] == [
+        "references/architecture-toolbox.md",
+        "references/vendored-skill-provenance.md",
+    ]
+
+    ccb_adapter = ROLE_ROOT / "adapters" / "ccb" / "adapter.toml"
+    assert "required = false" in ccb_adapter.read_text(encoding="utf-8")
+
+    memory = ROLE_ROOT.joinpath("memory.md").read_text(encoding="utf-8")
+    readme = ROLE_ROOT.joinpath("README.md").read_text(encoding="utf-8")
+    tools = ROLE_ROOT.joinpath("tools/README.md").read_text(encoding="utf-8")
+    evidence_skill = ROLE_ROOT.joinpath("skills/archi-evidence-map/SKILL.md").read_text(encoding="utf-8")
+    toolbox = ROLE_ROOT.joinpath("references/architecture-toolbox.md").read_text(encoding="utf-8")
+    provenance = ROLE_ROOT.joinpath("references/vendored-skill-provenance.md").read_text(encoding="utf-8")
+    deepening = ROLE_ROOT.joinpath("skills/vendor/improve-codebase-architecture/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "never depend on one tool" in memory
+    assert "project-native dependency rules" in memory
+    assert "vendored public skills" in memory
+    assert "Do not block architecture review just because Architec" in evidence_skill
+    assert "vendored `code-review-and-quality`" in evidence_skill
+    assert "dependency-cruiser" in tools
+    assert "ArchUnit" in tools
+    assert "Semgrep" in toolbox
+    assert "CodeQL" in toolbox
+    assert "Copying license-cleared focused skills: allowed" in toolbox
+    assert "Vendored Public Skills" in readme
+    assert "Public Skills Carried Or Fused Into Archi" in toolbox
+    assert "addyosmani/agent-skills" in readme
+    assert "mattpocock/skills" in readme
+    assert "obra/superpowers" in readme
+    assert "awesome-skills/code-review-skill" in readme
+    assert "maragudk/skills" in readme
+    assert "vendored_intact" in provenance
+    assert "vendored_modified" in provenance
+    assert ROLE_ROOT.joinpath("skills/vendor/code-review-and-quality/LICENSE").is_file()
+    assert ROLE_ROOT.joinpath("skills/vendor/improve-codebase-architecture/LICENSE").is_file()
+    assert ROLE_ROOT.joinpath("skills/vendor/requesting-code-review/LICENSE").is_file()
+    assert ROLE_ROOT.joinpath("skills/vendor/receiving-code-review/LICENSE").is_file()
+    assert "Do not write project files" in deepening
+    assert "xdg-open" not in deepening
+    assert "cdn.tailwindcss.com" not in deepening
 
 
 def test_install_uses_npm_archi_package_and_records_manifest(tmp_path: Path, monkeypatch, capsys) -> None:
@@ -272,7 +356,7 @@ def test_ccb_adapter_guidance_does_not_prefer_legacy_ccb_archi() -> None:
 def test_agent_roles_archi_install_update_doctor_store_current(tmp_path: Path, monkeypatch, capsys) -> None:
     install = _run_json(["install", "archi"], tmp_path, monkeypatch, capsys)
     assert install["role_id"] == "agentroles.archi"
-    assert install["version"] == "0.2.3"
+    assert install["version"] == "0.4.0"
 
     update = _run_json(["update", "archi"], tmp_path, monkeypatch, capsys)
     installed_path = Path(update["path"])

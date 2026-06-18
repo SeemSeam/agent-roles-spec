@@ -25,8 +25,12 @@ authority files, and host-generated projection output.
 - Before selecting between multiple sources, produce a candidate scorecard
   with hard gates, confidence, rejected candidates, and any user-priority
   overrides.
-- Treat license/provenance uncertainty as a stop gate for copied content.
-  Synthesize patterns only until copying rights are clear.
+- Treat license/provenance uncertainty as a stop gate for copied or vendored
+  content. Synthesize patterns only until copying rights are clear.
+- Directly vendor public or open-source skills when the user asks for it or
+  the blueprint justifies it, the license is known and compatible, provenance
+  is recorded, forbidden runtime/provider/project state is excluded, and the
+  copied content can remain reviewable Role source.
 - Require a `single_role`, `multiple_roles`, or `topology_recipe` decision
   before scaffolding.
 - Require an adversarial design review before writing Role source for
@@ -50,8 +54,11 @@ authority files, and host-generated projection output.
 - Do not include credentials, API keys, auth tokens, provider sessions,
   conversation logs, task progress, runtime authority files, project-private
   data, or lifecycle state in Role source.
-- Do not copy third-party skill examples wholesale. Synthesize patterns into
-  original Role source and keep licensing/provenance concerns visible.
+- Do not copy license-unclear, incompatible, private, or runtime-state
+  external content. When a source is public/open-source and cleared by
+  source-ingest, it may be vendored intact or vendored with documented
+  modifications; preserve license/provenance notes and keep hidden installer,
+  provider state, and generated projection output outside Role source.
 - Do not write into `roles/<id>/` until the intended Role id, publication
   target, write scope, and blueprint are clear.
 - For generated Roles, define behavior success prompts and failure or negative
@@ -84,7 +91,9 @@ a Role from external skills, plugins, prompts, tools, or workflow repositories.
    Project Binding, runtime state, or excluded material.
 4. Produce a blueprint gate with Role id, aliases, catalog level, single-role
    versus multi-role decision, contents map, permission posture, provenance,
-   validation plan, risks, and user confirmation points.
+   copy treatment (`vendored_intact`, `vendored_modified`, `synthesized`,
+   `referenced_only`, or `excluded`), validation plan, risks, and user
+   confirmation points.
 5. Write only after the blueprint is accepted or the user has explicitly asked
    for an implementation with that blueprint.
 
@@ -133,8 +142,8 @@ For a new Role, check that the source has:
   references, scripts/assets only when justified, security boundaries, and
   realistic validation prompts.
 - For external source conversions, include provenance, license notes,
-  inventory findings, a source-boundary decision, and a validation plan before
-  publication.
+  inventory findings, source-boundary and copy-treatment decisions, and a
+  validation plan before publication.
 - For research-backed Roles, include research evidence, candidate scorecard,
   blueprint, and evaluation notes before publication.
 - Aliases only when they improve user-facing discovery.
@@ -150,8 +159,9 @@ Review:
 - purpose, responsibilities, non-goals, interaction mode, and action posture;
 - memory durability and absence of task progress, private state, provider
   state, runtime files, or generated projection output;
-- skills and prompts for clear trigger conditions, scoped workflow, forbidden
-  content risk, and hidden installer behavior;
+- skills and prompts for clear trigger conditions, scoped workflow, copied or
+  vendored-source provenance, forbidden content risk, and hidden installer
+  behavior;
 - tools for documented install, update, doctor, network, and lifecycle notes;
 - adapters for source/projection boundaries, unsupported-content behavior,
   cleanup expectations, and Project Binding separation;
@@ -168,7 +178,10 @@ For skill design research:
 2. Search official docs, open standards, and maintained example repositories.
 3. Compare findings against local Agent Roles specs and templates.
 4. Capture the design-relevant takeaway, source URL, and access date.
-5. Keep Role source original, concise, and compliant with local source
+5. Choose the right copy treatment: synthesize by default, but vendor
+   open-source skills directly when license/provenance is clear, the user wants
+   reusable upstream behavior unchanged, and the Role records what was carried.
+   Keep all Role source concise, reviewable, and compliant with local source
    boundaries.
 
 ## Output Shape

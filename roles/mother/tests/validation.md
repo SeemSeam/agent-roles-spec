@@ -9,7 +9,8 @@ The `mother` Role should be validated with:
 - catalog list discovery with a clean `AGENT_ROLES_STORE`.
 - reference coverage for web-backed skill construction guidance.
 - source-ingest coverage confirming `skills/role-source-ingest/SKILL.md`
-  exists and requires inventory plus blueprint before writes.
+  exists and requires inventory plus copy-treatment decisions and blueprint
+  before writes.
 - research workflow coverage confirming `role-research`,
   `role-candidate-score`, and `role-blueprint` exist and require inspected
   sources, hard gates, rejected candidates, and blueprint write scope.
@@ -25,4 +26,6 @@ The `mother` Role should be validated with:
 The Role source must not contain secrets, provider sessions, runtime state,
 project-specific task progress, pid or socket files, lifecycle authority files,
 or host-generated projection output. Web research output must cite public
-sources and must not copy third-party skill examples wholesale.
+sources. Vendored public/open-source skills must have known compatible
+licenses, provenance, required notices, copy-treatment records, and runtime or
+provider state exclusions.

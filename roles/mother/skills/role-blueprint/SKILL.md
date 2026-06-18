@@ -30,10 +30,15 @@ contents, boundaries, and validation plan are explicit.
 3. Map contents.
    - Memory, skills, references, prompts, tools, plugin content, adapters,
      templates, schemas, and tests.
-   - Mark copied, synthesized, referenced-only, and excluded material.
+   - Mark `vendored_intact`, `vendored_modified`, `synthesized`,
+     `referenced_only`, and `excluded` material. Older `copied` records remain
+     readable as legacy provenance.
 4. Define boundaries.
    - Project Binding, runtime state, provider state, generated projection
      output, secrets, and hidden installer state must stay outside Role source.
+   - For vendored public/open-source skills, record upstream ref, license,
+     required notices, whether the content was modified, and the paths carried
+     into the Role package.
 5. Define validation.
    - TOML parsing, contents path checks, alias resolution, list/install/resolve
      behavior, source-boundary scan, script smoke tests, realistic prompts, and

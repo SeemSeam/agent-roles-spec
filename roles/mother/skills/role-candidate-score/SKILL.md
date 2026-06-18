@@ -20,15 +20,20 @@ make selection explicit before source ingestion, blueprinting, or scaffolding.
 
 ## Hard Gates
 
-Reject or require a user decision before copying/adapting when any gate is hit:
+Reject or require a user decision before vendoring, copying, or adapting when
+any gate is hit:
 
-- license is unknown or incompatible for copied content;
+- license is unknown or incompatible for copied or vendored content;
 - source contains secrets, provider sessions, runtime state, or hidden install
   state;
 - depended-on tooling has no maintainer signal;
 - host fit is poor or adapter behavior would be misleading;
 - testability is weak and cannot be made explicit;
 - Role-shape fit is unclear: one Role, multiple Roles, or topology recipe.
+
+Direct vendoring is a positive option, not a fallback, when the hard gates pass
+and the user wants upstream behavior carried as-is. Score it separately from
+`synthesized` or `referenced_only` treatment.
 
 ## Scoring Dimensions
 
@@ -55,7 +60,9 @@ Return:
 1. scorecard table;
 2. hard-gate results;
 3. recommended candidate or split recommendation;
-4. rejected candidates with reasons, or an explanation that only one source
+4. recommended copy treatment (`vendored_intact`, `vendored_modified`,
+   `synthesized`, `referenced_only`, or `excluded`);
+5. rejected candidates with reasons, or an explanation that only one source
    was available;
-5. next action: inspect selected source, produce blueprint, ask the user, or
+6. next action: inspect selected source, produce blueprint, ask the user, or
    stop.

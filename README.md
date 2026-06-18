@@ -94,11 +94,11 @@ through `agent-roles` and may expose host-specific adapters.
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Version**: `0.2.3`
+- **Version**: `0.4.0`
 - **Level**: `stable`
-- **Purpose**: Reviews architecture drift, boundaries, coupling, maintainability, and structural risk.
-- **Best for**: architecture reviews, dependency-boundary checks, coupling analysis, and practical next-step sequencing.
-- **Contents**: Role instructions, architecture review skills, reusable prompts, tool documentation, plugin content, and host adapters.
+- **Purpose**: Reviews architecture drift, boundaries, coupling, maintainability, code-review evidence, and structural risk without depending on one tool.
+- **Best for**: architecture reviews, dependency-boundary checks, coupling analysis, optional Architec/Hippo evidence, project-native architecture checks, vendored review skills, and practical next-step sequencing.
+- **Contents**: Role instructions, architecture review skills, evidence-map routing, vendored public code-review skills, architecture toolbox and provenance references, reusable prompts, tool documentation, plugin content, and host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
 - **Add**: `agent-roles add archi`
 - **Update**: `agent-roles update archi`
@@ -139,12 +139,12 @@ through `agent-roles` and may expose host-specific adapters.
 <details>
 <summary><strong>agentroles.mother</strong> - Role Mother</summary>
 
-- **Version**: `0.2.2`
+- **Version**: `0.2.3`
 - **Level**: `preview`
 - **Purpose**: Creates, researches, blueprints, ingests, and audits spec-compliant Agent Roles with evidence-backed gates.
-- **Best for**: drafting new Roles, auditing Role source, research briefs, candidate scorecards, blueprint gates, checking catalog readiness, and researching skill-construction tools and techniques.
+- **Best for**: drafting new Roles, auditing Role source, research briefs, candidate scorecards, blueprint gates, source-ingest copy-treatment decisions, checking catalog readiness, and researching skill-construction tools and techniques.
 - **Skill research**: Uses bounded public web research, preferring official docs and maintained examples, and records sources when research affects the design.
-- **Contents**: Role authoring memory, creation/audit, source-ingest, research, candidate-score, and blueprint skills, reusable prompts, skill-construction research reference, artifact templates, preview schemas, local inventory script, validation notes, and host adapter display metadata.
+- **Contents**: Role authoring memory, creation/audit, source-ingest, research, candidate-score, and blueprint skills, reusable prompts, skill-construction research reference, artifact templates, vendoring-aware preview schemas, local inventory script, validation notes, and host adapter display metadata.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
 - **Add**: `agent-roles add mother`
 - **Update**: `agent-roles update mother`

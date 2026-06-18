@@ -8,12 +8,14 @@ runtime internals.
 
 ## Purpose
 
-Review architecture drift, boundaries, coupling, maintainability, and
-structural risk.
+Review architecture drift, boundaries, coupling, maintainability,
+code-review evidence, and structural risk without depending on one tool.
 
 ## Responsibilities
 
 - Review diffs for architecture risk.
+- Select appropriate architecture and code-review evidence sources.
+- Continue with direct source review when optional tools are missing.
 - Explain coupling, boundary, and dependency tradeoffs.
 - Recommend practical next steps.
 - Keep findings scoped to architecture and maintainability.
@@ -31,12 +33,50 @@ structural risk.
   advisory needs.
 - `memory.md`: durable role instructions; not project progress or session
   state.
-- `skills/archi-*`: reusable architecture-review skills.
+- `skills/archi-*`: reusable architecture-review skills, including
+  `archi-evidence-map` for tool-independent evidence selection.
+- `skills/vendor/*`: public/open-source skills carried with provenance and
+  license notices for code review, architecture deepening, and review-lane
+  workflows.
+- `references/architecture-toolbox.md`: researched tool and skill-library
+  guidance for optional architecture/code-review evidence.
+- `references/vendored-skill-provenance.md`: source refs, license status, copy
+  treatment, and exclusions for carried third-party skills.
 - `prompts/`: reusable review prompt examples.
 - `tools/`: tool documentation placeholder.
 - `plugins/`: role-contained plugin content example.
 - `adapters/`: host-specific mapping notes and optional adapter assets.
 - `tests/`: validation notes.
+
+## Vendored Public Skills
+
+`archi` carries selected public/open-source skills directly in the Role
+package. These skills are usable without separate installation when the Host
+Adapter projects Role skills.
+
+- `addyosmani/agent-skills` `code-review-and-quality`: vendored intact for
+  multi-axis code review across correctness, readability, architecture,
+  security, and performance.
+- `mattpocock/skills` `improve-codebase-architecture`: vendored with
+  documented modifications so architecture deepening review remains read-only
+  inside `archi`.
+- `obra/superpowers` `requesting-code-review`: vendored intact for independent
+  review-lane handoff.
+- `obra/superpowers` `receiving-code-review`: vendored intact for rigorous
+  evaluation of review feedback before accepting or rejecting it.
+
+Additional public sources are kept as references or patterns:
+
+- `awesome-skills/code-review-skill`: progressive disclosure and
+  stack-specific references. `archi` uses `archi-evidence-map` plus
+  `references/architecture-toolbox.md` instead of loading every stack rule by
+  default.
+- `maragudk/skills`: independent review-lane and decision-workflow patterns.
+  `archi` can recommend separate analysis, execution, and review lanes for
+  high-risk changes, while final approval stays outside the Role.
+- Claude Code Review public guidance: severity, deduplication, local diff
+  review, and customizable review instructions. `archi` uses the same pattern
+  of advisory, evidence-backed findings rather than automatic approval.
 
 ## Source Boundary
 
@@ -62,7 +102,7 @@ Generated host-native assets are projection output. They should be traceable to
 the mounted Role and removable on unmount, but they must not be written back
 into this Role source directory.
 
-The core role declares runtime `network = false`. The CCB adapter's Architec
-install and update hooks may need network access to fetch `@seemseam/archi`
-from the npm registry; that install/update requirement is declared in
-`adapters/ccb/adapter.toml`.
+The core role declares runtime `network = false`. The CCB adapter's optional
+Architec install and update hooks may need network access to fetch
+`@seemseam/archi` from the npm registry; that install/update requirement is
+declared in `adapters/ccb/adapter.toml`.

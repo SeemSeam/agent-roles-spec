@@ -1,12 +1,12 @@
 ---
 name: archi-tooling
-description: Manage and diagnose the CCB adapter's npm Archi CLI, bundled Hippo/llmgateway capabilities, and role tool readiness.
+description: Manage and diagnose the CCB adapter's optional npm Archi CLI, bundled Hippo/llmgateway capabilities, and role tool readiness.
 ---
 
 # Archi Tooling
 
-Use this skill for the CCB adapter's architecture-analysis toolchain, not for
-architecture review itself.
+Use this skill for the CCB adapter's optional architecture-analysis toolchain,
+not for architecture review itself.
 
 `archi-tooling` is an internal skill name, not a shell command. The shell
 commands are `ccb roles ...` and `archi`.
@@ -26,7 +26,7 @@ ccb roles install agentroles.archi
 ccb roles update agentroles.archi
 ```
 
-Check the local Architec route:
+Check the local Architec route when the user asks for tool evidence:
 
 ```bash
 archi --check .
@@ -66,6 +66,8 @@ Do not print API keys or llmgateway secret values.
 - llmgateway config is external user configuration. Missing config degrades
   LLM-enhanced Architec evidence, but it does not prevent direct architecture
   review.
+- Missing Architec means optional tool evidence is unavailable. Continue
+  direct architecture review unless the user asked only for tool readiness.
 - When the npm package or binary is missing, prefer `ccb roles update
   agentroles.archi` or `npm install -g @seemseam/archi` before manual package
   edits.

@@ -66,7 +66,10 @@ starts from a broad role idea or requires source discovery, route through
      changes the Role.
    - Never cite unopened sources. Label source authority and confidence.
    - Record rejected candidates or explain why only one candidate exists.
-   - Do not paste third-party examples wholesale into Role source.
+   - Do not paste license-unclear, incompatible, private, or runtime-state
+     third-party examples into Role source. If direct vendoring is selected,
+     route through source ingestion and record `vendored_intact` or
+     `vendored_modified` with license/provenance and modification notes.
 4. Create or inspect source.
    - For external source conversions, do not write into `roles/<id>/` until a
      blueprint exists and the write scope is clear.
@@ -108,6 +111,9 @@ starts from a broad role idea or requires source discovery, route through
 
    - Run `agent-roles list --json` or the repository's equivalent list command
      with a clean temporary `AGENT_ROLES_STORE`.
+   - For vendored public/open-source skills, verify the carried paths, required
+     license/notice references, provenance notes, and exclusion of runtime or
+     provider state.
    - Run broader tests when the change affects shared catalog behavior.
 
 ## Review Output

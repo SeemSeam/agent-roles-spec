@@ -13,8 +13,10 @@ improve the result.
   paywalled/private docs.
 - Record source URLs and access date in audit or authoring notes when web
   research affects the Role design.
-- Summarize and synthesize. Do not copy third-party examples wholesale into
-  Role source.
+- Summarize and synthesize by default. Directly vendor public/open-source
+  skills into Role source when the user wants upstream behavior carried, the
+  license is known and compatible, provenance is recorded, and forbidden
+  runtime/provider/project state is excluded.
 - Treat web evidence as advisory. The Agent Roles specs in this repository
   remain authoritative for Role source boundaries.
 
@@ -88,13 +90,19 @@ workflow repository into Role source.
 4. Classify each source item as Role memory, Role skill, Role reference,
    tool/runtime support, plugin content, adapter note, validation fixture,
    Project Binding, runtime state, or excluded material.
-5. Decide packaging shape:
+5. Decide copy treatment:
+   - `vendored_intact`: carry a public/open-source skill unchanged;
+   - `vendored_modified`: carry upstream content with documented changes;
+   - `synthesized`: use the source as design input only;
+   - `referenced_only`: point to the source without carrying it;
+   - `excluded`: leave it out because of license, boundary, quality, or scope.
+6. Decide packaging shape:
    - one Role when one specialist identity owns the workflow;
    - multiple Roles when memory, providers, permissions, or lifecycle contracts
      must differ;
    - future team/topology recipe when the source is an agent network rather
      than one Role identity.
-6. Produce a blueprint before copying files into `roles/<id>/`.
+7. Produce a blueprint before copying files into `roles/<id>/`.
 
 ## First-Class Artifacts
 
@@ -131,4 +139,6 @@ be reviewed by a maintainer, attached to a plan, or reused during repair.
 - Are scripts documented, bounded, and testable?
 - Does the skill avoid hidden installers, secrets, project state, conversation
   logs, and host-generated projection output?
+- If a skill is vendored, are upstream URL/ref, license, required notices,
+  modification status, and excluded files documented?
 - Does validation cover both metadata shape and realistic behavior?

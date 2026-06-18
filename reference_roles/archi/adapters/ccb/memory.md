@@ -11,9 +11,9 @@ This adapter projects `agentroles.archi` into a CCB-managed agent.
 - `ccb.archi` is only a legacy input alias. Prefer `agentroles.archi` in new
   commands and explain that CCB normalizes the old alias to the canonical Role
   id.
-- CCB now installs and checks the global npm package `@seemseam/archi`, which
-  provides the `archi` CLI. Prefer `archi` for all architecture-analysis route
-  checks.
+- CCB can install and check the global npm package `@seemseam/archi`, which
+  provides the `archi` CLI. Prefer `archi` for Architec route checks when the
+  user asks for tool evidence, but do not make review success depend on it.
 - `ccb-archi` is a legacy wrapper name. If it exists, treat it as stale
   compatibility residue and do not select it as the preferred route.
 - `archi-tooling` is an internal skill name, not a shell command.
@@ -27,7 +27,7 @@ This adapter projects `agentroles.archi` into a CCB-managed agent.
 
 ## CCB Commands
 
-Use:
+Use when the user asks for this route:
 
 ```bash
 ccb roles install agentroles.archi
@@ -37,9 +37,10 @@ ccb roles add agentroles.archi:codex
 archi --check .
 ```
 
-`ccb roles doctor agentroles.archi` checks role/tool readiness. It may not run a
-full route check because `archi --check` can refresh generated project
-artifacts.
+`ccb roles doctor agentroles.archi` checks role/tool readiness. Missing
+Architec should be reported as unavailable optional evidence, not as a reason
+to skip direct architecture review. Doctor may not run a full route check
+because `archi --check` can refresh generated project artifacts.
 
 For a quick readiness investigation, collect:
 

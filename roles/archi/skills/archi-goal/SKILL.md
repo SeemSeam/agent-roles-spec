@@ -11,10 +11,15 @@ Use this skill when the user gives a specific architecture objective.
 
 1. Restate the goal as an architecture constraint.
 2. Identify the relevant modules, ownership boundaries, and runtime contracts.
-3. Use full-project evidence when the goal depends on whole-project structure.
-4. Use diff evidence when the goal is about an active patch.
-5. Read targeted source files directly.
-6. Return a staged plan with gates.
+3. Use `archi-evidence-map` to choose direct source review, generated
+   architecture artifacts, dependency rules, architecture tests, or static
+   analysis evidence.
+4. Use full-project evidence when the goal depends on whole-project structure.
+5. Use diff evidence when the goal is about an active patch.
+6. Use vendored `improve-codebase-architecture` for refactor goals involving
+   shallow modules, interfaces, seams, adapters, leverage, or locality.
+7. Read targeted source files directly.
+8. Return a staged plan with gates.
 
 ## Output
 
