@@ -43,7 +43,8 @@ in `role.toml` so `agent-roles list` can display their maturity.
   `experimental`): mobile app engineering role for iOS, Android, React Native,
   Expo, Flutter, SwiftUI, and Jetpack Compose with mobile UX, platform stack
   guidance, component and asset-library curation, vendored UI/UX Pro Max
-  design intelligence, device QA, performance, and store-readiness skills.
+  design intelligence, virtual-device lab setup/control, device QA,
+  performance, and store-readiness skills.
 - [mother](mother/) (`agentroles.mother`, `preview`): Role creation, research,
   candidate scoring, blueprinting, external source ingestion, and audit role
   for spec compliance, catalog readiness, source-boundary checks,

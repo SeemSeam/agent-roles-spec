@@ -19,6 +19,9 @@ channels.
 | Flutter testing, performance, release docs | official | testing, DevTools, performance, build/release sections | Use Flutter-native quality and release checks for Flutter apps. |
 | React Native docs | official | testing, debugging, performance, Android/iOS guides | Use React Native source and device evidence for RN apps. |
 | Expo deployment docs and skills | official | EAS, app stores, updates, metadata, monitoring | Use Expo/EAS checks when the project is Expo. |
+| Android SDK command-line tools | official | `sdkmanager`, `avdmanager`, Android Emulator command-line startup, AVD package structure, and `adb` app install flow | Treat Android virtual-device setup as explicit host mutation with check/plan/apply phases. |
+| Xcode command-line tools and simulator components | official | `xcrun simctl` command-line entrypoint and simulator runtime/component installation guidance | Treat iOS Simulator setup as macOS/Xcode-bound host state, not Role source. |
+| Expo Orbit docs | official | simulator management, EAS build/update launch, local app install support, and reliance on Android SDK or `xcrun` | Use as optional Expo-friendly virtual-device control layer when installed or explicitly approved. |
 
 Source locators:
 
@@ -29,6 +32,40 @@ Source locators:
 - https://reactnative.dev/docs/getting-started
 - https://docs.expo.dev/
 - https://docs.expo.dev/skills/
+- https://developer.android.com/tools/sdkmanager
+- https://developer.android.com/tools/avdmanager
+- https://developer.android.com/studio/run/emulator-commandline
+- https://developer.apple.com/documentation/xcode/xcode-command-line-tool-reference
+- https://developer.apple.com/documentation/xcode/downloading-and-installing-additional-xcode-components
+- https://docs.expo.dev/build/orbit/
+
+## Virtual Device Lab
+
+Use `mobile-virtual-device-lab` when the work requires setting up or operating
+Android emulators, Android Virtual Devices, iOS Simulators, Expo Orbit, or
+stack-native emulator launch flows.
+
+Separate every request into:
+
+- `check`: inspect installed tools, SDK paths, runtimes, AVDs, simulators,
+  connected devices, project build scripts, and environment variables without
+  mutation.
+- `plan`: state exact SDK packages, system images, simulator runtimes, AVD
+  names, app artifacts, environment variables, and commands that would change
+  host state.
+- `apply`: install packages, create devices, boot devices, install apps,
+  launch apps, capture screenshots/logs, erase devices, or clean up state only
+  when explicitly approved.
+
+Boundary rules:
+
+- Android SDK packages, AVD definitions, emulator images, snapshots, logs,
+  and screenshots are host or provider-shared state.
+- Xcode, simulator runtimes, CoreSimulator devices, DerivedData, screenshots,
+  videos, and device logs are host or provider-shared state.
+- Role source may carry instructions, references, and scripts only when they
+  are reviewable; it must not carry installed SDKs, virtual-device data,
+  screenshots, logs, crash dumps, app binaries, signing state, or credentials.
 
 ## Device Quality Matrix
 

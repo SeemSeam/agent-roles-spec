@@ -123,11 +123,11 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 <details>
 <summary><strong>agentroles.mobile_app_engineer</strong> - Mobile App Engineer（移动 App 工程师）</summary>
 
-- **版本**: `0.1.0`
+- **版本**: `0.2.0`
 - **等级**: `experimental`
-- **用途**: 设计、实现、评审并验证生产级移动 App，覆盖 iOS、Android、React Native、Expo、Flutter、SwiftUI 和 Jetpack Compose。
-- **适合场景**: 移动 App brief、平台和技术栈选择、原生体验流程、移动组件系统、图标/动画/素材库选择、模拟器/真机 QA、可访问性、性能，以及 App Store 或 Google Play 发布准备。
-- **包含内容**: 移动 App 工程 memory、聚焦的 mobile skills、内置 UI/UX Pro Max 设计智能、平台与技术栈 references、公开 skill 与素材库目录、质量/发布指引、可复用 prompt、工具说明、host adapter notes 和验证说明。
+- **用途**: 设计、实现、评审、验证并通过虚拟设备测试生产级移动 App，覆盖 iOS、Android、React Native、Expo、Flutter、SwiftUI 和 Jetpack Compose。
+- **适合场景**: 移动 App brief、平台和技术栈选择、原生体验流程、移动组件系统、图标/动画/素材库选择、Android Emulator 与 iOS Simulator 安装/控制计划、模拟器/真机 QA、可访问性、性能，以及 App Store 或 Google Play 发布准备。
+- **包含内容**: 移动 App 工程 memory、聚焦的 mobile skills、内置 UI/UX Pro Max 设计智能、虚拟设备 lab workflow、平台与技术栈 references、公开 skill 与素材库目录、质量/发布指引、可复用 prompt、工具说明、host adapter notes 和验证说明。
 - **Adapters**: CCB、Claude Code、Codex、HIVE。
 - **添加**: `agent-roles add mobile`
 - **更新**: `agent-roles update mobile`

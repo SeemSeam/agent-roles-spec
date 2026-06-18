@@ -28,18 +28,21 @@ def test_mobile_app_engineer_role_loads_with_expected_inventory() -> None:
 
     assert role.id == "agentroles.mobile_app_engineer"
     assert role.name == "Mobile App Engineer"
-    assert role.version == "0.1.0"
+    assert role.version == "0.2.0"
     assert role.catalog_level == "experimental"
     assert "React Native" in role.description
     assert "Flutter" in role.description
+    assert "emulator/simulator labs" in role.description
 
     identity = role.table("identity")
     assert identity["interaction_mode"] == "interactive"
     assert identity["initiates_actions"] is False
     assert "production mobile apps" in identity["purpose"]
     assert any("asset" in item.lower() for item in identity["responsibilities"])
+    assert any("simulators and Android emulators" in item for item in identity["responsibilities"])
     assert any("App Store" in item for item in identity["responsibilities"])
     assert any("signing keys" in item for item in identity["non_goals"])
+    assert any("global SDK state" in item for item in identity["non_goals"])
 
     contents = role.table("contents")
     assert contents["memory"] == ["memory.md"]
@@ -49,6 +52,7 @@ def test_mobile_app_engineer_role_loads_with_expected_inventory() -> None:
         "skills/mobile-ux-flow",
         "skills/mobile-stack-patterns",
         "skills/mobile-component-system",
+        "skills/mobile-virtual-device-lab",
         "skills/mobile-device-quality",
         "skills/mobile-release-readiness",
         "skills/mobile-library-curation",
@@ -85,6 +89,7 @@ def test_mobile_app_engineer_role_loads_with_expected_inventory() -> None:
         "skills/mobile-ux-flow/SKILL.md",
         "skills/mobile-stack-patterns/SKILL.md",
         "skills/mobile-component-system/SKILL.md",
+        "skills/mobile-virtual-device-lab/SKILL.md",
         "skills/mobile-device-quality/SKILL.md",
         "skills/mobile-release-readiness/SKILL.md",
         "skills/mobile-library-curation/SKILL.md",
@@ -112,8 +117,14 @@ def test_mobile_app_engineer_memory_and_references_capture_design() -> None:
     assert "senior mobile app engineer" in memory
     assert "device-evidence driven" in memory
     assert "React Native, Expo, Flutter, SwiftUI, and Jetpack Compose" in memory
+    assert "mobile-virtual-device-lab" in memory
     assert "App Store" in quality
     assert "Google Play" in quality
+    assert "Virtual Device Lab" in quality
+    assert "sdkmanager" in quality
+    assert "avdmanager" in quality
+    assert "xcrun simctl" in quality
+    assert "Expo Orbit" in quality
     assert "Expo Skills" in library
     assert "UI/UX Pro Max" in library
     assert "Callstack React Native Best Practices" in library
@@ -165,7 +176,7 @@ def test_mobile_app_engineer_installs_and_aliases_resolve_from_catalog(
     install = _run_json(["install", "mobile"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
     assert install["role_id"] == "agentroles.mobile_app_engineer"
-    assert install["version"] == "0.1.0"
+    assert install["version"] == "0.2.0"
     assert install["catalog_level"] == "experimental"
 
     resolved = _run_json(["resolve", "app-engineer"], tmp_path, monkeypatch, capsys)
@@ -183,7 +194,7 @@ def test_mobile_app_engineer_list_discovers_role_from_clean_store(
 
     assert "agentroles.mobile_app_engineer" in rows
     row = rows["agentroles.mobile_app_engineer"]
-    assert row["version"] == "0.1.0"
+    assert row["version"] == "0.2.0"
     assert row["catalog_level"] == "experimental"
     assert row["status"] == "available"
     assert row["update_reason"] == "not_installed"

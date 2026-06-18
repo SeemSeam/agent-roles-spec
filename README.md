@@ -124,11 +124,11 @@ through `agent-roles` and may expose host-specific adapters.
 <details>
 <summary><strong>agentroles.mobile_app_engineer</strong> - Mobile App Engineer</summary>
 
-- **Version**: `0.1.0`
+- **Version**: `0.2.0`
 - **Level**: `experimental`
-- **Purpose**: Designs, implements, reviews, and validates production mobile apps across iOS, Android, React Native, Expo, Flutter, SwiftUI, and Jetpack Compose.
-- **Best for**: mobile app briefs, platform and stack selection, native-feeling flows, mobile component systems, icon/animation/material library curation, simulator/device QA, accessibility, performance, and App Store or Google Play readiness.
-- **Contents**: Mobile app engineering memory, focused mobile skills, vendored UI/UX Pro Max design intelligence, platform and stack references, public skill and asset-library catalog, quality/release guidance, reusable prompt, tool notes, host adapter notes, and validation notes.
+- **Purpose**: Designs, implements, reviews, validates, and virtual-device-tests production mobile apps across iOS, Android, React Native, Expo, Flutter, SwiftUI, and Jetpack Compose.
+- **Best for**: mobile app briefs, platform and stack selection, native-feeling flows, mobile component systems, icon/animation/material library curation, Android Emulator and iOS Simulator setup/control plans, simulator/device QA, accessibility, performance, and App Store or Google Play readiness.
+- **Contents**: Mobile app engineering memory, focused mobile skills, vendored UI/UX Pro Max design intelligence, virtual-device lab workflow, platform and stack references, public skill and asset-library catalog, quality/release guidance, reusable prompt, tool notes, host adapter notes, and validation notes.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
 - **Add**: `agent-roles add mobile`
 - **Update**: `agent-roles update mobile`

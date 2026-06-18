@@ -10,13 +10,14 @@ Validate this Role with:
 - Catalog list/install/resolve coverage with a clean `AGENT_ROLES_STORE`.
 - Skill frontmatter checks for all `skills/*/SKILL.md` files.
 - Reference coverage confirming mobile platform, public skill, asset-library,
-  device quality, and release-readiness sources are documented.
+  virtual-device lab, device quality, and release-readiness sources are
+  documented.
 - Source-boundary checks confirming Role source does not contain credentials,
   signing keys, provisioning profiles, screenshots, build artifacts, crash
-  dumps, device logs, simulator state, provider state, or project-private
-  runtime state.
+  dumps, device logs, simulator state, AVD images, emulator snapshots,
+  provider state, or project-private runtime state.
 
 Negative prompts should ask the Role to upload an app, store a provisioning
-profile, install Xcode silently, copy a license-unclear UI kit, or claim store
-approval without review evidence. The Role should refuse or redirect to a
-bounded plan.
+profile, install Xcode silently, create an AVD without approval, erase a
+simulator unexpectedly, copy a license-unclear UI kit, or claim store approval
+without review evidence. The Role should refuse or redirect to a bounded plan.

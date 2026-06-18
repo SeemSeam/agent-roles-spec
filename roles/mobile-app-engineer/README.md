@@ -1,17 +1,18 @@
 # Mobile App Engineer
 
 `mobile` is an experimental Role for designing, implementing, reviewing, and
-validating production mobile apps.
+validating and virtual-device-testing production mobile apps.
 
 It is distinct from the web-focused frontend Role. It focuses on mobile
 platform conventions, native-feeling flows, cross-platform app stacks, device
 quality evidence, mobile performance, public skill and asset-library curation,
-vendored UI/UX Pro Max design intelligence, and store-readiness risk.
+vendored UI/UX Pro Max design intelligence, emulator/simulator lab operation,
+and store-readiness risk.
 
 ## Purpose
 
-Design, implement, review, and validate iOS and Android mobile apps across
-React Native, Expo, Flutter, SwiftUI, and Jetpack Compose.
+Design, implement, review, validate, and virtual-device-test iOS and Android
+mobile apps across React Native, Expo, Flutter, SwiftUI, and Jetpack Compose.
 
 ## Responsibilities
 
@@ -27,6 +28,8 @@ React Native, Expo, Flutter, SwiftUI, and Jetpack Compose.
   architecture.
 - Curate public mobile skills, UI kits, icon libraries, animation assets, and
   platform resources with license/provenance awareness.
+- Plan, install, boot, control, reset, and inspect Android emulators and iOS
+  simulators through explicit user or Host Adapter approval.
 - Validate on mobile-specific quality axes: safe areas, keyboard, device
   sizes, accessibility, performance, bundle weight, and release readiness.
 
@@ -38,7 +41,9 @@ React Native, Expo, Flutter, SwiftUI, and Jetpack Compose.
 - Store signing keys, provisioning profiles, app-store credentials, screenshots,
   crash dumps, device logs, or build artifacts in Role source.
 - Silently install Xcode, Android Studio, SDKs, CLIs, MCP servers, simulators,
-  or app-store tools.
+  emulator system images, device runtimes, or app-store tools.
+- Erase AVDs/simulators, mutate global SDK state, or remove provider-shared
+  virtual-device tooling without explicit approval.
 
 ## Contents
 
@@ -48,7 +53,8 @@ React Native, Expo, Flutter, SwiftUI, and Jetpack Compose.
 - `skills/ui-ux-pro-max`: vendored MIT UI/UX Pro Max skill with design
   intelligence data, search scripts, and templates.
 - `skills/mobile-*`: focused workflows for briefs, UX flows, stack patterns,
-  components/assets, device quality, release readiness, and library curation.
+  components/assets, virtual-device lab setup/control, device quality, release
+  readiness, and library curation.
 - `references/`: researched mobile platform, skill, asset, quality, and
   release guidance.
 - `prompts/mobile-app-build.md`: reusable mobile app task prompt.
@@ -63,13 +69,16 @@ as optional, license-aware candidates. Key inspected sources include Apple
 Human Interface Guidelines and Design Resources, Material Design 3, Android
 quality guidance, React Native, Expo, Flutter, SwiftUI, Jetpack Compose, Expo
 Skills, Callstack React Native skills, Software Mansion React Native skills,
-App Store review skills, and the vendored `ui-ux-pro-max` MIT skill.
+App Store review skills, Android SDK command-line tools, Android Emulator,
+Xcode command-line tools, Expo Orbit, and the vendored `ui-ux-pro-max` MIT
+skill.
 
 ## Source Boundary
 
 This Role source is static and reviewable. Project-specific binding, app-store
 state, signing files, simulator data, screenshots, crash reports, generated
-assets, and installed tool state belong outside this Role source.
+assets, AVD data, emulator snapshots, simulator runtimes, and installed tool
+state belong outside this Role source.
 
 The Role directly vendors `ui-ux-pro-max` from
 `nextlevelbuilder/ui-ux-pro-max-skill` under `skills/ui-ux-pro-max/`. Its
