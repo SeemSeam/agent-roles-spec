@@ -151,6 +151,36 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 
 </details>
 
+<details>
+<summary><strong>agentroles.mobile_app_engineer</strong> - Mobile App Engineer（移动 App 工程师）</summary>
+
+- **版本**: `0.1.0`
+- **等级**: `experimental`
+- **用途**: 设计、实现、评审并验证生产级移动 App，覆盖 iOS、Android、React Native、Expo、Flutter、SwiftUI 和 Jetpack Compose。
+- **适合场景**: 移动 App brief、平台和技术栈选择、原生体验流程、移动组件系统、图标/动画/素材库选择、模拟器/真机 QA、可访问性、性能，以及 App Store 或 Google Play 发布准备。
+- **包含内容**: 移动 App 工程 memory、聚焦的 mobile skills、平台与技术栈 references、公开 skill 与素材库目录、质量/发布指引、可复用 prompt、工具说明、host adapter notes 和验证说明。
+- **Adapters**: CCB、Claude Code、Codex、HIVE。
+- **添加**: `agent-roles add mobile`
+- **更新**: `agent-roles update mobile`
+- **源码**: [`roles/mobile-app-engineer`](../../roles/mobile-app-engineer/)
+
+</details>
+
+<details>
+<summary><strong>agentroles.su_ccb</strong> - SU-CCB Workflow Operator（SU-CCB 工作流编排）</summary>
+
+- **版本**: `0.1.0`
+- **等级**: `preview`
+- **用途**: 将 SU-CCB 的 Claude 协调者工作流和 Codex 执行 skills 封装为一个 Role。
+- **适合场景**: 需要在 Claude 与 Codex 之间推进需求分析、技术设计、任务拆分、派工、执行回执、审查门、归档、状态恢复和 reconcile 的 SU-CCB 项目。
+- **包含内容**: Claude 侧协调 skills、Codex 侧执行/文档 skills、运行时 helper library、SU-CCB kernel references、项目模板、Claude plugin metadata、验证说明和 host adapter notes。
+- **Adapters**: CCB、Claude Code、Codex。
+- **添加**: `agent-roles add su-ccb`
+- **更新**: `agent-roles update su-ccb`
+- **源码**: [`roles/su-ccb`](../../roles/su-ccb/)
+
+</details>
+
 ---
 
 ## 包管理器预览

@@ -1,0 +1,194 @@
+version: v1.0
+policies:
+  - policy_id: reconcile.apply:reconcile_drift_repaired:subtask
+    capability_id: reconcile.apply
+    outcome_type: reconcile_drift_repaired
+    subject_type: subtask
+    write_target: dev_task
+    state_effects:
+      current_node: set_from_input_optional
+      status: set_from_input_optional
+      node_substate: set_from_input_optional
+      blocked_reason: set_from_input_optional
+    evidence_required:
+      mode: all
+      items:
+        - kind: A
+          source: event_journal
+          check_id: journal_event_exists
+    must_ask_refs: []
+    guards:
+      - no_self_referential_event
+      - no_unclosed_outcome_dependency
+
+  - policy_id: reconcile.apply:reconcile_quick_archive:subtask
+    capability_id: reconcile.apply
+    outcome_type: reconcile_quick_archive
+    subject_type: subtask
+    write_target: dev_task
+    state_effects:
+      status: set:done
+      current_node: set:archive
+      node_substate: set:archived
+      review_status: set:passed
+    evidence_required:
+      mode: all
+      items:
+        - kind: C
+          source: reconcile_report
+          check_id: hash_matches
+    must_ask_refs: []
+    guards:
+      - no_self_referential_event
+
+  - policy_id: archive.quick_review:review_passed:subtask
+    capability_id: archive.quick_review
+    outcome_type: review_passed
+    subject_type: subtask
+    write_target: dev_task
+    state_effects:
+      current_node: set:review
+      status: set:reviewing
+      node_substate: set:reviewed
+      review_status: set:passed
+    evidence_required:
+      mode: all
+      items:
+        - kind: C
+          source: file
+          check_id: file_exists
+    must_ask_refs: []
+    guards:
+      - no_self_referential_event
+
+  - policy_id: archive.quick_archive:archived:subtask
+    capability_id: archive.quick_archive
+    outcome_type: archived
+    subject_type: subtask
+    write_target: dev_task
+    state_effects:
+      status: set:done
+      current_node: set:archive
+      node_substate: set:archived
+      review_status: set:passed
+    evidence_required:
+      mode: all
+      items:
+        - kind: C
+          source: file
+          check_id: file_exists
+    must_ask_refs: []
+    guards:
+      - no_self_referential_event
+
+  - policy_id: requirement.cancel:cancelled:requirement
+    capability_id: requirement.cancel
+    outcome_type: cancelled
+    subject_type: requirement
+    write_target: requirement_md
+    state_effects:
+      status: set:cancelled
+    evidence_required:
+      mode: all
+      items:
+        - kind: A
+          source: file
+          check_id: file_exists
+    must_ask_refs: [must_ask_9]
+    guards:
+      - no_self_referential_event
+      - requirement_cancel_terminal_protection
+
+  - policy_id: requirement.defer:deferred:requirement
+    capability_id: requirement.defer
+    outcome_type: deferred
+    subject_type: requirement
+    write_target: requirement_md
+    state_effects:
+      status: set:deferred
+    evidence_required:
+      mode: all
+      items:
+        - kind: A
+          source: file
+          check_id: file_exists
+    must_ask_refs: [must_ask_9]
+    guards:
+      - no_self_referential_event
+      - requirement_defer_terminal_protection
+
+  - policy_id: subtask.cancel:cancelled:subtask
+    capability_id: subtask.cancel
+    outcome_type: cancelled
+    subject_type: subtask
+    write_target: dev_task
+    state_effects:
+      status: set:cancelled
+    evidence_required:
+      mode: all
+      items:
+        - kind: A
+          source: file
+          check_id: file_exists
+    must_ask_refs: [must_ask_9]
+    guards:
+      - no_self_referential_event
+      - subtask_cancel_terminal_protection
+
+  - policy_id: requirement.finalize:delivered:requirement
+    capability_id: requirement.finalize
+    outcome_type: delivered
+    subject_type: requirement
+    write_target: requirement_md
+    state_effects:
+      status: set:delivered
+    evidence_required:
+      mode: any
+      items:
+        - kind: C
+          source: dev_task_scope
+          check_id: dev_task_scope_terminal
+        - kind: C
+          source: dev_task_requirement
+          check_id: dev_task_requirement_terminal
+    must_ask_refs: []
+    guards:
+      - no_self_referential_event
+      - requirement_finalize_expected_hash
+      - requirement_not_cancelled_or_deferred
+
+  - policy_id: requirement.promote:planning:requirement
+    capability_id: requirement.promote
+    outcome_type: planning
+    subject_type: requirement
+    write_target: requirement_md
+    state_effects:
+      status: set:planning
+    evidence_required:
+      mode: all
+      items:
+        - kind: A
+          source: requirement_md
+          check_id: hash_matches
+    must_ask_refs: []
+    guards:
+      - no_self_referential_event
+      - requirement_promote_forward_only
+
+  - policy_id: requirement.promote:delivering:requirement
+    capability_id: requirement.promote
+    outcome_type: delivering
+    subject_type: requirement
+    write_target: requirement_md
+    state_effects:
+      status: set:delivering
+    evidence_required:
+      mode: all
+      items:
+        - kind: A
+          source: event_journal
+          check_id: journal_event_exists
+    must_ask_refs: []
+    guards:
+      - no_self_referential_event
+      - requirement_promote_delivering_forward_only

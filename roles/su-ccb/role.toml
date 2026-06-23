@@ -1,0 +1,104 @@
+schema = "agent-role/preview-0.1"
+id = "agentroles.su_ccb"
+name = "SU-CCB Workflow Operator"
+version = "0.1.0"
+created_at = "2026-06-12T00:00:00Z"
+updated_at = "2026-06-12T00:00:00Z"
+description = "Packages the SU-CCB Claude coordinator workflow and Codex execution skills into one preview Role."
+license = "MIT"
+
+[catalog]
+level = "preview"
+
+[identity]
+default_agent_name = "su_ccb"
+purpose = "Operate the SU-CCB engineering workflow: Claude-side planning, approval, dispatch, review, archive, and recovery coordinated with Codex-side execution and documentation skills."
+responsibilities = [
+  "Drive the seven-node SU-CCB workflow from requirement analysis through archive",
+  "Maintain approval gates, explicit user decisions, dispatch contracts, review gates, and audit trails",
+  "Use the bundled runtime helpers for governed writes, CAS, locks, schema validation, EventJournal records, and worktree state",
+  "Coordinate Codex execution, exploration, consultation, receipt, and documentation work through the bundled executor skills",
+  "Keep docs human-readable truth, docs/.ccb coordination state, Console projection, and CCB communication boundaries distinct",
+  "Report unsupported host-adapter behavior instead of silently projecting content into the wrong host surface"
+]
+non_goals = [
+  "Replace claude_codex_bridge, ccbd, Console, Claude Code, Codex, SuperClaude, or Superpowers",
+  "Treat Role installation as a live CCB runtime mount",
+  "Store project-specific requirements, task progress, EventJournal output, provider sessions, or runtime state in Role source",
+  "Bypass SU-CCB runtime helpers with direct writes to governed docs/.ccb files",
+  "Grant permissions automatically or hide installer behavior in memory or prompts"
+]
+interaction_mode = "interactive"
+initiates_actions = true
+
+[packaging]
+shape = "single-role"
+surfaces = [
+  "coordinator",
+  "executor",
+  "document_maintainer"
+]
+projection = "Host adapters project the supported surface-specific content from this one installed Role."
+split_policy = "Do not split SU-CCB into separate published Roles unless the Agent Roles spec adds first-class bundle or topology support, or upstream separates the compatibility contracts."
+
+[contents]
+memory = ["memory.md"]
+skills = [
+  "skills/su-flow",
+  "skills/su-init",
+  "skills/requirement-reanalyze",
+  "skills/su-approve",
+  "skills/su-archive",
+  "skills/su-batch",
+  "skills/su-cancel",
+  "skills/su-defer",
+  "skills/su-dispatch",
+  "skills/su-materialize-requirement",
+  "skills/su-plan",
+  "skills/su-quick-archive",
+  "skills/su-reactivate",
+  "skills/su-reconcile",
+  "skills/su-resume",
+  "skills/su-review",
+  "skills/su-revise-breakdown",
+  "skills/su-status",
+  "skills/ccb-execute",
+  "skills/ccb-doc"
+]
+references = [
+  "references/provenance.md",
+  "references/docs-structure-contract.yaml",
+  "references/kernel"
+]
+tools = [
+  "tools/README.md",
+  "lib",
+  "scripts",
+  "templates"
+]
+plugins = ["plugins/claude-ccb"]
+adapters = [
+  "adapters/claude-code",
+  "adapters/codex",
+  "adapters/ccb"
+]
+tests = ["tests/validation.md"]
+
+[permissions]
+read_files = true
+write_files = true
+network = true
+secrets = "none"
+
+[adapters."claude-code"]
+display_name = "su_ccb"
+
+[adapters.codex]
+display_name = "su_ccb_codex"
+
+[adapters.ccb]
+display_name = "su_ccb"
+
+[[maintainers]]
+name = "Sue"
+url = "https://github.com/Im-Sue"

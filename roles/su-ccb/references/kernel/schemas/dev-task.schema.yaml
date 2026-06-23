@@ -1,0 +1,78 @@
+# Runtime checks are implemented in lib/runtime/schema-validate.mjs and
+# lib/subtask/business-rules.mjs. This schema validates the human-readable
+# dev_task document that is the Task/SubTask truth source under docs/03_开发计划/.
+schema_name: dev-task
+kind: dev_task_markdown
+version: 1
+description: >
+  Canonical dev_task markdown artifact created by /ccb:su-materialize-requirement.
+
+root:
+  type: markdown_with_frontmatter
+  required_frontmatter:
+    - doc_type
+    - task_id
+    - title
+    - status
+    - current_node
+    - node_substate
+    - priority
+    - requirement_id
+    - section_id
+    - order
+    - implementation_owner
+    - dependencies
+    - source_breakdown_draft
+    - source_draft_hash
+    - created_at
+
+fields:
+  doc_type:
+    type: literal
+    value: dev_task
+  task_id:
+    type: non_empty_string
+  title:
+    type: non_empty_string
+  status:
+    type: enum
+    values: [reviewing, done, cancelled]
+  current_node:
+    type: enum
+    values: [requirement_analysis, technical_design, task_breakdown, dispatch, implementation, review, archive]
+  node_substate:
+    type: non_empty_string
+  review_status:
+    type: enum
+    values: [passed, failed, needs_followup, design_conflict, requirement_conflict, task_breakdown]
+    optional: true
+  priority:
+    type: enum
+    values: [high, medium, low]
+  requirement_id:
+    type: non_empty_string
+  section_id:
+    type: regex
+    pattern: '^pr\d+-[a-z0-9-]+$'
+  order:
+    type: positive_integer
+  implementation_owner:
+    type: enum
+    values: [claude, ccb_codex]
+  dependencies:
+    type: array_of_task_id
+    note: stored as YAML inline list text for Console frontmatter parser compatibility
+  source_breakdown_draft:
+    type: relative_path
+  source_draft_hash:
+    type: sha256_hex
+  created_at:
+    type: iso8601_datetime
+  code_workspace:
+    type: object
+    optional: true
+    required_keys: [path, branch]
+    allowed_keys: [path, branch, target_branch, base_sha]
+    non_empty_string_keys: [path, branch, target_branch, base_sha]
+body:
+  type: markdown_min_50_chars_with_heading_or_list

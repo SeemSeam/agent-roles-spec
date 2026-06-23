@@ -1,0 +1,716 @@
+# =============================================================================
+# CCB Capabilities · global.yaml
+# =============================================================================
+# Canonical layer: global
+# Status: frozen (v0.3.2 baseline)
+# Authority: 7 节点必需 capability 的初始定义
+# Active capability registry. The legacy capability registry schema has been retired.
+# Override path:
+#   - User: ~/.ccb/capabilities.user.yaml （仅可 override provider_bindings 顺序）
+# =============================================================================
+
+schema_version: capability-registry-v0.3.2
+layer: global
+last_updated: 2026-04-20
+
+capabilities:
+
+  # ===========================================================================
+  # State 类
+  # ===========================================================================
+
+  - capability_id: state.read_write
+    display_name: 任务状态读写
+    category: state
+    criticality: governance_critical
+    description: 通过 primitive_executor wrapper 读写 task_state / batch_state
+    required_artifacts:
+      all_of: [task.task_id]
+    output_contract:
+      produces: [task.revision]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: kernel_native
+          provider: ccb-kernel
+          entrypoint: primitive_executor.run
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: [interactive-single, autonomous-batch]
+
+  # ===========================================================================
+  # Analysis 类
+  # ===========================================================================
+
+  - capability_id: analysis.scope
+    display_name: 任务范围与影响评估
+    category: analysis
+    criticality: governance_critical
+    description: 评估任务复杂度、影响面、红旗（assess_task_scope primitive）
+    required_artifacts:
+      all_of: [task.description]
+      any_of: [project.context, project.index]
+    output_contract:
+      produces:
+        - task.scope_assessment.complexity
+        - task.scope_assessment.impact
+        - task.scope_assessment.red_flags
+      evidence_fields:
+        - task.scope_assessment.evidence
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_scope
+          provider: claude_native
+          entrypoint: primitive:assess_task_scope
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: [autonomous-batch]
+
+  - capability_id: analysis.decision_shape
+    display_name: 决策形态语义分类
+    category: analysis
+    criticality: governance_critical
+    description: |
+      判定任务是否多方案、是否需要 consult、是否需要 user decision。
+      F7 语义：U1/U4/U6 属于真实用户权威，必须 needs_user_decision=true；
+      U2/U3/U5 只有在 engineering-decidable 5-of-5 证据通过时，才可设
+      needs_user_decision=false 并转 record_decision_provenance。
+    required_artifacts:
+      all_of: [task.description, task.scope_assessment]
+    optional_artifacts: [task.spec_draft]
+    output_contract:
+      produces:
+        - task.decision_shape.multi_options
+        - task.decision_shape.option_count
+        - task.decision_shape.needs_consult
+        - task.decision_shape.needs_user_decision
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_decision_shape
+          provider: claude_native
+          entrypoint: primitive:assess_decision_shape
+          role: primary
+        - binding_id: codex_decision_shape_consult
+          provider: codex
+          entrypoint: ccb-execute
+          mode: consult
+          role: fallback
+          arguments_template:
+            layer: decision_shape_classification
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: [autonomous-batch]
+
+  - capability_id: analysis.consult
+    display_name: 独立专家协商（Codex consult）
+    category: analysis
+    criticality: governance_critical
+    description: |
+      Codex 以 consult 模式独立分析。多方案设计 / 高影响红旗任务必须先 consult。
+      governance_critical：缺失必 escalate。
+      F7 engineering_decidability consult 必须输出 touchpoint、evidence、
+      reversibility、scope、tests、canonical_consistency 五维判断。
+    required_artifacts:
+      all_of: [task.description, task.scope_assessment]
+      any_of: [task.spec_draft, task.requirement_doc_path]
+    optional_artifacts: [project.context]
+    output_contract:
+      produces:
+        - task.consult_records[]
+        - task.open_red_flags[]
+      evidence_fields:
+        - task.consult_records[*].round
+        - task.consult_records[*].stop_reason
+        - task.consult_records[*].codex_reply.recommendation
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: codex_consult
+          provider: codex
+          entrypoint: ccb-execute
+          mode: consult
+          role: primary
+          timeout_seconds: 1800
+          arguments_template:
+            supported_layers:
+              - requirement
+              - design
+              - breakdown
+              - review
+              - engineering_decidability
+            engineering_decidability:
+              layer: engineering_decidability
+              required_fields: [touchpoint, evidence_list, reversibility_class, scope, tests_ref, canonical_consistency]
+        - binding_id: superclaude_spec_panel
+          provider: superclaude
+          entrypoint: /sc:spec-panel
+          role: advisory
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: [autonomous-batch]
+
+  - capability_id: analysis.brainstorm
+    display_name: 发散性头脑风暴
+    category: ideation
+    criticality: advisory
+    description: 用于需求模糊 / 目标冲突 / 范围未拆解时的发散思维
+    required_artifacts:
+      all_of: [task.description]
+    optional_artifacts: [task.scope_assessment]
+    output_contract:
+      produces: [task.idea_set]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: superclaude_brainstorm
+          provider: superclaude
+          entrypoint: /sc:brainstorm
+          role: primary
+        - binding_id: claude_native_brainstorm
+          provider: claude_native
+          entrypoint: inline_reasoning
+          role: fallback
+    degradation:
+      default_action: baseline
+      allowed_fallbacks: [claude_native_brainstorm]
+      forbidden_policies: []
+
+  - capability_id: analysis.deep_design
+    display_name: 深度架构设计分析
+    category: analysis
+    criticality: advisory
+    description: 架构边界 / 模块拆分 / 接口设计的深度推理
+    required_artifacts:
+      all_of: [task.scope_assessment, task.requirement_doc_path]
+    output_contract:
+      produces: [task.design_analysis]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: superclaude_design
+          provider: superclaude
+          entrypoint: /sc:design
+          role: primary
+        - binding_id: claude_native_design
+          provider: claude_native
+          entrypoint: inline_reasoning
+          role: fallback
+    degradation:
+      default_action: baseline
+      allowed_fallbacks: [claude_native_design]
+      forbidden_policies: []
+
+  # ===========================================================================
+  # Artifact 类
+  # ===========================================================================
+
+  - capability_id: artifact.requirement_summary
+    display_name: 需求摘要产出
+    category: artifact
+    criticality: execution_critical
+    description: |
+      产出需求摘要。
+      simple 任务：inline 到 task.requirement_summary（string 字段）。
+      moderate / complex 任务：写文件到 docs/02_需求设计/<task>.md，路径存 task.requirement_doc_path。
+    required_artifacts:
+      all_of: [task.scope_assessment]
+    output_contract:
+      produces:
+        # simple 任务产 task.requirement_summary；moderate/complex 产 task.requirement_doc_path。
+        # 两者互斥，任一满足即视为 capability 产出成功。
+        any_of:
+          - task.requirement_summary
+          - task.requirement_doc_path
+      evidence_fields: []
+      branch_rules:
+        - when: 'task.scope_assessment.complexity == "simple"'
+          produces: [task.requirement_summary]
+        - when: 'task.scope_assessment.complexity in ["moderate", "complex"]'
+          produces: [task.requirement_doc_path]
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_requirement_summary
+          provider: claude_native
+          entrypoint: primitive:write_requirement_doc
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: artifact.design_doc
+    display_name: 技术设计文档产出
+    category: artifact
+    criticality: execution_critical
+    description: 中等以上任务产出 docs/03_开发计划/<task>-技术设计.md
+    required_artifacts:
+      all_of: [task.scope_assessment, task.consult_records]
+    output_contract:
+      produces: [task.design_doc_path]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_design_doc
+          provider: claude_native
+          entrypoint: primitive:write_design_doc
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: artifact.spec
+    display_name: 精简 spec 产出
+    category: artifact
+    criticality: execution_critical
+    description: 产出经目录契约定位的 dev_task / 精简派工文档（docs/03_开发计划/<task>-开发任务.md）
+    required_artifacts:
+      all_of: [task.scope_assessment, task.decision_shape]
+    output_contract:
+      produces: [task.spec_path]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_spec
+          provider: claude_native
+          entrypoint: primitive:write_spec
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: artifact.adr
+    display_name: ADR 决策文档产出
+    category: artifact
+    criticality: advisory
+    description: 高影响决策时产出 docs/06_决策记录/ADR-NNNN-<slug>.md
+    required_artifacts:
+      all_of: [task.decision_refs]
+    output_contract:
+      produces: [task.adr_path]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_adr
+          provider: claude_native
+          entrypoint: primitive:write_adr
+          role: primary
+    degradation:
+      default_action: skip_with_provenance
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  # ===========================================================================
+  # Gate 类
+  # ===========================================================================
+
+  - capability_id: gate.user_confirmation
+    display_name: 用户审批门
+    category: gate
+    criticality: governance_critical
+    description: |
+      🔴 必审门或 🟡 可审门。autonomous-batch 模式下被降级时自动跳过；
+      非降级状态下缺失必 escalate。
+    required_artifacts:
+      all_of: [task.task_id]
+    output_contract:
+      produces: ["task.approval_records[]"]
+      evidence_fields:
+        - task.approval_records[*].gate_id
+        - task.approval_records[*].actor
+        - task.approval_records[*].timestamp
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_approval
+          provider: claude_native
+          entrypoint: primitive:ask_user_approval
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: gate.user_decision
+    display_name: 用户决策仲裁
+    category: gate
+    criticality: governance_critical
+    description: |
+      高影响决策时由用户拍板。autonomous-batch 模式下原语会被
+      pre_ask_user_decision_not_autonomous 拦截，必须改走 escalate_to_human。
+      F7：U2/U3/U5 若满足 engineering-decidable 5-of-5，应走 consult +
+      governance.decision_record，不应调用本 capability。
+    required_artifacts:
+      all_of: [task.task_id, task.decision_shape]
+    output_contract:
+      produces: ["batch_state.decision_records[]"]
+      evidence_fields:
+        - batch_state.decision_records[*].id
+        - batch_state.decision_records[*].decided_by
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_decision
+          provider: claude_native
+          entrypoint: primitive:ask_user_decision
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: [autonomous-batch]
+
+  # ===========================================================================
+  # Governance 类
+  # ===========================================================================
+
+  - capability_id: governance.decision_record
+    display_name: 决策证据记录
+    category: governance
+    criticality: governance_critical
+    description: |
+      唯一的决策写入入口。consult_codex / ask_user_decision 必须通过此 capability
+      写 batch_state.decision_records，task 只保留 ref。
+      F7：U2/U3/U5 的 engineering-decidable 结论必须在 decision_records[].why
+      包含结构化 evidence block，并在 task.engineering_decidable_decisions 追加
+      对应 evidence ledger；decision_ref 必须指向 batch_state.decision_records[].id。
+    required_artifacts:
+      all_of: [task.task_id]
+      any_of: [task.consult_records, task.approval_records]
+    output_contract:
+      produces:
+        - batch_state.decision_records[]
+        - task.decision_refs[]
+        - task.engineering_decidable_decisions[]
+      evidence_fields:
+        - batch_state.decision_records[*].why
+        - batch_state.decision_records[*].refs
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_provenance
+          provider: claude_native
+          entrypoint: primitive:record_decision_provenance
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: [interactive-single, autonomous-batch]
+
+  - capability_id: governance.escalation
+    display_name: 升级用户仲裁
+    category: governance
+    criticality: governance_critical
+    description: |
+      非可覆盖升级 / loop budget 耗尽 / hard_max_rounds 失败时使用。
+      不走 AskUserQuestion 工具，避免被 hook_block_askuser_in_autonomous 误伤。
+      F7：escalation_reason 为 U1/U4/U6 可直接升级；U2/U3/U5 只有在
+      5-of-5 evidence 缺失或失败时才能升级，证据已通过时必须本地 DENY 并走
+      engineering-decidable 决策记录。
+    required_artifacts:
+      all_of: [task.task_id]
+    output_contract:
+      produces:
+        - batch_state.escalations[]
+        - task.runtime_state (= 'escalated')
+      evidence_fields:
+        - batch_state.escalations[*].reason_class
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_escalation
+          provider: claude_native
+          entrypoint: primitive:escalate_to_human
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: [interactive-single, autonomous-batch]
+
+  - capability_id: governance.red_flag_resolution
+    display_name: Red flag 显式关闭
+    category: governance
+    criticality: governance_critical
+    description: |
+      关闭 consult 注入的 red_flags（dispatch_to_codex 前置要求）。
+      v0.3.1 §10.1 修复 dispatch 死锁问题。
+    required_artifacts:
+      all_of: [task.open_red_flags]
+    output_contract:
+      produces: ["task.open_red_flags[*].status (= resolved_*)"]
+      evidence_fields:
+        - task.open_red_flags[*].resolved_by
+        - task.open_red_flags[*].resolution_type
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_resolve
+          provider: claude_native
+          entrypoint: primitive:resolve_red_flag
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  # ===========================================================================
+  # Execution 类
+  # ===========================================================================
+
+  - capability_id: execution.dispatch
+    display_name: 派工到 Codex
+    category: execution
+    criticality: execution_critical
+    description: ccb ask [--task-id <id>] <agent> 派工，--task-id 用作幂等键
+    required_artifacts:
+      all_of: [task.spec_path, task.spec_hash]
+    output_contract:
+      produces:
+        - task.runtime_state (= waiting_codex)
+        - batch_state.idempotency_log.dispatch[]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: codex_dispatch
+          provider: codex
+          entrypoint: primitive:dispatch_to_codex
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: execution.review
+    display_name: Codex 回执审查
+    category: execution
+    criticality: execution_critical
+    description: 审查 codex 回执，符合性 / 边界 / 决策检查
+    required_artifacts:
+      all_of: [task.task_id]
+      any_of: [codex.receipt]
+    output_contract:
+      produces:
+        - task.review_status
+        - batch_state.idempotency_log.review[]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_review
+          provider: claude_native
+          entrypoint: primitive:review_codex_receipt
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: execution.verification
+    display_name: 构建与测试验证
+    category: execution
+    criticality: execution_critical
+    description: 通过 /sc:build / /sc:test 跑构建与测试
+    required_artifacts:
+      all_of: [task.task_id]
+    output_contract:
+      produces: [task.verification_result]
+      evidence_fields:
+        - task.verification_result.build
+        - task.verification_result.test
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: superclaude_build_test
+          provider: superclaude
+          entrypoint: /sc:build,/sc:test
+          role: primary
+        - binding_id: claude_native_verification
+          provider: claude_native
+          entrypoint: inline_bash
+          role: fallback
+    degradation:
+      default_action: baseline
+      allowed_fallbacks: [claude_native_verification]
+      forbidden_policies: []
+
+  - capability_id: execution.archive
+    display_name: 归档 spec 与 git 收尾
+    category: execution
+    criticality: execution_critical
+    description: spec 移到 archive 目录 + （可选）/sc:git 收尾
+    required_artifacts:
+      all_of: [task.spec_path]
+    output_contract:
+      produces:
+        - task.status (= done)
+        - batch_state.idempotency_log.archive[]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: claude_native_archive
+          provider: claude_native
+          entrypoint: primitive:archive_spec
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  # ===========================================================================
+  # Requirement / SubTask lifecycle 类
+  # ===========================================================================
+
+  - capability_id: requirement.publish
+    display_name: 发布 Requirement 生命周期事件
+    category: hierarchy
+    criticality: execution_critical
+    description: requirement_analysis 完成后发布 Requirement planning/delivering/delivered 生命周期事件。
+    required_artifacts:
+      all_of: [task.requirement_id]
+    output_contract:
+      produces: [project.context]
+      evidence_fields: []
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: kernel_requirement_publish
+          provider: ccb-kernel
+          entrypoint: primitive:requirement_publish
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: requirement.promote
+    display_name: 晋升 Requirement 生命周期状态
+    category: hierarchy
+    criticality: execution_critical
+    description: 绑定 slot、执行需求分析或首个子任务派发后,通过 capability outcome forward-only 写 requirement md status=planning/delivering。
+    required_artifacts:
+      all_of: [requirement.id, requirement.status]
+    output_contract:
+      produces: [requirement.status]
+      evidence_fields: [requirement.canonical_hash]
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: kernel_requirement_promote
+          provider: ccb-kernel
+          entrypoint: primitive:requirement_promote
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: requirement.cancel
+    display_name: 取消 Requirement
+    category: hierarchy
+    criticality: execution_critical
+    description: 通过 capability outcome 写 requirement md status=cancelled，并由 su-cancel lib 级联取消子任务、draft 和 worktree。
+    required_artifacts:
+      all_of: [requirement.id, requirement.status]
+    output_contract:
+      produces: [requirement.status]
+      evidence_fields: [requirement.canonical_hash, EventJournal.user_cancel_authorized]
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: kernel_requirement_cancel
+          provider: ccb-kernel
+          entrypoint: primitive:requirement_cancel
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: requirement.defer
+    display_name: 暂缓 Requirement
+    category: hierarchy
+    criticality: execution_critical
+    description: 通过 capability outcome 写 requirement md status=deferred，并由 terminal guard 阻止 delivered/cancelled 覆盖。
+    required_artifacts:
+      all_of: [requirement.id, requirement.status]
+    output_contract:
+      produces: [requirement.status]
+      evidence_fields: [requirement.canonical_hash, EventJournal.user_approval]
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: kernel_requirement_defer
+          provider: ccb-kernel
+          entrypoint: primitive:requirement_defer
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: requirement.finalize
+    display_name: 交付完成 Requirement
+    category: hierarchy
+    criticality: execution_critical
+    description: 通过 capability outcome 在子任务终态证据满足后写 requirement md status=delivered。
+    required_artifacts:
+      all_of: [requirement.id, requirement.status]
+    output_contract:
+      produces: [requirement.status]
+      evidence_fields: [dev_task.terminal_scope]
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: kernel_requirement_finalize
+          provider: ccb-kernel
+          entrypoint: primitive:requirement_finalize
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+  - capability_id: subtask.cancel
+    display_name: 取消开发子任务
+    category: hierarchy
+    criticality: execution_critical
+    description: 通过 capability outcome 写 dev_task frontmatter status=cancelled，done 子任务由 terminal guard 保留 done。
+    required_artifacts:
+      all_of: [task.task_id, task.status]
+    output_contract:
+      produces: [task.status]
+      evidence_fields: [dev_task.canonical_hash, EventJournal.user_cancel_authorized]
+    provider_bindings:
+      resolution_order: project_override_then_user_then_global
+      candidates:
+        - binding_id: kernel_subtask_cancel
+          provider: ccb-kernel
+          entrypoint: primitive:subtask_cancel
+          role: primary
+    degradation:
+      default_action: escalate
+      allowed_fallbacks: []
+      forbidden_policies: []
+
+# -----------------------------------------------------------------------------
+# Provider overrides (none at global layer)
+# -----------------------------------------------------------------------------
+provider_overrides: {}

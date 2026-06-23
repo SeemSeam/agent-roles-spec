@@ -1,0 +1,32 @@
+# schema_version: ccb-decision-card-schema-placeholder-v1
+# status: placeholder
+# introduced_by: ADR-0030
+# activation_target: v1.5+
+#
+# Business purpose:
+#   Decision Card will standardize high-impact decision records after the
+#   natural-language v1.x workflow stabilizes.
+#
+# v1.x rule:
+#   Use natural-language decision records in specs / EventJournal. Do not block
+#   node work on this placeholder schema.
+
+schema_version: decision-card-schema-placeholder-v1
+status: placeholder
+planned_for: v1.5+
+fields:
+  topic:
+    type: string
+    status: reserved
+  context:
+    type: string
+    status: reserved
+  options:
+    type: array
+    status: reserved
+  recommendation:
+    type: string
+    status: reserved
+  user_decision:
+    type: string
+    status: reserved

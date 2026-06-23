@@ -1,0 +1,148 @@
+# docs-structure-contract —— 文档驱动架构的「目录契约 + 维护规则」
+# 由 plugin 声明,plugin 与 Console indexer 共读,取代到处硬编码路径。
+#
+# 状态: 已采纳(ADR-0037 文档驱动架构),迁移已完成。
+# 真相/投影: 人读 docs 文档 = 业务真相;.ccb = 索引+协调;DB = 可重建投影;冲突以人读文档为准。
+# 消费方接线: plugin、Console indexer、su-init 与主要技能入口按本契约定位产物落点;新增消费方不得硬编码旧路径。
+
+version: docs-structure-contract-v0.1
+adr: ADR-0037
+
+# ── 人读层:业务真相源 ──
+human_docs:
+  root: docs/
+  naming_default: "<模块/主题>-<文档类型>.md"   # 不加日期前缀
+  entries:
+    - path: "00_项目总览.md"
+      doc_type: project_overview
+      template: _模板_项目总览.md
+    - path: "00_文档地图.md"
+      doc_type: doc_map
+      template: _模板_文档地图.md      # 模板=输出格式参考(非手填)
+      maintained_by: generated         # 由 indexer 自动生成
+      status_derived_from: [文档位置(是否在 99_归档), 绑定实体(需求/任务/ADR)状态]  # 派生,不是每文档存的 status 字段
+    - path: "01_架构设计/"
+      doc_types: [architecture]
+      template: _模板_架构.md
+      split_by_part: true             # 多独立项目 → 前端架构/后端架构/后台管理架构 + 系统总架构
+      # scope frontmatter(可选):architecture_scope 为子系统 slug 或 "overview"。
+      # scope frontmatter(可选):scope_source_roots 为仓库相对路径数组,必须写单行 inline list,如 ["apps/web", "src-tauri"]。
+      # scope frontmatter(可选):su-init 分层生成会写入;人工手写架构可标注以参与补缺判断。
+    - path: "02_需求设计/"
+      doc_type: requirement
+      template: _模板_需求.md
+    - path: "03_开发计划/"
+      doc_types: [technical_design, dev_task]
+      templates: [_模板_技术设计.md, _模板_开发任务.md]
+    - path: "04_模块规格/"
+      doc_type: module_spec
+      template: _模板_模块规格.md
+      split_by_part: true             # 全栈大模块 → 前端-X / 后端-X / 后台管理-X
+      naming: "<部分>-<模块>模块规格.md"
+    - path: "05_经验沉淀/"
+      doc_type: lessons
+      template: _模板_经验沉淀.md
+    - path: "06_决策记录/"
+      doc_type: adr
+      template: _模板_ADR.md
+      naming: "ADR-NNNN-<slug>.md"
+    - path: "99_归档/"
+      doc_type: archive_index
+      naming: "归档索引.md"
+      note: 只留索引,不堆原文件
+
+  # 视图拆分规则
+  view_split:
+    reference_views: [architecture, module_spec]              # 按部分拆,部分在前命名,跨部分连接看架构
+    integrated_views: [requirement, technical_design, dev_task]  # 整份不拆(本就跨部分)
+
+# ── 机器层:索引 + 协调(不存本体)──
+machine_layer:
+  root: docs/.ccb/
+  holds:
+    - 目录契约运行副本
+    - 索引缓存
+    - events/journal.jsonl     # 流水账(审计)
+    - locks/                   # 写锁
+    - drafts/breakdown/        # 拆分草稿(机制件;人读 review 投影到 03)
+    - assets/requirements/<reqId>/  # 需求图片/附件资产,按需求 id 归属
+    - schemas/                 # 校验规则
+  not_holds: [需求本体, 设计本体, 任务本体, 状态本体]   # 这些上移人读层
+
+# ── 字段可改性(写作工作流核心)──
+field_editability:
+  free_edit: [原话, 背景与目标, 设计正文, 业务规则描述, 经验]   # 人随便改
+  command_only: [status, current_node, progress, 任务流转, materialize]  # 必须走命令
+  on_broken_edit: 显式标"无效/部分",不静默修正
+
+# ── 状态 / 治理模型:三层(实体状态 + 文档健康度 + 位置归档)──
+# 关键:状态是"实体"概念,不是"每份文档"概念。只有会逐步推进的实体才有状态。
+
+# 第 1 层 · 实体状态(只此三类;文档承载其所属实体的状态)
+entity_status:
+  requirement:
+    doc_types: [requirement]
+    kind: requirement_lifecycle
+    fields: [status]
+    values: [drafting, planning, delivering, delivered, deferred, cancelled]
+    source: kernel
+  task_subtask:
+    doc_types: [dev_task]
+    kind: task_workflow
+    fields: [current_node, status, node_substate]
+    values:
+      current_node: [requirement_analysis, technical_design, task_breakdown, dispatch, implementation, review, archive]
+      status: [reviewing, done, cancelled]
+    source: kernel
+  adr:
+    doc_types: [adr]
+    kind: adr_decision
+    fields: [status]
+    values: [proposed, accepted, superseded, deprecated]
+    source: contract
+
+# 第 2 层 · 文档治理元数据 + 健康度(无生命周期 status,但 ≠ 无治理)
+documents:
+  requirement_bound:                       # 跟随需求:技术设计 / 开发任务 / 拆分
+    doc_types: [technical_design, dev_task]
+    must_have: [doc_type, requirement_id]  # 显式绑定,别靠文件名/目录/标题推断
+    status: entity_or_follows_requirement
+    follows: requirement
+  evergreen:                               # 常青参考:架构 / 模块规格 / 经验 / 项目总览
+    doc_types: [project_overview, doc_map, architecture, module_spec, lessons]
+    must_have: [doc_type, updated]
+    status: none
+  archive_index:
+    doc_types: [archive_index]
+    must_have: [doc_type, updated]
+    status: none
+  health: [parseStatus, link_validity, stale]   # indexer 自动测,非手填;文档地图据此显示"可信度"
+
+# 第 3 层 · 归档靠位置
+archive: 退役文档移 99_归档/(位置语义),不给每份文档挂 status
+
+# 文档地图 = indexer 从【位置 + 绑定实体状态 + 文档健康度】派生;不给每文档塞生命周期 status
+enum_sources:
+  kernel: references/kernel/{state-schema.yaml, schemas/requirement-md-frontmatter.schema.yaml}  # 需求/任务实体状态真相源
+  contract: 本文件   # ADR 状态 + 文档健康度约定
+
+# ── 真相 / 投影 / 索引 ──
+truth_model:
+  source_of_truth: human_docs
+  projection: console_db          # 从文档重建;UI 读它
+  on_conflict: human_docs_wins    # 其余重建
+  index_entry: [docs/00_文档地图.md, 本契约]
+  load: on_demand                 # 按需读
+
+# ── 维护规则 ──
+maintenance:
+  doc_map_tiers: [生效中, 历史, 归档]                       # 文档地图的派生显示档位(非每文档存的字段)
+  doc_map_upkeep: 文档地图由 indexer 派生生成(位置 + 绑定实体状态);改的是实体状态(需求/任务/ADR)或文档位置,不是每文档的 status
+  no_single_mainline: true                                # 无单一主线;活跃需求由 Console 实时显示
+  archive: 退役文档移 99_归档/,只留索引
+
+# ── 消费方(已接线;持续演进)──
+consumers:
+  - plugin skills/lib:读本契约定位产物落点,不得硬编码旧 .ccb 本体路径
+  - Console indexer:读本契约扫描 + 投影,生成文档地图与索引缓存
+  - su-init/templates:按本契约生成项目骨架和读取入口

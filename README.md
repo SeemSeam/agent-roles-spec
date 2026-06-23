@@ -152,6 +152,36 @@ through `agent-roles` and may expose host-specific adapters.
 
 </details>
 
+<details>
+<summary><strong>agentroles.mobile_app_engineer</strong> - Mobile App Engineer</summary>
+
+- **Version**: `0.1.0`
+- **Level**: `experimental`
+- **Purpose**: Designs, implements, reviews, and validates production mobile apps across iOS, Android, React Native, Expo, Flutter, SwiftUI, and Jetpack Compose.
+- **Best for**: mobile app briefs, platform and stack selection, native-feeling flows, mobile component systems, icon/animation/material library curation, simulator/device QA, accessibility, performance, and App Store or Google Play readiness.
+- **Contents**: Mobile app engineering memory, focused mobile skills, platform and stack references, public skill and asset-library catalog, quality/release guidance, reusable prompt, tool notes, host adapter notes, and validation notes.
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **Add**: `agent-roles add mobile`
+- **Update**: `agent-roles update mobile`
+- **Source**: [`roles/mobile-app-engineer`](roles/mobile-app-engineer/)
+
+</details>
+
+<details>
+<summary><strong>agentroles.su_ccb</strong> - SU-CCB Workflow Operator</summary>
+
+- **Version**: `0.1.0`
+- **Level**: `preview`
+- **Purpose**: Packages the SU-CCB Claude coordinator workflow and Codex execution skills into one Role.
+- **Best for**: SU-CCB projects that need requirement analysis, technical design, task breakdown, dispatch, execution receipts, review gates, archive, status recovery, and reconciliation across Claude and Codex.
+- **Contents**: Claude-side coordinator skills, Codex-side executor/documentation skills, runtime helper library, SU-CCB kernel references, project templates, Claude plugin metadata, validation notes, and host adapter notes.
+- **Adapters**: CCB, Claude Code, Codex.
+- **Add**: `agent-roles add su-ccb`
+- **Update**: `agent-roles update su-ccb`
+- **Source**: [`roles/su-ccb`](roles/su-ccb/)
+
+</details>
+
 ---
 
 ## Package Manager Preview

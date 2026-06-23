@@ -1,0 +1,12 @@
+version: v1.0
+checks:
+  - check_id: file_exists
+    kind: system-verifiable
+  - check_id: schema_valid
+    kind: system-verifiable
+  - check_id: count_gt_zero
+    kind: system-verifiable
+  - check_id: hash_matches
+    kind: system-verifiable
+  - check_id: journal_event_exists
+    kind: system-verifiable

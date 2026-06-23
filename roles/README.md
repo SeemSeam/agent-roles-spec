@@ -51,3 +51,7 @@ in `role.toml` so `agent-roles list` can display their maturity.
   vendored public/open-source skill copy-treatment decisions,
   evidence-backed skill construction research, artifact templates, preview
   schemas, inventory evidence, blueprint gates, and optimization findings.
+- [su-ccb](su-ccb/) (`agentroles.su_ccb`, `preview`): SU-CCB workflow role
+  packaging Claude-side coordinator skills, Codex-side executor skills,
+  runtime helpers, kernel references, templates, plugin metadata, and host
+  adapter notes.

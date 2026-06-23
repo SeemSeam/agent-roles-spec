@@ -1,0 +1,1 @@
+`references/kernel/` in this plugin is the single source of truth for the active CCB kernel. There is no upstream snapshot, sync script, or distribution metadata; update the plugin kernel directly through normal review.

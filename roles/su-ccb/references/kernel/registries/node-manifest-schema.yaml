@@ -1,0 +1,596 @@
+# =============================================================================
+# CCB Kernel · node-manifest-schema.yaml
+# =============================================================================
+# Canonical: 6 of 6
+# Status: active (v0.5.1 lifecycle status protocol)
+# Owner: CCB protocol kernel
+# Authority: 节点 manifest 文件（references/kernel/nodes/<node_id>.node.yaml）的 schema 定义
+# Critical constraint:
+#   manifest 的 transitions 字段必须 refs-only（只能 ref transition-table.md 已注册的 ID），
+#   manifest 内不允许 inline 新 transition 定义、不允许重写 guard 逻辑。
+# Related:
+#   - state-schema.yaml                  (manifest 字段操作的 state 字段)
+#   - guard-registry.md                  (guard_refs 引用源)
+#   - transition-table.md                (transitions 字段引用源)
+#   - capability-registry-schema.yaml    (required_capabilities 引用源)
+#   - primitive-executor-contract.md     (action_type=primitive 的调用 ABI)
+# =============================================================================
+
+schema_version: node-manifest-v0.5.1
+
+# -----------------------------------------------------------------------------
+# 0. Top-level fields
+# -----------------------------------------------------------------------------
+
+manifest:
+  description: 单个节点的完整定义。一份 manifest = 一个节点。
+  fields:
+
+    # --- 标识 ---
+    schema_version:
+      type: string
+      required: true
+      value: node-manifest-v0.5.1
+
+    node_id:
+      type: string
+      required: true
+      pattern: '^[a-z][a-z0-9_]*$'
+      description: |
+        7 个 canonical 节点 ID 之一：
+        requirement_analysis / technical_design / task_breakdown /
+        dispatch / implementation / review / archive
+
+    node_name:
+      type: string
+      required: true
+      description: 英文节点名（人读）
+
+    phase_label:
+      type: string
+      required: false
+      description: 中文阶段标签（用于看板 / UI）
+
+    legacy_phase_projection:
+      type: enum
+      required: false
+      values: [requirement, planning, ready, implementing, reviewing, blocked, done]
+      description: |
+        v0.3.2 兼容字段。当前节点对应的旧 phase（用于 console phase_projection 计算）。
+        v0.4 删除。
+
+    applicable_kinds:
+      type: array<enum.task_kind>
+      required: true
+      default: [subtask]
+      values: [epic, subtask]
+      description: |
+        当前节点适用的 Task.kind 集合。v0.5.0 起 7 个 canonical 节点全部必须显式声明
+        applicable_kinds: [subtask]；Epic / Requirement 不进入 7 节点，分别由 lifecycle manifest 承载。
+
+    # --- 入口条件 ---
+    entry_conditions:
+      type: object
+      required: true
+      schema:
+        state:
+          type: object
+          schema:
+            task_status_in:
+              type: array<enum.task_status>
+              description: |
+                兼容字段。v0.5.1 起 task.status 只表示 lifecycle
+                (reviewing/done/cancelled)，节点入口主要由 previous_nodes_any_of、
+                current_node 与 guard 判定；7 个节点统一声明 [reviewing]。
+            previous_nodes_any_of:
+              type: array<enum.current_node | __entry__>
+              description: 允许的来源节点列表
+            batch_policy_in:
+              type: array<enum.policy_profile>
+              description: 允许的 batch policy
+        artifacts:
+          type: object
+          schema:
+            all_of:
+              type: array<string>
+              description: 必须存在的 artifact ID
+            any_of:
+              type: array<string>
+              description: 至少存在一个的 artifact ID
+        guard_refs:
+          type: array<string>
+          description: |
+            进入节点前必须满足的 guard ID（必须存在于 guard-registry.md）。
+            通常引用 inv_* 或 pre_*。
+
+    # --- 节点级运行时状态 ---
+    runtime_state:
+      type: object
+      required: true
+      schema:
+        initial:
+          type: enum.runtime_state
+          required: true
+          default: running
+          description: 进入节点时的初始 runtime_state
+        values:
+          type: array<enum.runtime_state>
+          required: true
+          description: 本节点允许的 runtime_state 取值集合
+
+    # --- 子状态白名单（节点内 substate）---
+    substate_values:
+      type: array<string>
+      required: false
+      description: |
+        节点内允许的 node_substate 取值集合（白名单）。
+        manifest lint 校验 fixed_actions / subflows 内引用的 substate ∈ 此列表。
+
+    # --- 固定动作序列 ---
+    fixed_actions:
+      type: object
+      required: true
+      schema:
+        execution_mode:
+          type: enum
+          required: true
+          values: [sequential, parallel_join]
+          description: |
+            v0.3.2 lint 强制限制为 'sequential'。
+            schema 预留 parallel_join 取值，v0.4 解锁（参见 v0.4 北极星 §3.4）。
+        order:
+          type: enum
+          values: [strict]
+          default: strict
+          description: 当 execution_mode=sequential 时的执行顺序
+        steps:
+          type: array<step_spec>
+          required: true
+          description: 节点内固定动作步骤（按 order 执行）
+
+    # --- 子流程 ---
+    subflows:
+      type: array<subflow_spec>
+      required: false
+      description: |
+        节点内的可选子流程。每个子流程有 activation_condition，
+        满足时按 execution_mode 执行 steps。
+        v0.3.2 lint 强制 subflow.execution_mode = sequential。
+
+    # --- 必需与可选 capability ---
+    required_capabilities:
+      type: object
+      required: false
+      schema:
+        must_have:
+          type: array<capability_requirement>
+          description: 节点必须可用的 capability；缺失按 on_missing 行为处理
+
+    optional_capabilities:
+      type: object
+      required: false
+      schema:
+        nice_to_have:
+          type: array<capability_requirement>
+          description: 可选 capability；缺失按 on_missing 行为处理
+
+    # --- 节点级 guards ---
+    guards:
+      type: object
+      required: false
+      schema:
+        node_pre:
+          type: array<string>
+          description: 节点入口 guard ID（与 entry_conditions.guard_refs 等价或互补）
+        action_post:
+          type: array<string>
+          description: |
+            **声明性字段**（不重复执行，仅作文档与审计用）：
+            列出本节点 fixed_actions / subflows 内的原语会触发的 post guards。
+            实际 enforce 由 primitive-executor-contract.md §2.4 阶段 4 自动校验，
+            manifest 不重复 enforce。
+            lint 校验：本字段列出的 guard_id 必须存在于 guard-registry.md 的 L2 段（post_*）。
+            此字段为节点 governance 透明度服务（让人读 manifest 就知道本节点会触发哪些副作用守卫）。
+        transition:
+          type: array<string>
+          description: |
+            节点出口 transition 触发时额外校验的 guard ID
+            （仅作"补充"，主 guard 已在 transition-table 内定义）
+        hook_dependencies:
+          type: array<string>
+          description: 节点依赖的 PreToolUse hook ID（来自 guard-registry L4）
+
+    # --- 出口 transitions（refs-only！）---
+    transitions:
+      type: array<transition_ref>
+      required: true
+      description: |
+        ⚠️ **CRITICAL**: 必须 refs-only！
+        每个条目只允许 { transition_id, target_node }，不能 inline trigger / when /
+        guard_refs / state_effects。完整定义在 transition-table.md。
+        manifest lint 强制校验：
+        - transition_id ∈ transition-table.md 注册表
+        - target_node 与 transition-table 一致
+        - manifest 内不存在 trigger / when / state_effects 字段
+
+    # --- Provenance 要求 ---
+    provenance_required:
+      type: array<provenance_requirement>
+      required: false
+      description: 节点完成时必须存在 evidence 的字段列表
+
+    # --- 出口条件 ---
+    exit_conditions:
+      type: object
+      required: true
+      schema:
+        all_of:
+          type: array<expr>
+          description: 所有条件必须满足
+        any_of:
+          type: array<expr>
+          description: 至少一个条件必须满足
+
+# -----------------------------------------------------------------------------
+# 1. step_spec
+# -----------------------------------------------------------------------------
+
+step_spec:
+  description: fixed_actions 内的单个步骤
+  fields:
+    step_id:
+      type: string
+      required: true
+      pattern: '^[a-z][a-z0-9_]*$'
+
+    action_type:
+      type: enum
+      required: true
+      values: [primitive, capability_action, subflow_ref]
+      description: |
+        - primitive: 直接调 v0.3.1 / v0.3.2 的 mutation 原语
+        - capability_action: 通过 capability resolver 调用
+        - subflow_ref: 引用本节点内 subflows 中的某个 subflow_id
+
+    ref:
+      type: string
+      required: false
+      description: |
+        - action_type=primitive: 原语名（必须是 19 mutation + 3 read 之一）
+        - action_type=subflow_ref: subflow_id
+
+    capability_id:
+      type: string
+      required: false
+      description: |
+        - action_type=capability_action: 必填，引用 capability-registry global capability_id
+        - action_type=primitive: 可选，记录该 primitive 隶属的 capability（用于 trace）
+
+    when:
+      type: expr
+      required: false
+      default: 'true'
+      description: 步骤执行条件表达式（task / batch state 字段为变量）
+
+    guard_refs:
+      type: array<string>
+      required: false
+      description: 此 step 额外校验的 guard ID
+
+    must_produce:
+      type: array<string>
+      required: false
+      description: |
+        步骤完成后必须存在的 state 字段。manifest lint 与运行时校验：
+        若步骤 OK 但 must_produce 字段未写入，则视为 step 失败。
+
+    on_success:
+      type: object
+      required: true
+      schema:
+        action:
+          type: enum
+          required: true
+          values: [next, complete]
+          description: |
+            - next: 进入 fixed_actions 下一个 step
+            - complete: 触发节点 exit_conditions 检查
+
+    on_wait:
+      type: object
+      required: false
+      schema:
+        runtime_state:
+          type: enum.runtime_state
+          description: 进入等待时切换的 runtime_state（waiting_codex / waiting_user）
+
+    on_failure:
+      type: object
+      required: true
+      schema:
+        action:
+          type: enum
+          required: true
+          values: [escalate, fail_node, skip_with_provenance]
+          description: |
+            - escalate: 调用 governance.escalation capability 升级用户
+            - fail_node: 触发节点级 escalate transition
+            - skip_with_provenance: 写 trace 后跳过（仅 advisory capability 可用）
+
+# -----------------------------------------------------------------------------
+# 2. subflow_spec
+# -----------------------------------------------------------------------------
+
+subflow_spec:
+  description: 节点内的可选子流程
+  fields:
+    subflow_id:
+      type: string
+      required: true
+      pattern: '^[a-z][a-z0-9_]*$'
+
+    execution_mode:
+      type: enum
+      required: true
+      values: [sequential, parallel_join]
+      description: |
+        v0.3.2 lint 强制限制为 'sequential'。
+        v0.4 解锁 parallel_join。
+
+    activation_condition:
+      type: expr
+      required: true
+      description: 满足此条件时触发子流程；否则跳过
+
+    guard_refs:
+      type: array<string>
+      required: false
+
+    steps:
+      type: array<step_spec>
+      required: true
+      description: 子流程步骤
+
+    branches:
+      type: array<branch_spec>
+      required: false
+      description: |
+        仅 execution_mode=parallel_join 时使用。
+        v0.3.2 lint 不允许定义 branches 字段。
+
+    join_condition:
+      type: enum
+      required: false
+      values: [all_branches_completed, any_branch_completed]
+      description: 仅 parallel_join 时使用
+
+    outputs:
+      type: object
+      required: false
+      description: 子流程对外暴露的输出字段（供 transitions when 表达式引用）
+
+    done_when:
+      type: expr
+      required: false
+      description: 子流程完成判定条件
+
+# -----------------------------------------------------------------------------
+# 3. branch_spec (parallel_join 专用，v0.3.2 不可用)
+# -----------------------------------------------------------------------------
+
+branch_spec:
+  description: parallel_join 子流程的并行分支
+  fields:
+    branch_id:
+      type: string
+      required: true
+    steps:
+      type: array<step_spec>
+      required: true
+
+# -----------------------------------------------------------------------------
+# 4. transition_ref（refs-only 强约束）
+# -----------------------------------------------------------------------------
+
+transition_ref:
+  description: 节点 transitions 字段的单条引用
+  allowed_fields:
+    transition_id:
+      type: string
+      required: true
+      description: 必须存在于 transition-table.md
+    target_node:
+      type: enum.current_node | __terminal__
+      required: true
+      description: 必须与 transition-table.md 中该 transition_id 的 target_node 一致
+
+  forbidden_fields:
+    description: |
+      ⚠️ 以下字段在 manifest transition_ref 内**禁止使用**。
+      它们已在 transition-table.md 中定义，重复声明将被 lint 拒绝。
+    list:
+      - trigger
+      - when
+      - guard_refs       # transition 级 guard 已在 transition-table 内
+      - state_effects
+      - source_node      # 推断自 manifest.node_id
+
+# -----------------------------------------------------------------------------
+# 5. capability_requirement
+# -----------------------------------------------------------------------------
+
+capability_requirement:
+  description: required_capabilities / optional_capabilities 内的单条
+  fields:
+    capability_id:
+      type: string
+      required: true
+      description: 必须存在于 capability-registry-schema 三层 resolution 后的 global
+
+    when:
+      type: expr
+      required: false
+      default: 'true'
+      description: 条件表达式；满足时此 capability 才需可用
+
+    on_missing:
+      type: enum
+      required: true
+      values:
+        - escalate                # governance_critical 必选
+        - hard_fail               # 节点失败
+        - fallback_equivalent     # 走 capability.degradation.allowed_fallbacks
+        - baseline                # 走 claude_native（advisory 适用）
+        - skip_with_provenance    # 跳过 + 写 trace（advisory 适用）
+
+# -----------------------------------------------------------------------------
+# 6. provenance_requirement
+# -----------------------------------------------------------------------------
+
+provenance_requirement:
+  description: 节点完成时必须有 evidence 的字段
+  fields:
+    field:
+      type: string
+      required: true
+      description: state-schema 中的字段路径
+    when:
+      type: expr | always
+      required: true
+      description: 'always' 或表达式
+
+# -----------------------------------------------------------------------------
+# 7. expr 表达式语言（v0.3.2 简化版）
+# -----------------------------------------------------------------------------
+
+expr_language:
+  description: manifest 内表达式的语言规范（v0.3.2 用 JSON-style 简化版）
+  rules:
+    - 字段路径用 dot 表示：task.scope_assessment.complexity
+    - 数组成员判断: 'value' in array_field （例: 'step1_approval' in task.approval_records.gate_ids）
+    - 数组字面量成员判断: field in ['a', 'b', 'c']
+    - 比较运算: == != < > <= >=
+    - 逻辑运算: && || !
+    - 布尔值: true / false
+    - 字符串: 双引号或单引号
+    - 数组字面量: [..., ...]
+    - 派生字段: 仅允许引用 state-schema.yaml 中字段下标记 derived_fields 的派生属性
+      （例: task.scope_assessment.evidence_count, task.consult_records.length,
+       task.consult_records.last_recommendation, task.open_red_flags.any_open,
+       task.open_red_flags.all_resolved, task.approval_records.gate_ids）
+    - 子流程输出引用: subflows.<subflow_id>.outputs.<output_name>
+    - 不支持: 负索引 [-1] / 函数调用语法 .foo() / lambda / 赋值 / 算术运算
+  example: |
+    "task.scope_assessment.complexity != 'simple'"
+    "task.decision_shape.needs_consult == true && task.consult_records.length > 0"
+    "task.consult_records.last_recommendation != null"
+    "task.open_red_flags.any_open == true"
+    "'step1_approval' in task.approval_records.gate_ids"
+    "task.scope_assessment.complexity in ['moderate', 'complex']"
+    "batch_state.policy_profile == 'autonomous-batch' && batch_state.user_approval_mode == 'none'"
+  evaluator:
+    description: |
+      v0.3.2 由 manifest lint 工具静态校验语法 + scheduler 运行时求值。
+      所有字段引用必须在 state-schema.yaml / artifact_namespaces 中定义；
+      所有派生字段（如 .any_open / .last_recommendation / .gate_ids）必须在 state-schema 的
+      `derived_fields` 段显式列出。
+      不支持函数调用、不支持 lambda、不支持赋值。
+
+# -----------------------------------------------------------------------------
+# 8. Lint 规则
+# -----------------------------------------------------------------------------
+
+lint_rules:
+
+  - rule_id: node_id_in_canonical_7
+    description: node_id 必须是 7 canonical 节点之一
+    severity: error
+
+  - rule_id: transitions_refs_only
+    description: |
+      transitions[*] 不允许使用 forbidden_fields 列表内的字段（trigger/when/guard_refs/state_effects/source_node）
+    severity: error
+
+  - rule_id: transition_id_exists
+    description: 每个 transitions[*].transition_id 必须存在于 transition-table.md
+    severity: error
+
+  - rule_id: transition_target_match
+    description: |
+      manifest transitions[*].target_node 必须与 transition-table.md
+      中该 transition_id 的 target_node 一致
+    severity: error
+
+  - rule_id: guard_refs_exist
+    description: 所有 guard_refs / hook_dependencies 必须存在于 guard-registry.md
+    severity: error
+
+  - rule_id: capability_id_exists_in_global
+    description: required_capabilities / optional_capabilities 内的 capability_id 必须存在于 global.yaml
+    severity: error
+
+  - rule_id: primitive_ref_exists
+    description: action_type=primitive 时 ref 必须是 19 mutation + 3 read 原语之一
+    severity: error
+
+  - rule_id: subflow_ref_exists
+    description: action_type=subflow_ref 时 ref 必须是本 manifest 内已定义的 subflow_id
+    severity: error
+
+  - rule_id: substate_in_whitelist
+    description: |
+      若 manifest 定义了 substate_values，那么 fixed_actions / subflows / on_wait
+      内引用的 substate 必须 ∈ substate_values
+    severity: error
+
+  - rule_id: must_produce_field_in_schema
+    description: must_produce 列出的字段必须存在于 state-schema.yaml
+    severity: error
+
+  - rule_id: parallel_join_disabled_v032
+    description: |
+      v0.3.2 lint 强制：execution_mode != 'parallel_join'。
+      branches / join_condition 字段不允许使用。
+    severity: error
+
+  - rule_id: governance_critical_capability_must_have
+    description: |
+      criticality=governance_critical 的 capability 在 manifest 引用时
+      on_missing 必须是 'escalate' 或 'hard_fail'，不能是 'baseline' / 'skip_with_provenance'
+    severity: error
+
+  - rule_id: action_post_guard_in_l2_registry
+    description: |
+      guards.action_post 列出的 guard_id 必须存在于 guard-registry.md 的 L2 段（post_*），
+      且属于本节点 fixed_actions / subflows 内调用的 primitive 的 post-condition 集合。
+      此字段为声明性，不重复执行。
+    severity: warning
+
+  - rule_id: provenance_field_in_schema
+    description: provenance_required[*].field 必须存在于 state-schema.yaml
+    severity: error
+
+  - rule_id: exit_conditions_non_empty
+    description: exit_conditions 必须含至少 1 条 all_of 或 any_of
+    severity: error
+
+# -----------------------------------------------------------------------------
+# 9. v0.3.2 ↔ v0.4 演进
+# -----------------------------------------------------------------------------
+
+evolution:
+
+  v032:
+    - 7 节点 manifest 全部按本 schema 落地
+    - lint 强制 transitions refs-only
+    - lint 强制 execution_mode = sequential
+    - lint 强制 governance_critical capability 不可降级到 baseline / skip
+
+  v04:
+    - parallel_join 解锁（lint 放宽）
+    - 增加 provenance_required 字段类型扩展（譬如 timestamp_within_window）
+    - manifest 支持 capability `must_have when` 表达式语法扩展
+
+# -----------------------------------------------------------------------------
+# END of node-manifest-schema.yaml
+# -----------------------------------------------------------------------------

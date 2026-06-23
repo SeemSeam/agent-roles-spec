@@ -1,0 +1,39 @@
+# schema_version: ccb-agent-reply-reviewed-schema-placeholder-v1
+# status: placeholder
+# introduced_by: ADR-0030
+# activation_target: v1.5+
+#
+# Business purpose:
+#   Agent Reply Review will standardize Claude's reflection after Codex or
+#   another agent replies. v1.x deliberately uses Markdown reflection with four
+#   anchors instead of a strict event payload.
+#
+# v1.x rule:
+#   The required reflection anchors are:
+#     1. 我同意的
+#     2. 我不同意的
+#     3. 我的盲点
+#     4. 接下来做什么
+
+schema_version: agent-reply-reviewed-schema-placeholder-v1
+status: placeholder
+planned_for: v1.5+
+fields:
+  source_agent:
+    type: string
+    status: reserved
+  source_message_ref:
+    type: string
+    status: reserved
+  agreed_points:
+    type: array
+    status: reserved
+  disagreed_points:
+    type: array
+    status: reserved
+  blind_spots:
+    type: array
+    status: reserved
+  next_action:
+    type: string
+    status: reserved

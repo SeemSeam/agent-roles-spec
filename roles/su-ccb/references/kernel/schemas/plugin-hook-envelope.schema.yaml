@@ -1,0 +1,39 @@
+# This YAML is contract documentation. Runtime checks are implemented in
+# lib/runtime/hook-notifier.mjs and Console plugin-hooks receiver.
+schema_name: plugin-hook-envelope
+kind: plugin_hook_envelope
+version: 1
+description: >
+  Localhost-only notification envelope emitted after a plugin EventJournal
+  append succeeds. The hook is a fail-open notification channel, not a truth
+  source and not a Console EventJournal persistence contract.
+
+root:
+  type: object
+  required:
+    - schema_version
+    - source
+    - project_root
+    - journal_path
+    - event_hash
+    - event
+
+fields:
+  schema_version:
+    type: literal
+    value: plugin-hook-v0.1
+  source:
+    type: literal
+    value: ccb-claude-plugin
+  project_root:
+    type: absolute_path
+  journal_path:
+    type: string
+    description: Usually docs/.ccb/events/journal.jsonl relative to project_root.
+  event_hash:
+    type: regex
+    pattern: '^[a-f0-9]{64}$'
+    description: sha256 of JSON.stringify(event).
+  event:
+    type: object
+    description: Original plugin EventJournal event, unchanged.

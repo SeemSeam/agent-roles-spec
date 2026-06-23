@@ -1,0 +1,20 @@
+{
+  "name": "SU-CCB",
+  "owner": {
+    "name": "Sue",
+    "email": ""
+  },
+  "metadata": {
+    "description": "SU/CCB 协作流程 — Claude+Codex 多 AI 协作编排插件",
+    "version": "0.3.3"
+  },
+  "plugins": [
+    {
+      "name": "ccb",
+      "source": "./",
+      "description": "Claude+Codex 多 AI 协作编排：规划、协商、派工、审查、归档、恢复。适合独立开发者和小团队的 AI 工程操作系统。",
+      "category": "workflow",
+      "tags": ["ccb", "collaboration", "multi-agent", "planning", "review", "codex"]
+    }
+  ]
+}

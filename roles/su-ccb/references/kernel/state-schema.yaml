@@ -1,0 +1,1019 @@
+# =============================================================================
+# CCB Kernel · state-schema.yaml
+# =============================================================================
+# Canonical: 1 of 6
+# Status: active (v0.5.1 lifecycle status protocol)
+# Owner: CCB protocol kernel
+# Authority: 任务生命周期状态由 dev_task frontmatter 承载；批量授权由 EventJournal / batch_state 承载。
+#           所有 skill / scheduler / console / codex skill 都必须按本文件和目录契约读写。
+# Related:
+#   - primitive-executor-contract.md  (谁能写 + 怎么写)
+#   - guard-registry.md               (写入校验)
+#   - transition-table.md             (last_transition_id 取值范围)
+#   - node-manifest-schema.yaml       (current_node 取值范围)
+# =============================================================================
+
+schema_version: state-schema-v0.5.1
+
+# -----------------------------------------------------------------------------
+# 1. 共享枚举类型
+# -----------------------------------------------------------------------------
+enums:
+
+  task_status:
+    description: dev_task frontmatter 中的任务生命周期状态；节点位置由 current_node 管理，异常/等待态由 runtime_state + node_substate 管理。
+    values:
+      - reviewing
+      - done
+      - cancelled
+
+  current_node:
+    description: 7 个 canonical 节点 ID（与 node-manifest-schema.yaml 同步）
+    values:
+      - requirement_analysis
+      - technical_design
+      - task_breakdown
+      - dispatch
+      - implementation
+      - review
+      - archive
+
+  runtime_state:
+    description: 与节点正交的运行时状态。blocked 不再是节点，而是 runtime 维度。
+    values:
+      - running
+      - waiting_codex
+      - waiting_user
+      - escalated
+      - completed
+      - blocked
+
+  policy_profile:
+    description: 调度策略档（v0.3.1 既有，v0.3.2 保留）
+    values:
+      - interactive-single
+      - autonomous-batch
+
+  user_approval_mode:
+    values:
+      - required
+      - none
+
+  red_flag_status:
+    description: red_flag 生命周期（v0.3.1 既有）
+    values:
+      - open
+      - resolved_by_consult
+      - resolved_by_decision
+      - resolved_by_replan
+      - resolved_by_scope_change
+
+  unsolicited_finding_disposition:
+    description: consult unsolicited finding 的处置结果
+    values:
+      - open_red_flag
+      - resolved_by_consult
+      - evidence_only
+      - no_action
+      - demand_triggered_followup
+
+  legacy_phase:
+    description: |
+      Console 兼容用 phase 投影。v0.3.2 期间持久化于 DB，v0.4 将删除。
+      不允许由用户手写；由 server-side 从 current_node + node_substate 派生。
+    values:
+      - requirement
+      - planning
+      - ready
+      - implementing
+      - reviewing
+      - blocked
+      - done
+
+  requirement_status:
+    description: Requirement 独立表生命周期状态。
+    values:
+      - drafting
+      - planning
+      - delivering
+      - delivered
+      - deferred
+      - cancelled
+
+# -----------------------------------------------------------------------------
+# 2. dev_task schema
+# -----------------------------------------------------------------------------
+# 持久化位置：docs/03_开发计划/*开发任务.md dev_task frontmatter
+# 每次 mutation 必须对 dev_task 文档做 CAS 写入。
+# 详细 mutation 规则见 primitive-executor-contract.md。
+# -----------------------------------------------------------------------------
+
+dev_task:
+  description: 单任务状态。持久化真相为 dev_task frontmatter；节点上下文内仍可用 task.<field> 引用。
+  fields:
+
+    # --- 标识与版本 ---
+    task_id:
+      type: string
+      required: true
+      writer: scheduler-on-create
+      mutable: false
+      description: 全局唯一任务 ID
+
+    description:
+      type: string
+      required: true
+      writer: scheduler-on-create
+      mutable: false
+      description: 用户原始需求描述（任务创建时由用户输入）
+
+    spec_path:
+      type: string
+      required: false
+      writer: write_spec primitive
+      description: 精简 spec 文件路径
+
+    spec_draft:
+      type: string
+      required: false
+      writer: write_spec primitive (in-progress)
+      description: |
+        spec 写作过程中的草稿内容（freeze 前的中间产物）。
+        capability 引用 task.spec_draft 表示需要读取草稿态。
+
+    spec_hash:
+      type: sha256-hex
+      required: false
+      writer: freeze_spec primitive
+      description: spec 冻结时算出的 hash，dispatch 前要校验匹配
+
+    requirement_summary:
+      type: string
+      required: false
+      writer: write_requirement_doc primitive (simple task)
+      description: |
+        简单任务的 inline 需求摘要（直接存 dev_task，不另写文档）。
+        与 requirement_doc_path 互斥：simple → 写此字段；moderate/complex → 写 requirement_doc_path。
+
+    requirement_doc_path:
+      type: string
+      required: false
+      writer: write_requirement_doc primitive (moderate/complex task)
+      description: 中等以上复杂度任务的需求文档路径（docs/02_需求设计/<task>.md）
+
+    design_doc_path:
+      type: string
+      required: false
+      writer: write_design_doc primitive
+      description: 技术设计文档路径（docs/03_开发计划/<task>-技术设计.md）
+
+    adr_path:
+      type: string
+      required: false
+      writer: write_adr primitive
+      description: ADR 决策文档路径（docs/06_决策记录/ADR-NNNN-<slug>.md）
+
+    idea_set:
+      type: array<string>
+      required: false
+      writer: analysis.brainstorm capability
+      description: brainstorm 产出的发散想法集合
+
+    design_analysis:
+      type: object
+      required: false
+      writer: analysis.deep_design capability (/sc:design)
+      description: |
+        深度架构设计分析产物。可选产出（capability 为 advisory）。
+        结构字段（非强制）：
+          - summary: string
+          - options: array<object>
+          - recommendation: string
+          - risks: array<string>
+          - tradeoffs: array<string>
+
+    revision:
+      type: int
+      required: true
+      default: 0
+      writer: primitive-executor (CAS)
+      description: 单调递增 CAS 版本号
+
+    # --- 节点状态（v0.3.2 新增）---
+    current_node:
+      type: enum.current_node
+      required: false
+      default: requirement_analysis
+      writer: scheduler / skill thin facade
+      description: dev_task 当前所在 7 节点 ID。
+      v032_new: true
+
+    node_substate:
+      type: string
+      required: false
+      writer: 节点引擎
+      description: |
+        节点内子状态。允许自由命名，但建议遵循 manifest 内 substate 白名单。
+        典型值：proposed / analyzing / awaiting_user_confirm / awaiting_codex_pickup /
+              executing / verifying / auto_reviewing / awaiting_user_verdict / replanning。
+      v032_new: true
+
+    runtime_state:
+      type: enum.runtime_state
+      required: true
+      default: running
+      writer: 节点引擎 / mark_waiting primitive
+      description: 与节点正交的运行时状态
+      v032_new: true
+
+    last_transition_id:
+      type: string
+      required: false
+      writer: 节点引擎
+      description: 最后一次执行的 transition ID（取值范围见 transition-table.md）
+      v032_new: true
+
+    rollback_origin:
+      type: object
+      required: false
+      writer: replan subflow
+      description: 如果当前是回退状态，记录从哪儿回来的
+      schema:
+        from_node: enum.current_node
+        from_transition_id: string
+        triggered_at: iso-8601
+      v032_new: true
+
+    # --- 两层 Requirement→SubTask 模型（ADR-0028）---
+    requirement_id:
+      type: string
+      required: true
+      writer: materializeRequirement / scheduler-on-create / migration
+      description: FK → Requirement.id；每个 dev_task 直接关联 Requirement。
+      adr0028_two_tier: true
+
+    section_id:
+      type: string
+      required: true
+      writer: materializeRequirement / migration
+      description: breakdown draft 内子任务 section_id，例如 pr1-runtime-contract。
+      adr0028_two_tier: true
+
+    order:
+      type: int
+      required: true
+      writer: materializeRequirement / migration
+      description: Requirement 内子任务顺序，从 1 开始。
+      adr0028_two_tier: true
+
+    implementation_owner:
+      type: enum
+      required: false
+      values: [claude, ccb_codex]
+      writer: materializeRequirement / migration
+      description: SubTask 预期实施方。UI/文档类任务可为 claude，协议/后端/迁移类任务可为 ccb_codex。
+      adr0028_two_tier: true
+
+    legacy_kind:
+      type: string
+      required: false
+      writer: migration
+      description: 历史迁移前的旧分类，供审计与回滚。
+      v050_new: true
+
+    legacy_parent_hint:
+      type: string
+      required: false
+      writer: migration
+      description: 启发式迁移推断 parentEpicId 的证据文本。
+      v050_new: true
+
+    migration_batch_id:
+      type: string
+      required: false
+      writer: migration
+      description: 本次 hierarchy 迁移批次 ID。
+      v050_new: true
+
+    migration_rule_id:
+      type: string
+      required: false
+      writer: migration
+      description: 命中的启发式分类规则 ID。
+      v050_new: true
+
+    migration_confidence:
+      type: float
+      required: false
+      writer: migration
+      description: 迁移置信度，范围 0.0-1.0；低置信记录必须人工 review。
+      v050_new: true
+
+    migration_reviewed_by:
+      type: string
+      required: false
+      writer: migration-review
+      description: 人工确认低置信分类的 reviewer。
+      v050_new: true
+
+    migration_reviewed_at:
+      type: iso-8601
+      required: false
+      writer: migration-review
+      description: 人工确认时间。
+      v050_new: true
+
+    # --- 兼容投影字段（v0.4 删除）---
+    phase_projection:
+      type: enum.legacy_phase
+      required: false
+      writer: server-side derive only (NOT user-writable)
+      description: |
+        v0.3.2 兼容字段，由 current_node + node_substate 派生。
+        Console PATCH 接口必须拒绝用户写入此字段。
+        v0.4 终态：DB 列删除，仅 API 暴露派生值。
+      v032_new: true
+      v04_deprecated: true
+
+    # --- 旧字段（v0.3.1 已有，保留）---
+    status:
+      type: enum.task_status
+      required: true
+      default: reviewing
+      writer: 多个 primitive (见 primitive-executor-contract)
+      description: |
+        生命周期状态。canonical 仅允许 reviewing / done / cancelled。
+        旧 proposed/planning/dispatch_ready/dispatched/waiting_for_user_arbitration/replanning/archived/completed/blocked
+        均不再作为写入值；位置看 current_node，等待/异常看 runtime_state 与 active_waiting_set。
+
+    waiting_state:
+      type: string
+      required: false
+      writer: mark_waiting primitive
+      description: 已被 runtime_state 覆盖；v0.3.2 兼容保留
+      v04_deprecated: true
+
+    # --- 评估结果 ---
+    scope_assessment:
+      type: object
+      required: false
+      writer: assess_task_scope primitive
+      schema:
+        complexity: enum[simple, moderate, complex]
+        impact: enum[local_reversible, design_affecting]
+        red_flags: array[enum]
+        evidence: array[string]   # 必须非空（v0.3.1 §5.2.2 守卫）
+      derived_fields:
+        evidence_count:
+          type: int
+          formula: count(scope_assessment.evidence)
+          description: evidence 条目数
+        is_populated:
+          type: bool
+          formula: complexity != null && impact != null && evidence_count > 0
+          description: assessment 所有必填字段已被填写的标记；inv_classification_required_before_dispatch 使用
+
+    decision_shape:
+      type: object
+      required: false
+      writer: assess_decision_shape primitive
+      schema:
+        multi_options: bool
+        option_count: int
+        needs_consult: bool
+        needs_user_decision: bool
+      derived_fields:
+        is_populated:
+          type: bool
+          formula: multi_options != null && option_count != null && needs_consult != null && needs_user_decision != null
+          description: decision_shape 所有必填字段已被填写；inv_classification_required_before_dispatch 使用
+
+    # --- 治理记录 ---
+    consult_records:
+      type: array<object>
+      required: false
+      default: []
+      writer: consult_codex primitive (append-only)
+      schema_per_item:
+        round: string  # R1 / R2 / ...
+        layer: enum[requirement, design, breakdown, review]
+        input_summary: string
+        codex_reply: object  # 含 recommendation / status / findings 等
+        unsolicited_findings: array
+        stop_reason: enum[converged, hard_max, blocked]
+        timestamp: iso-8601
+      append_only: true
+      description: round 关闭后不可修改（参见 immutable_frozen_artifacts invariant）
+      derived_fields:
+        length:
+          type: int
+          formula: count(consult_records)
+          description: 当前已记录的 consult 轮次数
+        last_recommendation:
+          type: string | null
+          formula: consult_records[-1].codex_reply.recommendation if length > 0 else null
+          description: 最后一轮 consult 的 recommendation；用于 manifest when 表达式
+        last_stop_reason:
+          type: string | null
+          formula: consult_records[-1].stop_reason if length > 0 else null
+        layer_contains:
+          type: function(string) -> bool
+          formula: any(r.layer == arg for r in consult_records)
+          description: 用法：consult_records.layer_contains('requirement')
+
+    unsolicited_findings_log:
+      type: array<object>
+      required: false
+      default: []
+      writer: consult_codex primitive / skill thin facade (append-only)
+      append_only: true
+      description: |
+        C4 hotfix ledger. 每个 consult unsolicited finding / uf{n} 必须有且仅有一条 disposition record。
+        该 ledger 不替代 open_red_flags；只有 disposition=open_red_flag 时才必须创建或引用 red_flag。
+      schema_per_item:
+        id: string
+        source: string
+        consult_round: string
+        summary: string
+        disposition: enum.unsolicited_finding_disposition
+        rationale: string
+        red_flag_ref: string
+        followup_ref: string
+        decided_by: enum[claude, codex_recommended, user]
+        created_at: iso-8601
+
+    decision_refs:
+      type: array<string>
+      required: false
+      default: []
+      writer: record_decision_provenance primitive (append-only)
+      description: |
+        决策 ID 引用列表。完整决策记录在 batch_state.decision_records，
+        task 层只保留 ref（v0.3.1 §5.2.6 已规定）
+
+    engineering_decidable_decisions:
+      type: array<object>
+      required: false
+      default: []
+      writer: record_decision_provenance primitive / skill thin facade (append-only)
+      append_only: true
+      description: |
+        F7 engineering-decidable 证据账本。仅记录 U2/U3/U5 被 Claude+Codex
+        工程裁定时的 5-of-5 evidence metadata；canonical 决策仍唯一写入
+        batch_state.decision_records，task 层通过 decision_ref 关联，不形成第二决策源。
+      schema_per_item:
+        id: string
+        decision_ref: string          # 必须匹配 batch_state.decision_records[].id
+        touchpoint: enum[U2_db_api_rename, U3_task_status_derivation, U5_migration_backfill]
+        summary: string
+        evidence_list: array<string>  # 至少 2 条具体证据引用
+        reversibility_class: enum[reversible, reversible_with_rollback]
+        rollback_ref: string          # U5 或 reversible_with_rollback 必填
+        scope:
+          class: enum[task_local, module_local, repo_local]
+          paths: array<string>
+          external_contract_impact: bool  # 必须为 false
+        tests_ref: array<string>      # 至少 1 条验证命令或测试引用
+        canonical_consistency:
+          class: enum[projection_only, api_compat_preserved, existing_kernel_direction, u1_u4_settled]
+          changes_kernel_semantics: bool  # 必须为 false；true 时必须升级用户
+          required_decision_refs: array<string>
+        decided_by: enum[claude, codex_recommended]
+        created_at: iso-8601
+
+    open_red_flags:
+      type: array<object>
+      required: false
+      default: []
+      writer: consult_codex (append) / resolve_red_flag (close)
+      schema_per_item:
+        id: string
+        source: string  # 例: consult_codex.R1.unsolicited_findings[0]
+        description: string
+        raised_at: iso-8601
+        status: enum.red_flag_status
+        resolved_at: iso-8601
+        resolved_by: string         # consult_ref / decision_id / replan_ref / scope_change_ref
+        resolution_type: enum.red_flag_status   # 镜像 status 的 resolved_* 取值，用于 provenance 查询
+      description: dispatch_to_codex pre-condition 要求所有 status != open
+      derived_fields:
+        any_open:
+          type: bool
+          formula: any(f.status == 'open' for f in open_red_flags)
+          description: 是否还有未关闭的 red_flag；manifest 常用
+        all_resolved:
+          type: bool
+          formula: all(f.status != 'open' for f in open_red_flags) OR length == 0
+          description: 是否全部已 resolved
+        open_count:
+          type: int
+          formula: count(f for f in open_red_flags where f.status == 'open')
+
+    approval_records:
+      type: array<object>
+      required: false
+      default: []
+      writer: ask_user_approval primitive (append-only)
+      schema_per_item:
+        gate_id: string
+        actor: string
+        timestamp: iso-8601
+        scope: string
+      derived_fields:
+        gate_ids:
+          type: array<string>
+          formula: [r.gate_id for r in approval_records]
+          description: 已记录的所有 gate_id 列表；用法：'step1_approval' in task.approval_records.gate_ids
+        contains_gate:
+          type: function(string) -> bool
+          formula: any(r.gate_id == arg for r in approval_records)
+          description: 用法：task.approval_records.contains_gate('step1_approval')
+
+    review_status:
+      type: enum
+      required: false
+      writer: review_codex_receipt primitive
+      values: [passed, needs_followup, design_conflict]
+
+    verification_result:
+      type: object
+      required: false
+      writer: run_verification primitive
+      schema:
+        build: enum[ok, fail, skipped]
+        test: enum[passed, failed, skipped]
+        timestamp: iso-8601
+
+    # --- 异步等待 ---
+    pending_user_decision:
+      type: bool
+      required: false
+      default: false
+      writer: ask_user_decision primitive
+      description: |
+        受 invariant `no_pending_user_decision_in_autonomous` 约束：
+        autonomous-batch 模式下进入 dispatch 节点前必须为 false。
+
+    blocker_type:
+      type: enum
+      required: false
+      values:
+        - user_confirmation
+        - consult_required
+        - claude_decision_required
+        - codex_unavailable
+        - codex_rejected            # v0.3.2 新增：codex 已挂载但拒接派工
+        - hook_violation
+      writer: 节点引擎
+
+# -----------------------------------------------------------------------------
+# 3. batch_state schema
+# -----------------------------------------------------------------------------
+# 持久化位置：docs/.ccb/events/journal.jsonl 的 batch_authorization_completed 事件
+# 批量授权由 EventJournal 承载；batch_state 名称作为协议兼容视图保留。
+# 完整 v0.3.1 §4.2 字段全部保留；v0.3.2 仅追加 nodes_executed。
+# -----------------------------------------------------------------------------
+
+batch_state:
+  description: 批次状态。原语不可直接 mutate；只能由调度器在 task 切换 / waiting / archive 时维护。
+  fields:
+
+    # --- 标识与版本 ---
+    schema_version:
+      type: string
+      required: true
+      default: v0.3.2
+
+    batch_id:
+      type: string
+      required: true
+      mutable: false
+
+    created_at:
+      type: iso-8601
+      required: true
+      mutable: false
+
+    revision:
+      type: int
+      required: true
+      default: 0
+      writer: scheduler (CAS)
+
+    # --- 策略档 ---
+    policy_profile:
+      type: enum.policy_profile
+      required: true
+
+    user_approval_mode:
+      type: enum.user_approval_mode
+      required: true
+
+    downgraded_gates:
+      type: array<object>
+      required: false
+      default: []
+      schema_per_item:
+        gate_id: string
+        downgraded_at: iso-8601
+        authorized_by: string  # 例: 'user_arguments:"完全自主"'
+        scope: string
+
+    authority_boundaries:
+      type: object
+      required: true
+      schema:
+        non_overridable_escalations:
+          type: array<string>
+          default:
+            - contract_change
+            - data_shape_change
+            - state_flow_change
+            - cross_module_dependency
+            - irreversible_migration
+            - security_impact
+            - scope_expansion
+
+    loop_budget:
+      type: object
+      required: false
+      schema:
+        per_task: int       # 默认 20
+        per_batch: int      # 默认 200
+        scale_by_complexity: bool  # 默认 true
+
+    # --- 任务列表与游标 ---
+    tasks:
+      type: array<object>
+      required: true
+      default: []
+      schema_per_item:
+        id: string
+        status: enum.task_status
+        current_node: enum.current_node    # v0.3.2 新增
+        runtime_state: enum.runtime_state  # v0.3.2 新增
+        spec_hash: sha256-hex
+        consult_records: array
+        decision_refs: array
+        open_red_flags: array
+        idempotency_keys: object
+        nodes_executed:                     # v0.3.2 新增
+          type: array<string>
+          description: 本任务走过的节点 ID 序列（审计用，按时间序）
+
+    current_task_id:
+      type: string
+      required: false
+      writer: scheduler
+
+    active_waiting_set:
+      type: array<object>
+      required: false
+      default: []
+      writer: scheduler / mark_waiting primitive
+      schema_per_item:
+        task_id: string
+        waiting_for: enum[codex_receipt, user_arbitration, hook_event]
+        since: iso-8601
+        resume_trigger: string
+
+    # --- 决策与审计 ---
+    decision_records:
+      type: array<object>
+      required: false
+      default: []
+      writer: record_decision_provenance primitive (append-only)
+      description: |
+        v0.3.1 §5.2.6 既有：决策写入的【唯一】canonical 表。
+        ask_user_decision / consult_codex 必须通过 record_decision_provenance 写此处，
+        不允许直接 mutate task.decision_records。
+      schema_per_item:
+        id: string
+        task_id: string
+        decided_by: enum[claude, user, codex-recommended]
+        at: iso-8601
+        why: string
+        scope: enum[task-local, batch-local, project-wide]
+        refs:
+          consult_ref: string
+          adr_ref: string
+          human_decision_ref: string
+
+    execution_trace:
+      type: array<object>
+      required: false
+      default: []
+      writer: 节点引擎 (append)
+      schema_per_item:
+        loop: int
+        at: iso-8601
+        primitive: string                     # 调用了哪个原语
+        node: enum.current_node               # v0.3.2 新增：哪个节点内调用
+        why_this_tool_now: string
+        expected_state_change: string
+        actual_result: enum[ok, denied, error]
+
+    idempotency_log:
+      type: object
+      required: false
+      writer: dispatch_to_codex / review_codex_receipt / archive_spec primitives
+      schema:
+        dispatch:
+          type: array<object>
+          schema_per_item:
+            key: sha256-hex
+            executed_at: iso-8601
+        review:
+          type: array<object>
+          schema_per_item:
+            key: sha256-hex
+            executed_at: iso-8601
+        archive:
+          type: array<object>
+          schema_per_item:
+            key: sha256-hex
+            executed_at: iso-8601
+
+    # --- Codex 主动通道 ---
+    unsolicited_findings_inbox:
+      type: array<object>
+      required: false
+      default: []
+      writer: consult_codex post-condition (auto-injection)
+
+    # --- 等待与升级 ---
+    waiting_states:
+      type: object
+      required: false
+      default: {}
+
+    escalations:
+      type: array<object>
+      required: false
+      default: []
+      writer: escalate_to_human primitive / dispatch_rejected transition
+      schema_per_item:
+        escalation_id: string
+        reason_class: string
+        raised_at: iso-8601
+        task_id: string
+        event_id: string     # 若由外部事件触发（如 codex_rejected），记录事件 ID
+        payload: object
+
+    consumed_events:
+      type: array<object>
+      required: false
+      default: []
+      writer: 节点引擎 / transition consumer (external event consumers)
+      description: |
+        已消费的外部事件集合，防止 hook replay 重复触发 transition。
+        所有 `on_external_event` 类 transition（且**仅**该类）消费事件前必须检查此集合。
+        其他 trigger 类型（on_done / on_subflow_done / on_guard_failure / on_escalation）
+        不使用此字段。
+      schema_per_item:
+        event_id: string            # 必须；事件唯一 ID（UUID）
+        idempotency_key: string     # 可选；若事件自身携带 idempotency_key 则存入，便于事后审计
+        event_type: string          # 事件类型，冗余记录以便审计（codex_picked_up / codex_rejected / ...）
+        consumed_at: iso-8601       # 消费时间戳
+        consumer_transition_id: string  # 触发消费的 transition_id
+      dedupe_key: event_id
+      description_note: |
+        Dedupe 算法：消费新事件前，若 `consumed_events[].event_id` 已存在相同 event_id，
+        则直接丢弃（即使 idempotency_key 不同），避免 hook replay 造成双写。
+        idempotency_key 字段用于审计（同一事件在不同 key 语境下被消费过哪些次），
+        不参与 dedupe。
+
+# -----------------------------------------------------------------------------
+# 4. 持久化与 CAS
+# -----------------------------------------------------------------------------
+persistence:
+
+  dev_task:
+    location: docs/03_开发计划/*开发任务.md
+    format: yaml-frontmatter + markdown body
+    cas_field: revision
+    cas_rule: |
+      写入方必须读到 revision = N 后，写入 N+1。
+      若磁盘上 revision != N，强制重读重算（参见 revision_monotonic_cas invariant）。
+
+  batch_state:
+    location: docs/.ccb/events/journal.jsonl
+    format: batch_authorization_completed event payload
+    cas_field: idempotency_key
+    cas_rule: EventJournal append-only idempotency
+
+# -----------------------------------------------------------------------------
+# 5. v0.3.2 ↔ v0.4 演进路线
+# -----------------------------------------------------------------------------
+evolution:
+
+  v032_added:
+    - dev_task.current_node
+    - dev_task.node_substate
+    - dev_task.runtime_state
+    - dev_task.last_transition_id
+    - dev_task.rollback_origin
+    - dev_task.phase_projection (derived only)
+    - batch_state.tasks[*].current_node
+    - batch_state.tasks[*].runtime_state
+    - batch_state.tasks[*].nodes_executed
+    - batch_state.execution_trace[*].node
+
+  v034_added:
+    - dev_task.engineering_decidable_decisions
+
+  v050_added:
+    - enums.requirement_status
+    - dev_task.requirement_id
+    - dev_task.section_id
+    - dev_task.order
+    - dev_task.implementation_owner
+    - dev_task.legacy_kind
+    - dev_task.legacy_parent_hint
+    - dev_task.migration_batch_id
+    - dev_task.migration_rule_id
+    - dev_task.migration_confidence
+    - dev_task.migration_reviewed_by
+    - dev_task.migration_reviewed_at
+
+  v051_changed:
+    - dev_task.status values narrowed to reviewing/done/cancelled
+    - current_node owns flow position
+    - runtime_state + node_substate + batch_state.active_waiting_set own waiting/escalation/replan state
+
+  v032_kept_for_compat:
+    - dev_task.waiting_state # 与 runtime_state 并存
+    - dev_task.phase_projection # v0.4 删除
+
+  v04_will_delete:
+    - dev_task.phase_projection (DB 列)
+    - dev_task.waiting_state    (合并入 runtime_state)
+    - Console DB Task.phase 列
+
+# -----------------------------------------------------------------------------
+# 5b. Artifact namespaces（capability required_artifacts 引用源）
+# -----------------------------------------------------------------------------
+# capability registry 的 required_artifacts.all_of / any_of 字段引用的 artifact ID
+# 不一定在 dev_task / batch_state 内，可能是文件系统 artifact 或 derived view。
+# 本节列出所有合法 artifact namespace，用于 lint 与 capability resolver 校验。
+# -----------------------------------------------------------------------------
+
+artifact_namespaces:
+
+  task:
+    description: 引用 dev_task.<field>，参见 §2 dev_task.fields
+    examples:
+      - task.task_id
+      - task.description
+      - task.scope_assessment
+      - task.spec_path
+      - task.spec_hash
+      - task.spec_draft
+      - task.consult_records
+      - task.requirement_summary
+      - task.requirement_doc_path
+      - task.design_doc_path
+      - task.adr_path
+      - task.idea_set
+      - task.open_red_flags
+      - task.approval_records
+      - task.decision_refs
+      - task.engineering_decidable_decisions
+      - task.review_status
+      - task.verification_result
+      - task.requirement_id
+      - task.section_id
+      - task.order
+      - task.implementation_owner
+
+  batch_state:
+    description: |
+      引用 batch_state.<field>，参见 §3 batch_state.fields。
+      ⚠️ **唯一合法拼写为 `batch_state.*`**；旧文档 / capability registry 中出现的 `batch.*`
+      是 legacy 简写，v0.3.2 起必须全部改为 `batch_state.*`（lint 规则将拒绝 `batch.*` 引用）。
+    examples:
+      - batch_state.policy_profile
+      - batch_state.user_approval_mode
+      - batch_state.decision_records
+      - batch_state.escalations
+      - batch_state.idempotency_log
+      - batch_state.active_waiting_set
+      - batch_state.consumed_events
+      - batch_state.current_task_id
+      - batch_state.tasks
+
+  project:
+    description: |
+      项目级 artifact 来自人读 docs 与自动索引缓存，不在 state 文件内。
+      读 primitive：load_project_index 加载 docs/00_项目总览.md、
+      docs/00_文档地图.md、docs/.ccb/docs-structure-contract.yaml 与
+      docs/.ccb/index/document-map.json 到 in-memory project_context 后供 capability 引用。
+    fields:
+      project.context:
+        type: object (in-memory only)
+        sources:
+          - docs/00_项目总览.md
+          - docs/00_文档地图.md
+          - docs/.ccb/docs-structure-contract.yaml
+          - docs/.ccb/index/document-map.json
+        description: 项目上下文聚合视图（在 task 启动时由 load_project_index 加载）
+      project.index:
+        type: object (in-memory only)
+        sources:
+          - docs/.ccb/index/document-map.json
+        description: 自动文档地图缓存（与 project.context 部分重叠，但保持独立 namespace 兼容现有引用）
+
+  codex:
+    description: codex 派工 / 回执相关 artifact
+    fields:
+      codex.receipt:
+        type: object (file)
+        sources:
+          - docs/.ccb/state/<task>.md frontmatter (codex_receipt 字段)
+        description: codex execute mode 完成后的精简回执
+
+  loop:
+    description: 当前调度器 loop 的临时变量（不持久化）
+    fields:
+      loop.state_revision:
+        type: int
+        description: 本轮 load_work_state 读到的 task.revision；用于 CAS 起点
+
+  subtask_batch:
+    description: create_subtask_batch 临时产物命名空间。
+    fields:
+      subtask_batch.subtask_ids:
+        type: array<string>
+
+  each_subtask:
+    description: create_subtask_batch 对每个新 SubTask 的 must_produce 断言命名空间。
+    fields:
+      each_subtask.requirement_id:
+        type: string
+      each_subtask.linked_spec_id:
+        type: string
+      each_subtask.section_id:
+        type: string
+      each_subtask.order:
+        type: string
+      each_subtask.implementation_owner:
+        type: enum[claude, ccb_codex]
+      each_subtask.current_node:
+        type: enum.current_node
+
+# -----------------------------------------------------------------------------
+# 6. 写入权限矩阵（与 primitive-executor-contract.md 交叉验证）
+# -----------------------------------------------------------------------------
+write_authority:
+
+  dev_task:
+    primitives_can_write:
+      - load_work_state          # 不写，只设 loop.state_revision
+      - assess_task_scope        # 写 scope_assessment
+      - assess_decision_shape    # 写 decision_shape
+      - consult_codex            # append consult_records / open_red_flags
+      - resolve_red_flag         # close open_red_flags
+      - ask_user_approval        # append approval_records
+      - ask_user_decision        # 设 pending_user_decision
+      - record_decision_provenance # append decision_refs / engineering_decidable_decisions evidence ledger
+      - write_spec               # 写 spec_path
+      - freeze_spec              # 写 spec_hash
+      - dispatch_to_codex        # 写 runtime_state / waiting_state
+      - review_codex_receipt     # 写 review_status
+      - mark_waiting             # 写 waiting_state / runtime_state
+      - escalate_to_human        # 写 runtime_state
+      - replan_from_review       # 写 rollback_origin / node_substate
+      - task_breakdown_materialize # 写 requirement_id / section_id / order / implementation_owner
+      - migration_apply          # 写 legacy_* / migration_* / hierarchy 字段
+
+    scheduler_can_write:
+      - current_node             # 节点转移
+      - node_substate
+      - runtime_state            # 与 mark_waiting 共写
+      - last_transition_id
+      - rollback_origin          # 与 replan 共写
+
+    server_side_only:
+      - phase_projection         # 派生字段，禁止用户写
+
+  batch_state:
+    primitives_can_write:
+      - record_decision_provenance  # append decision_records
+      - dispatch_to_codex           # append idempotency_log.dispatch
+      - review_codex_receipt        # append idempotency_log.review
+      - archive_spec                # append idempotency_log.archive
+      - mark_waiting                # append active_waiting_set
+      - escalate_to_human           # append escalations
+
+    scheduler_only:
+      - tasks                       # 任务列表维护
+      - current_task_id
+      - active_waiting_set          # 与 mark_waiting 共写
+      - execution_trace             # 调度器循环追加
+      - downgraded_gates
+      - loop_budget
+      - revision                    # CAS
+
+# -----------------------------------------------------------------------------
+# END of state-schema.yaml
+# -----------------------------------------------------------------------------

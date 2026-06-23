@@ -1,0 +1,53 @@
+[
+  {
+    "name": "single-claude-codex-peer",
+    "currentAgent": "agent_claude",
+    "configText": "[windows]\npair-a = \"agent_claude:claude, agent_codex:codex\"\n",
+    "expected": {
+      "kind": "peer",
+      "peer": "agent_codex",
+      "window": "pair-a"
+    }
+  },
+  {
+    "name": "single-provider-no-peer",
+    "currentAgent": "claude_a",
+    "configText": "[windows]\nreviewers = \"claude_a:claude, claude_b:claude\"\n",
+    "expected": {
+      "kind": "no_peer",
+      "reason": "no_complementary_peer",
+      "window": "reviewers",
+      "candidates": []
+    }
+  },
+  {
+    "name": "multiple-complementary-peers-ambiguous",
+    "currentAgent": "lead_claude",
+    "configText": "[windows]\nimplementation = \"lead_claude:claude, codex_a:codex, codex_b:codex\"\n",
+    "expected": {
+      "kind": "ambiguous",
+      "reason": "multiple_complementary_peers",
+      "window": "implementation",
+      "candidates": ["codex_a", "codex_b"]
+    }
+  },
+  {
+    "name": "unknown-agent-no-peer",
+    "currentAgent": "missing_agent",
+    "configText": "[windows]\npair-a = \"agent_claude:claude, agent_codex:codex\"\n",
+    "expected": {
+      "kind": "no_peer",
+      "reason": "agent_not_found"
+    }
+  },
+  {
+    "name": "renamed-window-still-groups",
+    "currentAgent": "alpha_claude",
+    "configText": "[windows]\nalpha-team = \"alpha_claude:claude, alpha_codex:codex\"\nresearch = \"review_claude:claude\"\n",
+    "expected": {
+      "kind": "peer",
+      "peer": "alpha_codex",
+      "window": "alpha-team"
+    }
+  }
+]

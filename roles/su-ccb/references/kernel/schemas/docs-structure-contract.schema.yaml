@@ -1,0 +1,85 @@
+# This YAML is contract documentation. Runtime structure checks are implemented in
+# lib/docs-structure/index.mjs.
+schema_name: docs-structure-contract
+kind: docs_structure_contract_yaml
+version: 1
+description: >
+  ADR-0037 directory contract consumed by plugin and Console code to resolve
+  human-readable docs locations, doc_type metadata, split rules, and entity
+  status ownership without hard-coded paths.
+
+root:
+  type: yaml_object
+  required:
+    - version
+    - adr
+    - human_docs
+    - machine_layer
+    - entity_status
+    - documents
+    - truth_model
+    - maintenance
+
+fields:
+  version:
+    type: literal
+    value: docs-structure-contract-v0.1
+  human_docs:
+    type: object
+    required:
+      - root
+      - naming_default
+      - entries
+      - view_split
+  human_docs.entries:
+    type: array
+    item_required_any_of:
+      - [path, doc_type]
+      - [path, doc_types]
+    doc_type_format: snake_case
+  human_docs.view_split:
+    type: object
+    required:
+      - reference_views
+      - integrated_views
+  machine_layer:
+    type: object
+    required:
+      - root
+      - holds
+      - not_holds
+  entity_status:
+    type: object
+    required:
+      - requirement
+      - task_subtask
+      - adr
+    each_value_required:
+      - doc_types
+      - kind
+      - fields
+      - values
+  documents:
+    type: object
+    required:
+      - requirement_bound
+      - evergreen
+      - archive_index
+      - health
+    each_group_required:
+      - doc_types
+      - must_have
+      - status
+
+resolver_output:
+  resolveDocType(doc_type):
+    returns:
+      - docType
+      - directory
+      - artifactPath
+      - outputPathPattern
+      - namingRule
+      - hasStatus
+      - statusKind
+      - statusFields
+      - splitByPart

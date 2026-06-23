@@ -1,0 +1,38 @@
+schema_version: lifecycle-v0.1
+lifecycle_id: requirement
+status_enum_ref: requirement_status
+applicable_to:
+  table: Requirement
+
+transitions:
+  - id: req__on_analysis_done__drafting_to_planning
+    from: drafting
+    to: planning
+    trigger_event: requirement_analysis_completed
+    guard_refs: []
+
+  - id: req__on_first_subtask_dispatched__planning_to_delivering
+    from: planning
+    to: delivering
+    trigger_event: subtask_dispatched
+    guard_refs:
+      - inv_parent_existence_guard
+
+  - id: req__on_all_subtasks_archived__delivering_to_delivered
+    from: delivering
+    to: delivered
+    trigger_event: subtask_archived
+    guard_refs:
+      - inv_all_child_subtasks_archived
+
+  - id: req__on_user_defer__any_to_deferred
+    from: [drafting, planning, delivering, deferred]
+    to: deferred
+    trigger_event: user_defer
+    guard_refs: []
+
+  - id: req__on_user_cancel__any_to_cancelled
+    from: [drafting, planning, delivering, deferred]
+    to: cancelled
+    trigger_event: user_cancel
+    guard_refs: []

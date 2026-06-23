@@ -1,0 +1,26 @@
+# Schema source: lib/worktree/topology.mjs
+# schema_version: implementation-topology-v0.1
+#
+# This project-level machine-readable file is optional.
+# If it is absent, CCB falls back to one root implementation space derived from
+# the dev_task code_workspace field.
+#
+# spaces:
+#   - space_id: root
+#     kind: git_worktree
+#     repo: "."
+#     worktree_path: "../PROJECT-req-<requirementId>"
+#     branch: "ccb/req-<requirementId>"
+#
+#   - space_id: example-package
+#     kind: git_worktree
+#     repo: "packages/example"
+#     worktree_path: "../example-package-req-<requirementId>"
+#     branch: "ccb/req-<requirementId>"
+#
+# associations:
+#   - association_id: root-to-example-package
+#     kind: project_specific_association_kind
+#     from_space: example-package
+#     to_space: root
+#     submodule_path: "packages/example"

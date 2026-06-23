@@ -1,0 +1,30 @@
+schema_name: requirement-md-frontmatter
+kind: markdown_frontmatter
+version: 1
+description: >
+  Requirement markdown frontmatter fields written by requirement-reanalyze.
+  The runtime validates only the plugin-owned analysis fields and allows
+  existing requirement metadata to pass through unchanged.
+validation_note: >
+  This YAML documents the contract. validateAgainstSchema reads only `kind`
+  and applies hard-coded checks in lib/runtime/schema-validate.mjs, including
+  strict ISO8601 datetime validation for analysis_applied_at.
+
+required_fields:
+  - analysis_input_hash
+  - analysis_applied_at
+
+fields:
+  status:
+    type: enum
+    values: [drafting, planning, delivering, delivered, deferred, cancelled]
+    required: false
+    business_meaning: Canonical requirement lifecycle status owned by requirement markdown and projected by Console.
+  analysis_input_hash:
+    type: sha256_hex
+    required: true
+    business_meaning: Hash of the title plus requirement description that the analysis was based on.
+  analysis_applied_at:
+    type: iso8601_datetime
+    required: true
+    business_meaning: Timestamp proving the plugin actively applied the latest analysis.

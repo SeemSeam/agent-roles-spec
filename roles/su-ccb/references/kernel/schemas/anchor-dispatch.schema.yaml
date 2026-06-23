@@ -1,0 +1,38 @@
+# This YAML is contract documentation. Runtime checks are implemented in
+# lib/runtime/schema-validate.mjs and lib/dispatch-parser/index.mjs.
+schema_name: anchor-dispatch
+kind: anchor_dispatch_json
+version: 1
+description: >
+  Structured JSON payload envelope for Console/anchor dispatch commands.
+  Legacy key=value command arguments and business *_b64 fields are rejected.
+
+root:
+  type: object
+  required:
+    - command
+    - payload
+
+fields:
+  command:
+    type: regex
+    pattern: '^[a-z][a-z0-9-]*$'
+    description: Skill name without the /ccb: prefix, for example su-flow.
+  payload:
+    type: object
+    max_bytes: 65536
+    max_depth: 8
+    description: >
+      Business fields consumed by the target skill. Subject identifiers may be
+      injected by Console before queueing. Nested objects and multi-line strings
+      are allowed through JSON escaping.
+
+examples:
+  slash_command:
+    text: '/ccb:su-revise-breakdown --payload {"subject":"requirement","requirement_id":"req_1","action":"breakdown_draft_reject","feedback":{"summary":"Revise slices"}}'
+  json_line:
+    command: su-flow
+    payload:
+      subject: requirement
+      requirement_id: req_1
+      step: design

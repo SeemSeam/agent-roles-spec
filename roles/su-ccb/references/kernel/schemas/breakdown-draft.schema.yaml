@@ -1,0 +1,108 @@
+schema_name: breakdown-draft
+kind: breakdown_draft_json
+version: 1
+description: >
+  Canonical breakdown-draft-v0.2 artifact consumed by Phase 2 planning-domain
+  decoupling. The runtime validates the complete top-level structure and the
+  nested plan, subtask, generation_source, and review_history sections.
+validation_note: >
+  This YAML documents the contract. validateAgainstSchema reads only `kind`
+  and applies hard-coded structural checks in lib/runtime/schema-validate.mjs.
+  Breakdown-specific business rules are enforced before writes in
+  lib/breakdown-draft/business-rules.mjs.
+
+root:
+  type: object
+  required:
+    - schema_version
+    - status
+    - requirement_id
+    - carrier_task_id
+    - carrier_task_key
+    - base_task_revision
+    - generated_at
+    - updated_at
+    - generated_by
+    - generation_source
+    - plan
+    - subtasks
+
+fields:
+  schema_version:
+    type: literal
+    value: breakdown-draft-v0.2
+  status:
+    type: enum
+    values: [draft, reviewing, approved, consumed, cancelled]
+  project_id:
+    type: non_empty_string
+    optional: true
+    deprecated: true
+  requirement_id:
+    type: non_empty_string
+  carrier_task_id:
+    type: non_empty_string
+  carrier_task_key:
+    type: non_empty_string
+  base_task_revision:
+    type: non_negative_integer_or_null
+  generated_at:
+    type: iso8601_datetime
+  updated_at:
+    type: iso8601_datetime
+  generated_by:
+    type: enum
+    values: [ai_session, manual]
+  generation_source:
+    type: object
+    allowed_keys: [cc_agent, cx_agent, ccb_job_id, manual_actor]
+    optional_fields:
+      cc_agent: non_empty_string
+      cx_agent: non_empty_string
+      ccb_job_id: non_empty_string
+      manual_actor: non_empty_string
+  plan:
+    type: object
+    required:
+      - title
+      - summary
+      - spec_outline_md
+    optional:
+      estimated_total_days: positive_number_or_null
+  subtasks:
+    type: non_empty_array
+    item:
+      section_id:
+        type: regex_unique
+        pattern: '^pr\d+-[a-z0-9-]+$'
+      order: contiguous_positive_integer_starting_at_1
+      title: non_empty_string
+      summary: non_empty_string
+      spec_section_md: markdown_min_50_chars_with_heading_or_list
+      priority: enum[high, medium, low]
+      implementation_owner: enum[claude, ccb_codex]
+      dependencies: array_of_known_section_id
+      include: boolean
+  review_history:
+    type: array
+    optional: true
+    item:
+      at: iso8601_datetime
+      actor: enum[ai, user]
+      action: enum[created, edited, status_changed, rejected]
+      note: optional_non_empty_string
+  approved_at:
+    type: iso8601_datetime
+    required_when: status == approved
+  approved_by:
+    type: non_empty_string
+    required_when: status == approved
+  consumed_at:
+    type: iso8601_datetime
+    required_when: status == consumed
+  consumed_by:
+    type: non_empty_string
+    required_when: status == consumed
+  consumed_from_hash:
+    type: sha256_hex
+    required_when: status == consumed

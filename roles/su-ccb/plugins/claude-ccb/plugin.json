@@ -1,0 +1,14 @@
+{
+  "name": "ccb",
+  "version": "1.2.0",
+  "description": "SU 协作流程 Plugin (v1.0.0 plugin sovereignty) — Plugin 是主系统 / Console 是可选 UI。含 Phase 1 写入运行时（atomic write + CAS + lock + schema + EventJournal）、Phase 2 计划域闭环（breakdown-draft + subtask materialize）、Phase 3 AI-native Reconcile（/ccb:su-reconcile + state 文件层）、Phase 4 Console clean start（field ownership + EventJournal v1.0）。多 AI 协作编排（Claude+Codex）含 Requirement/SubTask 协议、规划、协商、派工、审查、归档、恢复。",
+  "author": {
+    "name": "Sue",
+    "url": "https://github.com/Im-Sue"
+  },
+  "homepage": "https://github.com/Im-Sue/su-ccb-claude-plugin",
+  "repository": "https://github.com/Im-Sue/su-ccb-claude-plugin",
+  "license": "MIT",
+  "keywords": ["ccb", "collaboration", "codex", "multi-agent", "planning", "review", "workflow"],
+  "skills": "./skills/"
+}
