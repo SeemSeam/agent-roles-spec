@@ -106,6 +106,21 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 </details>
 
 <details>
+<summary><strong>agentroles.coder</strong> - Coder（代码实现工程师）</summary>
+
+- **版本**: `0.1.0`
+- **等级**: `experimental`
+- **用途**: 实现聚焦的代码改动，匹配仓库既有模式，保持范围收敛，并提供合适的验证证据。
+- **适合场景**: 小功能实现、有证明的 bug fix、聚焦重构、失败测试与 CI 修复、测试驱动的实现、巨石文件增长控制、fallback 纪律、仓库风格匹配，以及需要审批的依赖变更。
+- **包含内容**: Coder memory、轻量实现 skills、编码纪律与角色边界 references、可复用实现 templates、host adapter notes 和验证 prompts。
+- **Adapters**: CCB、Claude Code、Codex、HIVE。
+- **添加**: `agent-roles add coder`
+- **更新**: `agent-roles update coder`
+- **源码**: [`roles/coder`](../../roles/coder/)
+
+</details>
+
+<details>
 <summary><strong>agentroles.frontend_engineer</strong> - Frontend Design Engineer（前端设计工程师）</summary>
 
 - **版本**: `0.3.0`

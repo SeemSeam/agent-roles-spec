@@ -31,6 +31,13 @@ in `role.toml` so `agent-roles list` can display their maturity.
   config, message-chain, source/manual, command, release, and test-evidence
   skills, plus dynamic workflow orchestration for analysis, execution, review,
   mounted-agent memory overlays, dispatch, and guarded refresh.
+- [coder](coder/) (`agentroles.coder`, `experimental`): focused
+  implementation role for small, repo-native, test-backed code changes with
+  context scanning, minimal implementation, bug-fix proof, fallback discipline,
+  large-file control, repository style following, source checks, CI-failure
+  fixes, safe dependency gates, reusable coding templates, and explicit
+  escalation boundaries for review, architecture, frontend, mobile, security,
+  release, and Role-spec work.
 - [frontend-engineer](frontend-engineer/) (`agentroles.frontend_engineer`,
   `experimental`): frontend design engineering role with focused skills for
   briefs, visual direction, design tokens, component composition,

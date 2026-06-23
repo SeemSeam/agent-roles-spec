@@ -107,6 +107,21 @@ through `agent-roles` and may expose host-specific adapters.
 </details>
 
 <details>
+<summary><strong>agentroles.coder</strong> - Coder</summary>
+
+- **Version**: `0.1.0`
+- **Level**: `experimental`
+- **Purpose**: Implements focused code changes that match repository patterns, stay narrow in scope, and are backed by appropriate verification.
+- **Best for**: small feature work, bug fixes with proof, focused refactors, failing-test and CI fixes, test-backed implementation, large-file growth control, fallback discipline, repository style matching, and approval-gated dependency changes.
+- **Contents**: Coder memory, lightweight implementation skills, coding discipline and boundary references, reusable implementation templates, host adapter notes, and validation prompts.
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **Add**: `agent-roles add coder`
+- **Update**: `agent-roles update coder`
+- **Source**: [`roles/coder`](roles/coder/)
+
+</details>
+
+<details>
 <summary><strong>agentroles.frontend_engineer</strong> - Frontend Design Engineer</summary>
 
 - **Version**: `0.3.0`
