@@ -31,6 +31,30 @@ in `role.toml` so `agent-roles list` can display their maturity.
   config, message-chain, source/manual, command, release, and test-evidence
   skills, plus dynamic workflow orchestration for analysis, execution, review,
   mounted-agent memory overlays, dispatch, and guarded refresh.
+- [ccb-frontdesk](ccb-frontdesk/) (`agentroles.ccb_frontdesk`,
+  `experimental`): user-facing workflow boundary for macro intake,
+  broker-curated clarification display, final summaries, and escalation
+  reporting without implementation or runtime orchestration authority.
+- [ccb-planner](ccb-planner/) (`agentroles.ccb_planner`, `experimental`):
+  phase-activated CCB workflow planner that emits task packet, readiness, and
+  candidate-question artifacts for script import and review gates.
+- [ccb-clarification-broker](ccb-clarification-broker/)
+  (`agentroles.ccb_clarification_broker`, `experimental`): fresh-context
+  question broker that compresses planner candidate questions into
+  frontdesk-facing batches and normalizes user answers back to planner.
+- [ccb-plan-reviewer](ccb-plan-reviewer/)
+  (`agentroles.ccb_plan_reviewer`, `experimental`): semantic readiness review
+  gate for planner artifacts, acceptance criteria, verification contracts,
+  risk handling, and clarification blockers.
+- [ccb-worker](ccb-worker/) (`agentroles.ccb_worker`, `experimental`):
+  short-lived bounded execution role for one work item with explicit evidence
+  and no global completion authority.
+- [ccb-checker](ccb-checker/) (`agentroles.ccb_checker`, `experimental`):
+  node-level checker for worker output, missing evidence, fallback,
+  degradation, and scope shrinkage.
+- [ccb-round-checker](ccb-round-checker/)
+  (`agentroles.ccb_round_checker`, `experimental`): whole-round verifier that
+  produces a machine-readable round result for CCB script import.
 - [coder](coder/) (`agentroles.coder`, `experimental`): focused
   implementation role for small, repo-native, test-backed code changes with
   context scanning, minimal implementation, bug-fix proof, fallback discipline,
@@ -38,6 +62,14 @@ in `role.toml` so `agent-roles list` can display their maturity.
   fixes, safe dependency gates, reusable coding templates, and explicit
   escalation boundaries for review, architecture, frontend, mobile, security,
   release, and Role-spec work.
+- [code-reviewer](code-reviewer/) (`agentroles.code_reviewer`,
+  `experimental`): bounded review-gate role for checking worker output against
+  task intent, test evidence, fallback discipline, and implementation
+  boundaries without taking over implementation.
+- [ccb-orchestrator](ccb-orchestrator/) (`agentroles.ccb_orchestrator`,
+  `experimental`): CCB loop dispatcher role for requesting configured dynamic
+  capacity, sending bounded worker/reviewer asks, aggregating loop evidence,
+  and releasing loop-owned idle capacity through CCB-owned commands.
 - [frontend-engineer](frontend-engineer/) (`agentroles.frontend_engineer`,
   `experimental`): frontend design engineering role with focused skills for
   briefs, visual direction, design tokens, component composition,

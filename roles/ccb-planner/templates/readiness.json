@@ -1,0 +1,7 @@
+{
+  "schema": "ccb.workflow.readiness/v1",
+  "task_id": "<task-id>",
+  "recommended_status": "ready|needs_clarification|blocked|not_ready",
+  "reason": "<short reason>",
+  "next_role": "plan_reviewer|clarification_broker|orchestrator|frontdesk"
+}

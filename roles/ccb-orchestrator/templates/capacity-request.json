@@ -1,0 +1,12 @@
+{
+  "loop_id": "",
+  "profiles": {
+    "worker": 1,
+    "code_reviewer": 1
+  },
+  "max_nodes": 4,
+  "lifetime": "current_round",
+  "reason": "",
+  "task_packet_ref": "",
+  "verification_ref": ""
+}

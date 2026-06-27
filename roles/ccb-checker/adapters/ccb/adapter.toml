@@ -1,0 +1,9 @@
+schema = "agent-role-adapter/ccb-preview-0.1"
+host = "ccb"
+display_name = "code_reviewer"
+default_agent_name = "code_reviewer"
+supported_providers = ["codex", "claude", "gemini", "opencode", "kimi", "mimo", "qwen", "zai", "droid"]
+memory = ["adapters/ccb/memory.md"]
+skills = []
+permission_default = "ask"
+recommended_workspace_mode = "inplace"

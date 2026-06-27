@@ -1,11 +1,11 @@
 # Agent Roles Open Source Implementation Status
 
-Date: 2026-06-14
+Date: 2026-06-27
 
 ## Current Phase
 
-Preview package-manager hardening, PyPI/npm release preparation, and
-`agentroles.mother` capability planning.
+Preview package-manager hardening, CCB workflow catalog Role handoff, PyPI/npm
+release preparation, and `agentroles.mother` capability planning.
 
 ## Current Review Target
 
@@ -43,6 +43,17 @@ this repository's Role adapter memory, `archi-tooling` skill, adapter metadata,
 and adapter tool script now match that route instead of the older CCB-managed
 `ccb-archi` Python venv path. See
 [topics/archi-ccb-adapter-tooling-alignment.md](topics/archi-ccb-adapter-tooling-alignment.md).
+
+The local catalog now includes the CCB agentic-loop workflow Roles promoted
+from CCB's plan-tree drafts: `agentroles.ccb_frontdesk`,
+`agentroles.ccb_planner`, `agentroles.ccb_clarification_broker`,
+`agentroles.ccb_plan_reviewer`, `agentroles.ccb_orchestrator`,
+`agentroles.ccb_worker`, `agentroles.ccb_checker`, and
+`agentroles.ccb_round_checker`. These Roles are CCB Host Adapter catalog
+entries, not a CCB runtime extraction. They carry role-local skills and
+templates, declare the full CCB provider set for host projection, and keep
+authoritative state mutation behind CCB-owned commands such as `ccb plan`,
+`ccb question`, and `ccb loop capacity`.
 
 Reviewer1 reviewed this plan on 2026-06-07 and returned `Proceed` with no
 blocking plan issues. The plan was tightened to expand `ccb-archi` acceptance
@@ -288,3 +299,18 @@ references should be treated as historical planning language until migrated.
   `git diff --check`, and a temporary-store CLI smoke where
   `list`, `install frontend`, and `resolve frontend` returned
   `agentroles.frontend_engineer` `0.2.0`.
+- On 2026-06-27, CCB workflow catalog Roles were landed in the local worktree:
+  `ccb-frontdesk`, `ccb-planner`, `ccb-clarification-broker`,
+  `ccb-plan-reviewer`, `ccb-orchestrator`, `ccb-worker`, `ccb-checker`, and
+  `ccb-round-checker`, with aliases in `aliases.toml`, catalog notes in
+  `roles/README.md`, and focused tests in `tests/test_ccb_workflow_roles.py`.
+  External verification passed with `python -m pytest -q` returning
+  `69 passed`. CCB source verification passed with `PYTHONPATH=lib pytest -q
+  test/test_ask_skill_templates.py test/test_repo_hygiene.py
+  test/test_orchestrator_rolepack.py test/test_question_cli.py
+  test/test_plan_tasks_cli.py` returning `37 passed`. The source-wrapper smoke
+  project `/home/bfly/yunwei/test_ccb2/workflow-rolepack-handoff-smoke`
+  installed all eight Roles through `ccb_test roles install`, validated the
+  five-role foreground config, planned worker/checker capacity, projected
+  Codex `ask` plus role skills, and imported planner/broker/reviewer artifacts
+  until task `role-handoff-001` reached `ready`.
