@@ -19,7 +19,7 @@ Allowed commands:
 ```bash
 ccb loop capacity ensure --loop-id <id> --profile worker=1 --profile code_reviewer=1 --json
 ccb loop capacity status --loop-id <id> --json
-ccb loop capacity release --loop-id <id> --idle-only --json
+ccb loop capacity release --loop-id <id> --policy auto --json
 ```
 
 Returned agent names are the only valid dynamic ask targets. Do not invent

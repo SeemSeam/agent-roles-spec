@@ -125,7 +125,7 @@ After the worker/checker branch is drained, release only idle loop-owned
 capacity:
 
 ```bash
-ccb loop capacity release --loop-id <id> --idle-only --json
+ccb loop capacity release --loop-id <id> --policy auto --json
 ```
 
 If release reports retained agents, treat them as active blockers or handoff
