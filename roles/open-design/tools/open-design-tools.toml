@@ -1,0 +1,88 @@
+schema = "agent-role/tool-manifest/preview-0.1"
+name = "Open Design Tool Manifest"
+version = "0.1.0"
+description = "Optional Open Design CLI, daemon, plugin, and MCP runtime projection for the Open Design Role wrapper."
+
+[runtime]
+scope = "provider-shared"
+install_policy = "explicit"
+store_hint = "{provider_runtime}/tools/agentroles.open-design"
+secrets = "external"
+cleanup = "unmount-owned"
+network = "install-and-docs"
+
+[[tools]]
+id = "open-design-source"
+kind = "source-bundle"
+optional = false
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Vendored nexu-io/open-design source carried by this Role."
+
+[tools.install]
+mode = "bundled"
+notes = "Source is bundled under upstream/open-design; dependencies are not installed."
+
+[tools.doctor]
+checks = [
+  "upstream/open-design/package.json exists",
+  "upstream/open-design/skills exists",
+  "upstream/open-design/design-systems exists",
+  "upstream/open-design/plugins exists",
+]
+
+[[tools]]
+id = "od-cli"
+kind = "cli"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Open Design CLI and daemon entrypoint from the vendored upstream source or a host-installed Open Design distribution."
+requires_project = ["project directory for Open Design artifacts when running generation"]
+
+[tools.install]
+mode = "manual-or-host-adapter"
+notes = "Requires explicit host or user approval for Node, pnpm, package install, native builds, daemon startup, and PATH changes."
+
+[tools.doctor]
+checks = [
+  "Node version satisfies upstream package.json engines",
+  "pnpm version satisfies upstream package.json packageManager",
+  "dependencies are installed in a runtime store outside Role source when execution is requested",
+  "od CLI is available or can be launched from an approved runtime checkout",
+]
+
+[[tools]]
+id = "open-design-mcp"
+kind = "mcp-server"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Open Design MCP server projection for agent access to Open Design projects, files, previews, and tools."
+requires_project = ["Open Design daemon/runtime state outside Role source"]
+
+[tools.install]
+mode = "manual-or-host-adapter"
+notes = "Use upstream guidance such as od mcp install <agent> only through adapter-owned projection. Generated MCP config is projection output."
+
+[tools.doctor]
+checks = [
+  "Open Design runtime is installed outside Role source",
+  "MCP config target is provider-approved",
+  "credentials and daemon data are stored outside Role source",
+]
+
+[[tools]]
+id = "open-design-plugins"
+kind = "plugin-runtime"
+optional = true
+adapter_targets = ["codex", "claude-code", "ccb", "hive"]
+description = "Open Design plugin install/apply/trust workflow."
+
+[tools.install]
+mode = "runtime"
+notes = "Plugin state and applied snapshots are runtime or Project Binding state, not Role source."
+
+[tools.doctor]
+checks = [
+  "plugin source is trusted according to host policy",
+  "capabilities are explicitly granted",
+  "applied plugin snapshots are written outside Role source",
+]

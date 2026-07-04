@@ -152,6 +152,21 @@ through `agent-roles` and may expose host-specific adapters.
 </details>
 
 <details>
+<summary><strong>agentroles.open-design</strong> - Open Design</summary>
+
+- **Version**: `0.1.0`
+- **Level**: `experimental`
+- **Purpose**: Wraps `nexu-io/open-design` as a Role, with upstream hidden agent/plugin/config paths reorganized into Agent Roles source directories.
+- **Best for**: Open Design skill selection, DESIGN.md design-system work, visual direction, prototype/deck/image/video design workflows, Open Design MCP or CLI setup planning, and design review using normalized Role content plus bundled upstream source.
+- **Contents**: Wrapper memory and skill, normalized Open Design contribution skill, plugin metadata, command prompt, runtime config templates, GitHub/Vaunt/superpowers references, vendored Open Design upstream source mirror under `upstream/open-design/`, provenance and blueprint references, advisory Open Design tool manifest, host adapter notes, and validation prompts.
+- **Adapters**: CCB, Claude Code, Codex, HIVE.
+- **Add**: `agent-roles add open-design`
+- **Update**: `agent-roles update open-design`
+- **Source**: [`roles/open-design`](roles/open-design/)
+
+</details>
+
+<details>
 <summary><strong>agentroles.mother</strong> - Role Mother</summary>
 
 - **Version**: `0.2.3`

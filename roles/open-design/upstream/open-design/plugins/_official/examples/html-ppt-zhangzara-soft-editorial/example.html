@@ -1,0 +1,1155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Open Design — Soft Editorial Deck</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet" />
+<script src="assets/deck-stage.js"></script>
+<style>
+  :root {
+    --paper:    #F2EEDF;     /* warm cream page */
+    --paper-2:  #ECE6D2;
+    --ink:      #2A241B;     /* warm near-black */
+    --ink-soft: #5C5345;
+    --pink:     #E1A4C2;     /* dusty pink */
+    --lemon:    #D6DD63;     /* chartreuse */
+    --blush:    #E8C9B6;     /* soft peach */
+    --sage:     #B7C7A8;     /* sage (extra) */
+    --ink-tint: #453D30;     /* body text on tinted blocks (AA on every pastel) */
+    --rose-ink: #B25A85;     /* deepened pink, thin data strokes only */
+    --olive-ink:#7E8826;     /* deepened lemon, thin data strokes only */
+    --hairline: rgba(42,36,27,.22);
+  }
+  html, body { margin:0; padding:0; background:#1a1a1a; }
+  body { font-family: "Work Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); }
+  deck-stage { background: #1a1a1a; }
+
+  section.slide {
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Header / footer chrome shared across slides */
+  .eyebrow {
+    position: absolute;
+    top: 66px; left: 80px;
+    font-family: "Work Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .footer {
+    position: absolute;
+    left: 80px; right: 80px; bottom: 50px;
+    display: flex;
+    justify-content: space-between;
+    font-family: "Cormorant Garamond", "Garamond", serif;
+    font-size: 21px;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--hairline);
+    padding-top: 16px;
+  }
+  .pagedot {
+    position: absolute;
+    right: 80px; top: 60px;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--ink-soft);
+  }
+
+  /* Typography */
+  h1, h2, h3, p { margin: 0; }
+  .serif      { font-family: "Cormorant Garamond", "Garamond", serif; font-weight: 500; }
+  .serif-it   { font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 500; }
+  .body {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.5;
+  }
+
+  /* Entrance motion: opacity only (layout containers rely on centering
+     transforms, so we never animate transform here), reduced-motion safe */
+  @keyframes settle {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  section.slide[data-deck-active] > :not(.eyebrow):not(.pagedot):not(.footer) {
+    animation: settle .6s cubic-bezier(.16,1,.3,1) both;
+  }
+  section.slide[data-deck-active] > :not(.eyebrow):not(.pagedot):not(.footer) ~ :not(.eyebrow):not(.pagedot):not(.footer) {
+    animation-delay: .08s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    section.slide > * { animation: none !important; }
+  }
+  @media print {
+    section.slide > * { animation: none !important; }
+  }
+
+  /* ============== 1. COVER ================================== */
+  .s-cover .stack {
+    position: absolute;
+    left: 80px; right: 80px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 44px;
+  }
+  .s-cover .kicker {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 38px;
+    color: var(--ink-soft);
+  }
+  .s-cover h1 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 232px;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+  .s-cover h1 em { font-style: italic; font-weight: 400; }
+  .s-cover .lede {
+    font-size: 30px;
+    line-height: 1.4;
+    max-width: 60ch;
+    color: var(--ink-soft);
+  }
+  .s-cover .swatches {
+    position: absolute;
+    right: 80px; top: 80px;
+    display: flex; gap: 14px;
+  }
+  .s-cover .swatches i {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: block;
+  }
+
+  /* ============== 2. FOREWORD =============================== */
+  .s-foreword .col-l {
+    position: absolute;
+    left: 80px; top: 200px; width: 760px;
+  }
+  .s-foreword .col-l .opener {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 56px;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 36px;
+  }
+  .s-foreword .col-l .opener:first-letter {
+    font-size: 132px;
+    float: left;
+    line-height: 0.85;
+    padding: 8px 14px 0 0;
+    font-style: normal;
+    font-weight: 500;
+  }
+  .s-foreword .col-r {
+    position: absolute;
+    right: 80px; top: 200px; width: 760px;
+  }
+  .s-foreword .col-r p {
+    font-size: 24px;
+    line-height: 1.55;
+    margin-bottom: 22px;
+    color: var(--ink-soft);
+  }
+  .s-foreword .col-r p:first-child { color: var(--ink); }
+  .s-foreword .signoff {
+    margin-top: 24px;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 30px;
+    color: var(--ink);
+  }
+
+  /* ============== 3. THE METHOD ============================= */
+  .s-method .grid {
+    position: absolute;
+    left: 80px; right: 80px; top: 220px; bottom: 140px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .s-method .step {
+    border-radius: 28px;
+    padding: 36px 32px;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+  }
+  .s-method .step .n {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 92px;
+    line-height: 0.9;
+    color: var(--ink);
+  }
+  .s-method .step h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 1.05;
+    margin-top: 16px;
+  }
+  .s-method .step p {
+    font-size: 24px;
+    line-height: 1.45;
+    color: var(--ink-tint);
+  }
+  .s-method .step.pink  { background: var(--pink); }
+  .s-method .step.lemon { background: var(--lemon); }
+  .s-method .step.blush { background: var(--blush); }
+  .s-method .step.sage  { background: var(--sage); }
+
+  /* ============== 4. INSIGHTS (reference layout) ============ */
+  .s-insights .row {
+    position: absolute;
+    left: 80px; right: 80px; top: 200px; bottom: 200px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .s-insights .card {
+    border-radius: 28px;
+    padding: 64px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 36px;
+  }
+  .s-insights .card.pink  { background: var(--pink); }
+  .s-insights .card.lemon { background: var(--lemon); }
+  .s-insights .card.blush { background: var(--blush); }
+  .s-insights .card .head h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 72px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+    white-space: nowrap;
+  }
+  .s-insights .card .head .sub {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.1;
+  }
+  .s-insights .card p {
+    font-size: 24px;
+    line-height: 1.45;
+    max-width: 26ch;
+  }
+
+  /* ============== 5. A CLOSER LOOK (full-bleed) ============= */
+  .s-closer { background: var(--pink); }
+  .s-closer .eyebrow,
+  .s-closer .pagedot,
+  .s-closer .footer { color: var(--ink); }
+  .s-closer .footer { color: rgba(42,36,27,.85); border-top-color: rgba(42,36,27,.3); }
+  .s-closer .center {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1100px;
+    text-align: center;
+  }
+  .s-closer .marker {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 38px;
+    color: var(--ink);
+    margin-bottom: 32px;
+  }
+  .s-closer h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 168px;
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+    margin-bottom: 36px;
+  }
+  .s-closer h2 em { font-style: italic; font-weight: 400; }
+  .s-closer p {
+    font-size: 28px;
+    line-height: 1.5;
+    max-width: 56ch;
+    margin: 0 auto;
+  }
+
+  /* ============== 6. BY THE NUMBERS ========================= */
+  .s-numbers .grid {
+    position: absolute;
+    left: 80px; right: 80px; top: 200px; bottom: 140px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr 1fr;
+    gap: 28px;
+  }
+  .s-numbers .stat {
+    border-radius: 28px;
+    padding: 42px 44px;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+  }
+  .s-numbers .stat .v {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 200px;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+  .s-numbers .stat .v em { font-style: italic; font-weight: 400; }
+  .s-numbers .stat .lab {
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 28ch;
+  }
+  .s-numbers .a { background: var(--lemon); grid-column: span 2; grid-row: span 2; }
+  .s-numbers .a .v { font-size: 320px; }
+  .s-numbers .b { background: var(--pink); }
+  .s-numbers .c { background: var(--blush); }
+
+  /* ============== 7. IN THEIR WORDS ========================= */
+  .s-quote .center {
+    position: absolute;
+    left: 80px; right: 80px; top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+  }
+  .s-quote .qmark {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 220px;
+    line-height: 0.7;
+    color: var(--pink);
+    margin-bottom: 12px;
+  }
+  .s-quote blockquote {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 88px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0 auto;
+    max-width: 28ch;
+    color: var(--ink);
+  }
+  .s-quote blockquote em { font-style: italic; font-weight: 400; }
+  .s-quote .attr {
+    margin-top: 48px;
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: var(--ink);
+  }
+  .s-quote .attr .role {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--ink-soft);
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* ============== 8. WHAT WE'LL DO NEXT ===================== */
+  .s-next .grid {
+    position: absolute;
+    left: 80px; right: 80px; top: 200px; bottom: 140px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+  .s-next .panel {
+    border-radius: 36px;
+    padding: 48px 52px;
+    display: flex; flex-direction: column;
+    gap: 18px;
+  }
+  .s-next .panel.l {
+    border-top: 1px solid var(--hairline);
+    border-radius: 0;
+    padding-left: 0;
+    justify-content: center;
+  }
+  .s-next .panel.l h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 124px;
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+  }
+  .s-next .panel.l h2 em { font-style: italic; font-weight: 400; }
+  .s-next .panel.l p {
+    font-size: 24px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 36ch;
+    margin-top: 12px;
+  }
+  .s-next .panel.r {
+    background: transparent;
+    padding: 0;
+    gap: 20px;
+  }
+  .s-next .item {
+    border-radius: 28px;
+    padding: 24px 32px;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 20px;
+    align-items: center;
+  }
+  .s-next .item.pink  { background: var(--pink); }
+  .s-next .item.lemon { background: var(--lemon); }
+  .s-next .item.blush { background: var(--blush); }
+  .s-next .item .n {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 64px;
+    line-height: 1;
+  }
+  .s-next .item h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 1.05;
+    margin-bottom: 4px;
+  }
+  .s-next .item p {
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink-tint);
+  }
+
+  /* ============== CONSULT (text-dense) ====================== */
+  .s-consult .eyebrow,
+  .s-consult .pagedot,
+  .s-consult .footer { color: var(--ink-soft); }
+  .s-consult .action {
+    position: absolute;
+    left: 80px; right: 80px; top: 130px;
+    background: var(--lemon);
+    border-radius: 24px;
+    padding: 24px 36px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .s-consult .action .tag {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--ink);
+    flex-shrink: 0;
+    border-right: 1px solid rgba(42,36,27,.3);
+    padding-right: 24px;
+  }
+  .s-consult .action h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+  .s-consult .body {
+    position: absolute;
+    left: 80px; right: 80px; top: 290px; bottom: 130px;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    gap: 28px;
+  }
+  .s-consult .col {
+    border-top: 1px solid rgba(42,36,27,.4);
+    padding: 28px 6px 0 0;
+    display: flex; flex-direction: column;
+    gap: 16px;
+  }
+  .s-consult .col h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 32px;
+    line-height: 1.05;
+    color: var(--ink);
+    border-bottom: 1px solid rgba(42,36,27,.18);
+    padding-bottom: 14px;
+  }
+  .s-consult .col .meta {
+    font-family: "Work Sans", sans-serif;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .s-consult .col p {
+    font-size: 24px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .s-consult .col ul {
+    margin: 0; padding-left: 18px;
+    font-size: 24px; line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .s-consult .col ul li { margin-bottom: 8px; }
+  .s-consult .col ul li strong { color: var(--ink); font-weight: 500; }
+  .s-consult .source {
+    margin-top: auto;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--ink-soft);
+    padding-top: 12px;
+    border-top: 1px dashed rgba(42,36,27,.18);
+  }
+
+  /* ============== CHART =================================== */
+  .s-chart .left {
+    position: absolute;
+    left: 80px; top: 200px; bottom: 130px; width: 540px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .s-chart .left h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 96px;
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+  }
+  .s-chart .left h2 em { font-style: italic; font-weight: 400; }
+  .s-chart .left p {
+    font-size: 24px; line-height: 1.5; color: var(--ink-soft);
+  }
+  .s-chart .left .legend {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-top: auto;
+  }
+  .s-chart .left .legend .li {
+    display: flex; align-items: center; gap: 14px;
+    font-size: 24px; color: var(--ink);
+  }
+  .s-chart .left .legend .li i {
+    width: 28px; height: 12px; border-radius: 6px;
+  }
+  .s-chart .right {
+    position: absolute;
+    right: 80px; top: 200px; bottom: 200px; left: 680px;
+    padding: 36px 40px 30px 80px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .s-chart .right .yhead {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .s-chart .right .plot {
+    flex: 1; min-height: 0; position: relative;
+    border-left: 1.5px solid rgba(42,36,27,.35);
+    border-bottom: 1.5px solid rgba(42,36,27,.35);
+    padding: 12px 12px 0 12px;
+  }
+  .s-chart .right .gline {
+    position: absolute; left: 0; right: 0;
+    border-top: 1px dashed rgba(42,36,27,.12);
+  }
+  .s-chart .right .yticks {
+    position: absolute; left: -56px; top: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-size: 24px; color: var(--ink-soft);
+    font-family: "Cormorant Garamond", serif; font-style: italic;
+  }
+  .s-chart .right svg { width: 100%; height: 100%; display: block; position: absolute; inset: 12px 12px 0 12px; overflow: visible; }
+  .s-chart .right .xticks {
+    display: flex; justify-content: space-between;
+    margin-top: 12px;
+    font-size: 24px; color: var(--ink-soft);
+    font-family: "Cormorant Garamond", serif; font-style: italic;
+  }
+
+  /* ============== PROCESS DIAGRAM ========================= */
+  .s-process .head {
+    position: absolute;
+    left: 80px; right: 80px; top: 130px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .s-process .head h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 88px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .s-process .head h2 em { font-style: italic; font-weight: 400; }
+  .s-process .head .sub {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--ink-soft);
+    max-width: 32ch;
+    text-align: right;
+  }
+  .s-process .flow {
+    position: absolute;
+    left: 80px; right: 80px; top: 320px; bottom: 240px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+    align-items: stretch;
+  }
+  .s-process .node {
+    border-radius: 28px;
+    padding: 26px 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative;
+  }
+  .s-process .node .n {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 56px;
+    line-height: 0.9;
+  }
+  .s-process .node h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.05;
+  }
+  .s-process .node p {
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink-tint);
+  }
+  .s-process .node.n1 { background: var(--pink); }
+  .s-process .node.n2 { background: var(--blush); }
+  .s-process .node.n3 { background: var(--lemon); }
+  .s-process .node.n4 { background: var(--sage); }
+  .s-process .node.n5 { background: var(--pink); }
+  .s-process .node .arrow {
+    position: absolute;
+    right: -20px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px;
+    z-index: 2;
+    color: var(--ink);
+  }
+  .s-process .node.n5 .arrow { display: none; }
+  .s-process .timeline {
+    position: absolute;
+    left: 80px; right: 80px; bottom: 140px; top: auto;
+    height: 60px;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    padding: 14px 28px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--ink);
+  }
+
+  /* ============== COMPARISON MATRIX ======================= */
+  .s-matrix .head {
+    position: absolute;
+    left: 80px; right: 80px; top: 130px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 40px;
+  }
+  .s-matrix .head h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 76px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+  }
+  .s-matrix .head h2 em { font-style: italic; font-weight: 400; }
+  .s-matrix .head .sub {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 26px;
+    color: var(--ink-soft);
+    max-width: 36ch;
+    text-align: right;
+    margin-top: 8px;
+  }
+  .s-matrix .table {
+    position: absolute;
+    left: 80px; right: 80px; top: 320px; bottom: 130px;
+    border-top: 1.5px solid rgba(42,36,27,.4);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    grid-auto-rows: minmax(0, 1fr);
+    overflow: hidden;
+  }
+  .s-matrix .table .cell {
+    padding: 22px 24px;
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink);
+    border-bottom: 1px dashed rgba(42,36,27,.18);
+    border-right: 1px dashed rgba(42,36,27,.18);
+  }
+  .s-matrix .table .cell:nth-child(4n) { border-right: 0; }
+  .s-matrix .table .cell.head-row {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--ink);
+    border-bottom: 1.5px solid rgba(42,36,27,.4);
+    align-items: center;
+  }
+  .s-matrix .table .cell.row-label {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 28px;
+    color: var(--ink);
+    align-items: center;
+  }
+  .s-matrix .table .cell.last { border-bottom: 0; }
+  .s-matrix .pill {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .s-matrix .pill.yes  { background: var(--lemon); }
+  .s-matrix .pill.part { background: var(--blush); }
+  .s-matrix .pill.no   { background: var(--pink); }
+  .s-matrix .pill.note { background: transparent; border: 1px solid rgba(42,36,27,.3); color: var(--ink-soft); font-style: italic; font-family: "Cormorant Garamond", serif; font-weight: 400; }
+
+  /* Hover lift on color blocks: transform only, quiet */
+  .s-method .step, .s-insights .card, .s-numbers .stat, .s-next .item, .s-process .node {
+    transition: transform .3s cubic-bezier(.16,1,.3,1);
+  }
+  .s-method .step:hover, .s-insights .card:hover, .s-numbers .stat:hover,
+  .s-next .item:hover, .s-process .node:hover {
+    transform: translateY(-3px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .s-method .step, .s-insights .card, .s-numbers .stat, .s-next .item, .s-process .node {
+      transition: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- 1. COVER -->
+  <section class="slide s-cover" data-label="01 Cover">
+    <div class="eyebrow">Open Design</div>
+    <div class="swatches" aria-hidden="true">
+      <i style="background:var(--pink)"></i>
+      <i style="background:var(--lemon)"></i>
+      <i style="background:var(--blush)"></i>
+    </div>
+    <div class="stack">
+      <div class="kicker">The open-source, local, agent-driven design platform</div>
+      <h1>Open <em>Design.</em></h1>
+      <div class="lede">From idea to prototypes, web pages, slides, and HTML video — the full product-design workflow, on your own machine. Apache-2.0 · Runs Locally · BYOK · No Sign-up.</div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 2. FOREWORD -->
+  <section class="slide s-foreword" data-label="02 Foreword">
+    <div class="eyebrow">Foreword</div>
+    <div class="pagedot">ii</div>
+    <div class="col-l">
+      <p class="opener">In April 2026, Claude Design proved an LLM can truly design.</p>
+    </div>
+    <div class="col-r">
+      <p>Not write about design — produce real design artifacts: prototypes, pages, slides, and video, straight from a prompt.</p>
+      <p>Yet that capability shipped closed-source, paid, and cloud-only: locked to one model, with no agent choice, no self-hosting, no BYOK. The frontier arrived, then closed its doors.</p>
+      <p>Open Design sets that capability free. This deck is the short version — what it is, what it makes, and how to bring it onto your own machine.</p>
+      <div class="signoff">— The Open Design project</div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 3. THE METHOD -->
+  <section class="slide s-method" data-label="03 The Pillars">
+    <div class="eyebrow">The Pillars</div>
+    <div class="pagedot">iii</div>
+    <div class="grid">
+      <div class="step pink">
+        <div class="n">i.</div>
+        <div>
+          <h3>Desktop-native</h3>
+          <p>Design happens on the desktop. Local files, Figma exports, and code repos are directly readable; agents get full terminal power.</p>
+        </div>
+      </div>
+      <div class="step lemon">
+        <div class="n">ii.</div>
+        <div>
+          <h3>Plug in agents</h3>
+          <p>Claude Code, Codex, and Cursor on your machine are already powerful. Open Design wires them into a complete design workflow.</p>
+        </div>
+      </div>
+      <div class="step blush">
+        <div class="n">iii.</div>
+        <div>
+          <h3>It learns your taste</h3>
+          <p>Every choice becomes design systems, preferences, and memory, so the next generation lands closer to what you want.</p>
+        </div>
+      </div>
+      <div class="step sage">
+        <div class="n">iv.</div>
+        <div>
+          <h3>Open by license</h3>
+          <p>Apache-2.0, end to end. Fork it, self-host it, build a business on it — nothing is held back behind a paid tier.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 4. INSIGHTS (reference) -->
+  <section class="slide s-insights" data-label="04 What You Make">
+    <div class="eyebrow">What you make</div>
+    <div class="pagedot">iv</div>
+    <div class="row">
+      <div class="card pink">
+        <div class="head">
+          <h3 class="serif">Prototypes</h3>
+          <div class="sub">& live artifacts</div>
+        </div>
+        <p>High-fidelity mobile and web prototypes, interactive dashboards, and live briefs — real runnable files, not pictures of screens.</p>
+      </div>
+      <div class="card lemon">
+        <div class="head">
+          <h3 class="serif">Slides</h3>
+          <div class="sub">& images</div>
+        </div>
+        <p>Creative decks, research reports, posters, illustrations, and product mockups, all generated in your own visual direction.</p>
+      </div>
+      <div class="card blush">
+        <div class="head">
+          <h3 class="serif">Video</h3>
+          <div class="sub">& HyperFrames</div>
+        </div>
+        <p>HTML-to-MP4 marketing shorts, product demos, and cinematic generative footage, scripted instead of edited by hand.</p>
+      </div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 5. A CLOSER LOOK (full bleed) -->
+  <section class="slide s-closer" data-label="05 A Closer Look">
+    <div class="eyebrow">A closer look</div>
+    <div class="pagedot">v</div>
+    <div class="center">
+      <div class="marker">the big idea</div>
+      <h2>Design, set <em>free.</em></h2>
+      <p>In April 2026, Claude Design proved an LLM can truly design — yet it shipped closed-source, paid, and cloud-only. Open Design sets that capability free: open, local, and agent-native.</p>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 6. BY THE NUMBERS -->
+  <section class="slide s-numbers" data-label="06 By the Numbers">
+    <div class="eyebrow">By the numbers</div>
+    <div class="pagedot">vi</div>
+    <div class="grid">
+      <div class="stat a">
+        <div class="lab serif-it" style="font-size:30px">GitHub Stars,<br/>open source under Apache-2.0.</div>
+        <div class="v">60K<em>+</em></div>
+      </div>
+      <div class="stat b">
+        <div class="v">300<em>+</em></div>
+        <div class="lab">contributors building the platform in the open.</div>
+      </div>
+      <div class="stat c">
+        <div class="v">217<em>+</em></div>
+        <div class="lab">plugins, from prototypes and slides to dashboards.</div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 7. IN THEIR WORDS -->
+  <section class="slide s-quote" data-label="07 In Their Words">
+    <div class="eyebrow">In their words</div>
+    <div class="pagedot">vii</div>
+    <div class="center">
+      <div class="qmark">"</div>
+      <blockquote>File-system semantics plus git-diffable artifacts — design is <em>finally</em> under version control.</blockquote>
+      <div class="attr">
+        Indie developer
+        <span class="role">Open Design community</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 8. WHAT WE'LL DO NEXT -->
+  <section class="slide s-next" data-label="08 Getting Started">
+    <div class="eyebrow">Getting started</div>
+    <div class="pagedot">viii</div>
+    <div class="grid">
+      <div class="panel l">
+        <h2>Three small <em>moves,</em><br/>then it's yours.</h2>
+        <p>No sign-up, no cloud account, no credit card. Open Design runs on your own machine, with the coding agents you already have.</p>
+      </div>
+      <div class="panel r">
+        <div class="item pink">
+          <div class="n">i.</div>
+          <div>
+            <h3>Download Open Design</h3>
+            <p>macOS or Windows. Apache-2.0, runs locally, no sign-up.</p>
+          </div>
+        </div>
+        <div class="item lemon">
+          <div class="n">ii.</div>
+          <div>
+            <h3>Bring your own agent</h3>
+            <p>Installed CLIs are auto-detected from PATH — zero config, full BYOK.</p>
+          </div>
+        </div>
+        <div class="item blush">
+          <div class="n">iii.</div>
+          <div>
+            <h3>Describe your first artifact</h3>
+            <p>One sentence, or start from a template or plugin. Preview and edit in a sandbox.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 9. CONSULT -->
+  <section class="slide s-consult" data-label="09 Capabilities · Detail">
+    <div class="eyebrow">Capabilities · Detail</div>
+    <div class="pagedot">ix</div>
+    <div class="action">
+      <div class="tag">Core capabilities</div>
+      <h2>Everything runs on your own machine — your files, your agents, your keys — and every choice you make compounds into design memory.</h2>
+    </div>
+    <div class="body">
+      <div class="col">
+        <h3>On your desktop</h3>
+        <p><strong style="color:var(--ink); font-weight:500">Desktop-first by design</strong> — local files, Figma exports, and code repos are readable in place, and agents get full terminal power.</p>
+        <ul>
+          <li><strong>21 coding agents</strong> — auto-detected from PATH, zero config.</li>
+          <li><strong>Full-stack BYOK</strong> — Anthropic / OpenAI / Azure / Google plus 14 media providers.</li>
+          <li><strong>HTML video pipeline</strong> — programmatic video via HyperFrames.</li>
+        </ul>
+        <div class="source">Apache-2.0 — fork, self-host, commercial use all allowed.</div>
+      </div>
+      <div class="col">
+        <h3>Why it matters</h3>
+        <div class="meta">−80% monthly cost vs. Claude Design: $500 → ~$73.</div>
+        <p>Closed, cloud-only design tools lock you to one model and one bill. Open Design keeps the workflow on your machine, with the agents and API keys you already pay for.</p>
+        <p>And it compounds: self-evolving design memory remembers your preferences and color lineage, so every run lands closer than the last.</p>
+        <div class="source">Cost comparison per the Open Design project benchmarks.</div>
+      </div>
+      <div class="col">
+        <h3>What's in the box</h3>
+        <ul>
+          <li><strong>129 design systems</strong> — import from GitHub, Figma, or local files.</li>
+          <li><strong>217+ plugins</strong> — prototypes, slides, posters, dashboards, reports.</li>
+          <li><strong>Plugin ecosystem</strong> — extend the platform or ship your own.</li>
+        </ul>
+        <div class="source">github.com/nexu-io/open-design</div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 10. CHART -->
+  <section class="slide s-chart" data-label="10 Community Growth">
+    <div class="eyebrow">Community, by month</div>
+    <div class="pagedot">x</div>
+    <div class="left">
+      <h2>The community <em>compounds</em><br/>month over month.</h2>
+      <p>Since the project opened, the curve has only steepened: 60K+ GitHub Stars, 300+ contributors, and 217+ plugins, all built in the open under Apache-2.0. (Curve shapes are illustrative.)</p>
+      <div class="legend">
+        <div class="li"><i style="background:var(--rose-ink)"></i> Plugins (217+)</div>
+        <div class="li"><i style="background:var(--olive-ink)"></i> Contributors (300+)</div>
+        <div class="li"><i style="background:var(--ink); height:14px"></i> GitHub Stars (60K+)</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="yhead">% of current total, by month</div>
+      <div class="plot">
+        <div class="yticks">
+          <span>100</span><span>75</span><span>50</span><span>25</span><span>0</span>
+        </div>
+        <div class="gline" style="top:0%"></div>
+        <div class="gline" style="top:25%"></div>
+        <div class="gline" style="top:50%"></div>
+        <div class="gline" style="top:75%"></div>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline fill="none" stroke="#B25A85" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"
+            points="0,98 16,90 32,78 48,62 64,44 80,24 100,2" />
+          <polyline fill="none" stroke="#7E8826" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"
+            points="0,96 16,86 32,72 48,56 64,40 80,22 100,2" />
+          <polyline fill="none" stroke="#2A241B" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"
+            points="0,99 16,94 32,84 48,68 64,46 80,24 100,2" />
+        </svg>
+      </div>
+      <div class="xticks">
+        <span>M0</span><span>M1</span><span>M2</span><span>M3</span><span>M4</span><span>M5</span><span>M6</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 11. PROCESS -->
+  <section class="slide s-process" data-label="11 Workflow">
+    <div class="eyebrow">How it works</div>
+    <div class="pagedot">xi</div>
+    <div class="head">
+      <h2>From <em>idea</em><br/>to delivery, 5 steps.</h2>
+      <div class="sub">The same loop every artifact follows, from a one-sentence prompt to a shipped prototype, deck, or video.</div>
+    </div>
+    <div class="flow">
+      <div class="node n1">
+        <div class="n">i.</div>
+        <h3>Pick a starting point</h3>
+        <p>Describe your goal in one sentence, or start from a template or plugin.</p>
+        <svg class="arrow" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n2">
+        <div class="n">ii.</div>
+        <h3>Set the direction</h3>
+        <p>Palette, type, and spacing flow into generation automatically.</p>
+        <svg class="arrow" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n3">
+        <div class="n">iii.</div>
+        <h3>Generate</h3>
+        <p>The agent reads full context and produces real runnable files, previewed in a sandbox.</p>
+        <svg class="arrow" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n4">
+        <div class="n">iv.</div>
+        <h3>Ship it, or film it</h3>
+        <p>Hand off to engineering, or turn it into a marketing video with HyperFrames.</p>
+        <svg class="arrow" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n5">
+        <div class="n">v.</div>
+        <h3>Memory compounds</h3>
+        <p>Every choice becomes context for the next run, so results keep getting closer.</p>
+      </div>
+    </div>
+    <div class="timeline">
+      <span>Prompt</span><span>Direction</span><span>Artifact</span><span>Delivery</span><span>Memory</span>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 12. COMPARISON MATRIX -->
+  <section class="slide s-matrix" data-label="12 Comparison">
+    <div class="eyebrow">Open vs. closed, side by side</div>
+    <div class="pagedot">xii</div>
+    <div class="head">
+      <h2>Where <em>open</em><br/>earns its keep.</h2>
+      <div class="sub">The same frontier capability, scored against the levers that matter: who owns the runtime, the model choice, and the bill.</div>
+    </div>
+    <div class="table">
+      <div class="cell head-row">Lever</div>
+      <div class="cell head-row">Open Design</div>
+      <div class="cell head-row">Claude Design</div>
+      <div class="cell head-row">Hand-rolled scripts</div>
+
+      <div class="cell row-label">License</div>
+      <div class="cell"><span class="pill yes">Apache-2.0</span></div>
+      <div class="cell"><span class="pill no">Closed-source</span></div>
+      <div class="cell"><span class="pill note">Yours, unmaintained</span></div>
+
+      <div class="cell row-label">Runs locally</div>
+      <div class="cell"><span class="pill yes">Yes</span></div>
+      <div class="cell"><span class="pill no">Cloud-only</span></div>
+      <div class="cell"><span class="pill part">Partially</span></div>
+
+      <div class="cell row-label">Agent choice & BYOK</div>
+      <div class="cell"><span class="pill yes">21 agents, full BYOK</span></div>
+      <div class="cell"><span class="pill no">One model, no BYOK</span></div>
+      <div class="cell"><span class="pill part">DIY glue</span></div>
+
+      <div class="cell row-label last">Monthly cost</div>
+      <div class="cell last"><span class="pill yes">~$73 (BYOK)</span></div>
+      <div class="cell last"><span class="pill no">$500</span></div>
+      <div class="cell last"><span class="pill note">Your time</span></div>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+
+  <!-- 13. CLOSING CTA (reuses s-closer master) -->
+  <section class="slide s-closer" data-label="13 Get Started">
+    <div class="eyebrow">Get started</div>
+    <div class="pagedot">xiii</div>
+    <div class="center">
+      <div class="marker">Open · Local · Agent-native</div>
+      <h2>Back on <em>your desk.</em></h2>
+      <p>Frontier AI design, back on every creator's desk. Download Open Design for macOS or Windows, or star us on GitHub — github.com/nexu-io/open-design · discord.gg/mHAjSMV6gz · x.com/nexudotio</p>
+    </div>
+    <div class="footer">
+      <span>github.com/nexu-io/open-design</span>
+      <span>Open Design · Apache-2.0</span>
+    </div>
+  </section>
+</deck-stage>
+
+</body>
+</html>

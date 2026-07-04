@@ -1,0 +1,88 @@
+name: Docker image
+
+# Phase 5 / spec §15.5 — multi-arch image builds.
+#
+# Pushes to ghcr.io on release tags and when invoked by release automation.
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: "Git ref to build when invoked as a reusable workflow."
+        required: false
+        type: string
+        default: ""
+      release_version:
+        description: "Stable Docker tag to publish when invoked from release automation."
+        required: false
+        type: string
+        default: ""
+      publish_latest:
+        description: "Whether to also publish :latest when invoked from release automation."
+        required: false
+        type: boolean
+        default: false
+  push:
+    tags: ['v*.*.*']
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/od
+          # spec §15.1 tag scheme:
+          #   - vX.Y.Z push             → :X.Y.Z + :latest
+          #   - workflow_call (stable)  → :<release_version> + optional :latest
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=${{ inputs.release_version }},enable=${{ inputs.release_version != '' }}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+            type=raw,value=latest,enable=${{ inputs.publish_latest == true }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/Dockerfile
+          # spec §15.1 — multi-arch single manifest
+          platforms: linux/amd64,linux/arm64
+          # Tags and release workflow calls publish.
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # The in-tree Dockerfile uses node:24-alpine + apk for build
+          # tooling; we keep that default so the workflow doesn't drift
+          # from local builds. Spec §15.1 nominates bookworm-slim as
+          # the canonical base; switching is a follow-up that needs
+          # the Dockerfile's apk lines re-cast for apt.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

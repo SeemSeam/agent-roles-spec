@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Pin &amp; Paper — Slide Template</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<script src="assets/deck-stage.js"></script>
+
+<!-- reusable safety pin svg, used via <use href="#pin"> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- closed safety pin: coil on right, shaft sweeping left, clasp cap on the left holding the point -->
+    <symbol id="pin" viewBox="0 0 360 110">
+      <g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+        <!-- coiled spring (one continuous loop) -->
+        <path d="M312 38 C 296 32, 290 50, 304 58 C 320 66, 340 60, 342 44 C 344 28, 322 18, 300 24"/>
+        <!-- top shaft running from coil to clasp -->
+        <path d="M300 24 C 240 14, 140 14, 70 30"/>
+        <!-- bottom shaft (the part holding the point) curving back under -->
+        <path d="M312 56 C 250 78, 150 82, 80 70"/>
+        <!-- clasp cap (oval) covering where the two shafts meet on the left -->
+        <ellipse cx="58" cy="50" rx="24" ry="14"/>
+      </g>
+    </symbol>
+
+    <!-- open safety pin: clasp lifted, sharp point exposed pointing left -->
+    <symbol id="pin-open" viewBox="0 0 360 130">
+      <g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+        <!-- coiled spring -->
+        <path d="M312 48 C 296 42, 290 60, 304 68 C 320 76, 340 70, 342 54 C 344 38, 322 28, 300 34"/>
+        <!-- top shaft -->
+        <path d="M300 34 C 240 24, 140 24, 70 40"/>
+        <!-- bottom shaft (the pointed one), now extending past where the clasp would be, into a sharp point -->
+        <path d="M312 66 C 250 90, 150 96, 80 86 L 24 78 L 38 70 M24 78 L 38 88"/>
+        <!-- clasp, lifted above where the point used to sit -->
+        <ellipse cx="82" cy="32" rx="22" ry="12" transform="rotate(-18 82 32)"/>
+      </g>
+    </symbol>
+
+    <!-- arrow for process flow -->
+    <symbol id="arr" viewBox="0 0 32 32">
+      <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 16 H26 M19 9 L26 16 L19 23"/>
+      </g>
+    </symbol>
+
+    <!-- small inline mark for the top-chrome lockup -->
+    <symbol id="mark" viewBox="0 0 32 16">
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="26" cy="8" r="5"/>
+        <path d="M21 8 H 6 M6 5 L 3 8 L 6 11"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<script type="application/json" id="speaker-notes">[]</script>
+</head>
+<body>
+
+<deck-stage>
+
+  <!-- ============ 01 COVER ============ -->
+  <section class="slide s-cover" data-screen-label="01 Cover" data-om-validate="false">
+    <svg class="pin-1" viewBox="0 0 360 110"><use href="#pin"/></svg>
+    <svg class="pin-2" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+    <div class="stage">
+      <div class="super">An open-source field guide</div>
+      <h1>Open<br/><em>Design.</em></h1>
+      <div class="row">
+        <div class="who">Presented by <span class="underline-thin">the Open Design team</span>
+          <small>Apache-2.0 · Runs Locally · BYOK · No Sign-up</small>
+        </div>
+        <div class="date">29 · IV · 2026</div>
+      </div>
+    </div>
+    <div class="handwritten">
+      <span class="underline">For:</span> every creator.<br/>
+      Open. Local. Agent-driven.
+    </div>
+  </section>
+
+  <!-- ============ 02 AGENDA ============ -->
+  <section class="slide s-agenda" data-screen-label="02 Agenda" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> Open Design</span>
+      <span class="meta"><span>Apache-2.0</span><span>Phase I</span></span>
+    </div>
+    <h2>What's<br/><em>inside.</em></h2>
+    <div class="list">
+      <div class="row">
+        <span class="num">01</span>
+        <span class="lab">Why open design</span>
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="meta">Story · 12 min</span>
+      </div>
+      <div class="row">
+        <span class="num">02</span>
+        <span class="lab">By the numbers</span>
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="meta">Evidence · 9 min</span>
+      </div>
+      <div class="row">
+        <span class="num">03</span>
+        <span class="lab">How it works</span>
+        <svg class="pin" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+        <span class="meta">Workflow · 7 min</span>
+      </div>
+      <div class="row">
+        <span class="num">04</span>
+        <span class="lab">Getting started</span>
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="meta">CTA · 8 min</span>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>02 / 11</span></div>
+  </section>
+
+  <!-- ============ 03 NOTECARDS ============ -->
+  <section class="slide s-notes" data-screen-label="03 Principles" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> Principles</span>
+      <span class="meta"><span>Open Design</span><span>Phase II</span></span>
+    </div>
+    <div class="head">
+      <h2>Three rules we're <em>keeping.</em></h2>
+      <div class="sub">Pinned above every desk. Every Open Design decision gets checked against these three before it ships.</div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="num">Rule · 01</span>
+        <h3>Stay<br/>desktop-native.</h3>
+        <p>Design happens on the desktop. Local files, Figma exports, and code repos are directly readable; agents get full terminal power.</p>
+        <div class="scribble">— your files, <span class="underline">your machine</span>.</div>
+      </div>
+      <div class="card alt">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="num">Rule · 02</span>
+        <h3>Plug in agents,<br/>don't rebuild.</h3>
+        <p>Claude Code, Codex, and Cursor on your machine are already powerful. Open Design wires them into a complete design workflow.</p>
+        <div class="scribble">21 agents, zero config.</div>
+      </div>
+      <div class="card alt2">
+        <svg class="pin" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+        <span class="num">Rule · 03</span>
+        <h3>Learn the<br/>user's taste.</h3>
+        <p>Every choice becomes design systems, preferences, and memory, so the next generation lands closer to what you want.</p>
+        <div class="scribble">129 design systems, counting.</div>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>03 / 11</span></div>
+  </section>
+
+  <!-- ============ 04 SECTION DIVIDER ============ -->
+  <section class="slide s-sec ink" data-screen-label="04 Section · Direction" data-om-validate="false">
+    <div class="marker">Section II</div>
+    <div class="label">Why open,<br/>why local</div>
+    <svg class="pin-big" viewBox="0 0 360 110"><use href="#pin"/></svg>
+    <h2>Set design<br/>capability<br/><em>free.</em></h2>
+    <div class="scribble">— turn the page —</div>
+    <div class="footer"><span>Open Design</span><span>04 / 11</span></div>
+  </section>
+
+  <!-- ============ 05 NOTICE ============ -->
+  <section class="slide s-notice" data-screen-label="05 Findings · Detail" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> Findings · detail</span>
+      <span class="meta"><span>Open Design</span><span>Phase III</span></span>
+    </div>
+    <div class="head">
+      <div class="pre">Notice · 05<br/>Why we exist</div>
+      <h2>In April 2026, Claude Design proved an LLM can truly design — and then locked that capability in a closed, paid, <em>cloud-only</em> box.</h2>
+    </div>
+    <div class="grid">
+      <div class="col">
+        <h3>What changed</h3>
+        <p><strong>An LLM can truly design</strong> — not write about design, but produce real design artifacts, end to end.</p>
+        <ul>
+          <li><strong>Real artifacts</strong> — prototypes, web pages, slides, and HTML video, not pictures of them.</li>
+          <li><strong>Full workflow</strong> — from idea to delivery, in one continuous loop.</li>
+          <li><strong>Proven in April 2026</strong> — Claude Design showed it works at production quality.</li>
+        </ul>
+        <div class="src">The moment LLM design became real</div>
+      </div>
+      <div class="col b">
+        <h3>Why it's stuck</h3>
+        <div class="meta">Closed-source · paid · cloud-only.</div>
+        <p>It is locked to one model, with no agent choice, no self-hosting, and no BYOK. Your files and your keys live on someone else's machine.</p>
+        <p>The cost is not just the monthly bill — it is every workflow you cannot own, version, fork, or run on your own terms.</p>
+        <div class="src">No agent choice · no self-hosting · no BYOK</div>
+      </div>
+      <div class="col">
+        <h3>What Open Design does</h3>
+        <ul>
+          <li><strong>Runs locally</strong> — your data stays in a local .od/ SQLite store; API keys never leave your machine.</li>
+          <li><strong>Plugs in 21 coding agents</strong> — Claude Code, Codex, Cursor and more, auto-detected from PATH.</li>
+          <li><strong>Stays open</strong> — Apache-2.0; fork, self-host, and commercial use all allowed.</li>
+        </ul>
+        <div class="src">github.com/nexu-io/open-design</div>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>05 / 11</span></div>
+  </section>
+
+  <!-- ============ 06 CHART ============ -->
+  <section class="slide s-chart ink" data-screen-label="06 Cost Curve" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> Cost, by setup</span>
+      <span class="meta"><span>Phase III</span><span>Evidence</span></span>
+    </div>
+    <svg class="pin-deco" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+    <div class="left">
+      <h2>The bill<br/>drops by<br/><em>80 percent.</em></h2>
+      <p>Running the same design workload through Open Design with your own keys, the monthly bill falls from $500 to about $73 — and the gap holds as usage grows. Illustrative monthly model.</p>
+      <div class="legend">
+        <div class="li"><i style="background:rgba(239,229,106,.5)"></i> Claude Design subscription</div>
+        <div class="li"><i style="background:#F5ECA0"></i> Hybrid · partial BYOK</div>
+        <div class="li"><i style="background:#EFE56A"></i> Open Design · full BYOK</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="yhead">Monthly cost, % of subscription baseline</div>
+      <div class="plot">
+        <div class="yticks">
+          <span>100</span><span>75</span><span>50</span><span>25</span><span>0</span>
+        </div>
+        <div class="gline" style="top:0%"></div>
+        <div class="gline" style="top:25%"></div>
+        <div class="gline" style="top:50%"></div>
+        <div class="gline" style="top:75%"></div>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline fill="none" stroke="#1F3A8A" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2,1.5"
+            points="0,8 16,8 32,7 48,8 64,7 80,8 100,8" />
+          <polyline fill="none" stroke="#2D4FB8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"
+            points="0,8 16,24 32,36 48,44 64,50 80,54 100,56" />
+          <polyline fill="none" stroke="#1F3A8A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"
+            points="0,8 16,40 32,58 48,70 64,78 80,82 100,85" />
+        </svg>
+      </div>
+      <div class="xticks">
+        <span>M0</span><span>M1</span><span>M2</span><span>M3</span><span>M4</span><span>M5</span><span>M6</span>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>06 / 11</span></div>
+  </section>
+
+  <!-- ============ 07 PROCESS ============ -->
+  <section class="slide s-process" data-screen-label="07 Process" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> How it works</span>
+      <span class="meta"><span>Open Design</span><span>Phase IV</span></span>
+    </div>
+    <div class="head">
+      <h2>From <em>idea</em><br/>to delivery,<br/>in five steps.</h2>
+      <div class="sub">The same repeatable path every artifact follows, end to end — from a one-sentence brief to a shipped prototype, deck, or video.</div>
+    </div>
+    <div class="flow">
+      <div class="node">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="n">1</div>
+        <h3>Start</h3>
+        <p>Describe your goal in one sentence, or pick a template or plugin as the starting point.</p>
+        <svg class="arr" viewBox="0 0 32 32"><use href="#arr"/></svg>
+      </div>
+      <div class="node alt">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="n">2</div>
+        <h3>Style</h3>
+        <p>Set the visual direction — palette, type, and spacing flow into generation automatically.</p>
+        <svg class="arr" viewBox="0 0 32 32"><use href="#arr"/></svg>
+      </div>
+      <div class="node alt2">
+        <svg class="pin" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+        <div class="n">3</div>
+        <h3>Generate</h3>
+        <p>The agent reads full context and produces real runnable files, previewed in a sandbox.</p>
+        <svg class="arr" viewBox="0 0 32 32"><use href="#arr"/></svg>
+      </div>
+      <div class="node alt">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="n">4</div>
+        <h3>Ship</h3>
+        <p>Hand off to engineering, or turn it into a marketing video with HyperFrames.</p>
+        <svg class="arr" viewBox="0 0 32 32"><use href="#arr"/></svg>
+      </div>
+      <div class="node">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="n">5</div>
+        <h3>Learn</h3>
+        <p>Every choice becomes memory — context that makes the next run land closer to your taste.</p>
+      </div>
+    </div>
+    <div class="timeline">
+      <span>Step 1 · Start</span>
+      <span>Step 2 · Style</span>
+      <span>Step 3 · Generate</span>
+      <span>Step 4 · Ship</span>
+      <span>Step 5 · Learn</span>
+    </div>
+    <div class="footer"><span>Open Design</span><span>07 / 11</span></div>
+  </section>
+
+  <!-- ============ 08 LEDGER ============ -->
+  <section class="slide s-matrix" data-screen-label="08 Comparison" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> Three setups, side by side</span>
+      <span class="meta"><span>Open Design</span><span>Phase IV</span></span>
+    </div>
+    <div class="head">
+      <h2>Where <em>open</em><br/>earns its<br/>keep.</h2>
+      <div class="sub">Scored against the four levers that decide whether you actually own your design workflow — or rent it.</div>
+    </div>
+    <div class="table">
+      <div class="cell head-row">Lever</div>
+      <div class="cell head-row">Claude Design</div>
+      <div class="cell head-row">Cloud design tools</div>
+      <div class="cell head-row">Open Design</div>
+
+      <div class="cell row-label">Runs locally</div>
+      <div class="cell"><span class="pill no">cloud-only</span></div>
+      <div class="cell"><span class="pill no">cloud-only</span></div>
+      <div class="cell"><span class="pill yes">desktop-first</span></div>
+
+      <div class="cell row-label">Bring your own key</div>
+      <div class="cell"><span class="pill no">locked</span></div>
+      <div class="cell"><span class="pill part">varies</span></div>
+      <div class="cell"><span class="pill yes">full BYOK</span></div>
+
+      <div class="cell row-label">Agent choice</div>
+      <div class="cell"><span class="pill no">one model</span></div>
+      <div class="cell"><span class="pill part">limited</span></div>
+      <div class="cell"><span class="pill yes">21 agents</span></div>
+
+      <div class="cell row-label last">License &amp; self-hosting</div>
+      <div class="cell last"><span class="pill no">closed</span></div>
+      <div class="cell last"><span class="pill no">closed</span></div>
+      <div class="cell last"><span class="pill yes">Apache-2.0</span></div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>08 / 11</span></div>
+  </section>
+
+  <!-- ============ 09 STATS ============ -->
+  <section class="slide s-stats" data-screen-label="09 In Numbers" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> In numbers</span>
+      <span class="meta"><span>Phase III</span><span>Evidence</span></span>
+    </div>
+    <div class="head">
+      <h2>The case,<br/><em>by the numbers.</em></h2>
+      <div class="sub">Three figures the community moves every week — all public, all on GitHub, all under Apache-2.0.</div>
+    </div>
+    <div class="grid">
+      <div class="stat">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="big">60<small>K+</small></div>
+        <h3>GitHub<br/>stars</h3>
+        <p>Open source under Apache-2.0, built in the open by a community of 300+ contributors.</p>
+      </div>
+      <div class="stat alt">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="big">217<small>+</small></div>
+        <h3>Plugins in<br/>the ecosystem</h3>
+        <p>Prototypes, slides, posters, dashboards — plus 129 design systems ready to import.</p>
+      </div>
+      <div class="stat alt2">
+        <svg class="pin" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+        <div class="big">21</div>
+        <h3>Coding agents,<br/>zero config</h3>
+        <p>Auto-detected from PATH; any OpenAI / Azure / Google-compatible endpoint works via BYOK.</p>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>09 / 11</span></div>
+  </section>
+
+  <!-- ============ 10 QUOTE ============ -->
+  <section class="slide s-quote" data-screen-label="10 Voice" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> Community voice</span>
+      <span class="meta"><span>Phase III</span><span>Evidence</span></span>
+    </div>
+    <div class="panel">
+      <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+      <div class="qmark">"</div>
+      <div>
+        <blockquote>File-system semantics plus git-diffable design artifacts — design is finally under <em>version control.</em></blockquote>
+        <div class="who">Indie developer
+          <small>Open Design community · early adopter</small>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>10 / 11</span></div>
+  </section>
+
+  <!-- ============ 11 CTA ============ -->
+  <section class="slide s-cta" data-screen-label="11 Next" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> What's next</span>
+      <span class="meta"><span>Open Design</span><span>Phase V</span></span>
+    </div>
+    <div class="stage">
+      <div class="pane l">
+        <div class="super">Open · Local · Agent-native</div>
+        <h2>Back on<br/>your<br/><em>desk.</em></h2>
+        <p>Frontier AI design, back on every creator's desk. Open source, running locally, wired into the agents you already use — no sign-up, no lock-in.</p>
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+      </div>
+      <div class="pane r">
+        <h3>How to start this week</h3>
+        <div class="step">
+          <div class="n">1</div>
+          <div>
+            <h4>Download Open Design</h4>
+            <p>macOS and Windows builds, free under Apache-2.0. Bring your own keys; nothing leaves your machine.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <div>
+            <h4>Star on GitHub</h4>
+            <p>github.com/nexu-io/open-design — 60K+ stars and counting. Fork it, self-host it, ship with it.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <div>
+            <h4>Join the community</h4>
+            <p>discord.gg/mHAjSMV6gz · x.com/nexudotio — 300+ contributors building plugins, design systems, and agents.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>11 / 11</span></div>
+  </section>
+
+</deck-stage>
+
+</body>
+</html>

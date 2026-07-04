@@ -52,6 +52,12 @@ in `role.toml` so `agent-roles list` can display their maturity.
   guidance, component and asset-library curation, vendored UI/UX Pro Max
   design intelligence, virtual-device lab setup/control, device QA,
   performance, and store-readiness skills.
+- [open-design](open-design/) (`agentroles.open-design`, `experimental`):
+  Role wrapper for `nexu-io/open-design`, including Open Design skills,
+  DESIGN.md design systems, templates, plugins, docs, CLI source, MCP guidance,
+  and normalized replacements for upstream hidden agent/plugin/config paths
+  while keeping runtime installs, daemon state, generated artifacts, and
+  credentials outside Role source.
 - [mother](mother/) (`agentroles.mother`, `preview`): Role creation, research,
   candidate scoring, blueprinting, external source ingestion, and audit role
   for spec compliance, catalog readiness, source-boundary checks,

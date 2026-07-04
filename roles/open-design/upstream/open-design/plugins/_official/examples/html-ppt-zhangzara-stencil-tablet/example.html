@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Stencil &amp; Tablet — Slide Template</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="assets/deck-stage.js"></script>
+<style>
+  :root {
+    --bone:    #E2DCC9;
+    --black:   #15120D; /* warm near-black, not pure #000, keeps the charcoal-rubbing feel */
+    --ink:     #0A0A0A;
+    --paper:   #F4EFE0;
+    --sienna:  #A9713F; /* lightened from #A06A3C so 18-22px ink body copy clears AA on sienna surfaces */
+    --magenta: #B13069; /* display accents on bone only */
+    --rose:    #9E2A5C; /* deep rose for surfaces that carry body text, bone copy clears AA */
+    --orange:  #EE7A2E;
+    --teal:    #266B61;
+    --blue:    #345F9A;
+    --mustard: #D8A93B;
+  }
+  html, body { margin:0; padding:0; background:#1a1a1a; }
+  body { font-family: "Barlow", "Helvetica Neue", Arial, sans-serif; color: var(--ink); }
+  deck-stage { background: #1a1a1a; }
+
+  section.slide { background: var(--bone); color: var(--ink); overflow: hidden; position: relative; }
+  section.slide.dark { background: var(--black); color: var(--bone); }
+
+  /* ---------- chrome ---------- */
+  .top {
+    position: absolute; top: 48px; left: 64px; right: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: "Barlow Condensed", "Helvetica Neue", sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .top .meta { display: flex; gap: 64px; font-size: 24px; font-weight: 600; letter-spacing: .06em; opacity: .85; }
+  section.slide.dark .top { color: var(--bone); }
+
+  .footer {
+    position: absolute; left: 64px; right: 64px; bottom: 36px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 600; font-size: 22px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .75;
+  }
+  section.slide.dark .footer { color: var(--bone); }
+
+  /* =========== 01 COVER =========== */
+  .s-cover { padding: 0; }
+  .s-cover .stage {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: 48px 64px;
+  }
+  .s-cover .super {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800; font-size: 28px; letter-spacing: .12em;
+    text-transform: uppercase; opacity: .8;
+  }
+  .s-cover h1 {
+    font-family: "Stardos Stencil", serif;
+    font-weight: 700;
+    font-size: 220px;
+    line-height: .82;
+    letter-spacing: -.015em;
+    text-transform: uppercase;
+    color: var(--ink);
+    align-self: end;
+    margin: 0;
+  }
+  .s-cover h1 em { font-style: normal; color: var(--magenta); }
+  .s-cover .row {
+    display: flex; align-items: end; justify-content: space-between;
+    margin-top: 24px;
+  }
+  .s-cover .row .lockup { display: flex; align-items: center; gap: 18px; }
+  .s-cover .row .mark {
+    width: 56px; height: 56px; border-radius: 12px; background: var(--orange);
+    position: relative; overflow: hidden;
+  }
+  /* stencil bridge cut through the mark, ties the lockup to the headline letterforms */
+  .s-cover .row .mark::after {
+    content: ""; position: absolute; left: 16%; right: 16%; top: 42%; height: 16%;
+    background: var(--bone);
+  }
+  .s-cover .row .who {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 700;
+    font-size: 30px; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .s-cover .row .who small {
+    display: block; font-size: 22px; font-weight: 500; letter-spacing: .08em; opacity: .65;
+  }
+  .s-cover .row .date {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 36px; text-transform: uppercase;
+  }
+  .s-cover .shape {
+    position: absolute; right: 56px; top: 64px;
+    width: 320px; height: 380px;
+    color: var(--teal);
+  }
+
+  /* =========== 02 AGENDA (organic shapes on black) =========== */
+  .s-agenda { padding: 0; }
+  .s-agenda .grid {
+    position: absolute;
+    left: 64px; right: 64px; top: 200px; bottom: 100px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .s-agenda .item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 36px 18px 36px; }
+  .s-agenda .item svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .s-agenda .item .n {
+    position: relative; z-index: 2;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800;
+    font-size: 32px; letter-spacing: .06em; color: var(--ink);
+  }
+  .s-agenda .item .lab {
+    position: relative; z-index: 2;
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 32px; line-height: 1.05; text-align: center;
+    text-transform: uppercase; color: var(--ink);
+  }
+  /* teal and blue tablets are too dark for ink labels, switch to bone */
+  .s-agenda .item:nth-child(2) .n, .s-agenda .item:nth-child(2) .lab,
+  .s-agenda .item:nth-child(3) .n, .s-agenda .item:nth-child(3) .lab { color: var(--bone); }
+
+  /* =========== 03 PRINCIPLES (the source slide) =========== */
+  .s-princ { padding: 0; }
+  .s-princ .row {
+    position: absolute;
+    left: 64px; right: 64px; top: 160px; bottom: 70px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .s-princ .card { border-radius: 26px; padding: 36px 30px 32px; display: flex; flex-direction: column; min-height: 0; }
+  .s-princ .card.c1 { background: var(--sienna); }
+  .s-princ .card.c2 { background: var(--rose); }
+  .s-princ .card.c3 { background: var(--orange); }
+  .s-princ .card.c4 { background: var(--teal); }
+  .s-princ .card .n {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 240px; line-height: .85; letter-spacing: -.02em;
+    color: var(--ink);
+  }
+  .s-princ .card.c2 .n, .s-princ .card.c4 .n { color: var(--bone); }
+  .s-princ .card h3 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 30px; line-height: 1.05;
+    text-transform: uppercase; letter-spacing: .02em;
+    margin: auto 0 14px; color: var(--ink);
+  }
+  .s-princ .card p {
+    font-size: 22px; line-height: 1.4; color: var(--ink);
+  }
+  .s-princ .card.c2 h3, .s-princ .card.c2 p,
+  .s-princ .card.c4 h3, .s-princ .card.c4 p { color: var(--bone); }
+
+  /* =========== 04 SECTION DIVIDER =========== */
+  .s-sec { padding: 0; }
+  .s-sec .num {
+    position: absolute; left: 64px; top: 110px;
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 540px; line-height: .8; color: var(--orange);
+  }
+  .s-sec .label {
+    position: absolute; right: 64px; top: 220px;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800;
+    font-size: 24px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--bone); opacity: .7;
+    text-align: right;
+  }
+  .s-sec h2 {
+    position: absolute;
+    right: 64px; bottom: 130px; left: 360px;
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 120px; line-height: .92; text-transform: uppercase;
+    letter-spacing: -.005em;
+    color: var(--bone);
+    text-align: right;
+  }
+  .s-sec h2 em { font-style: normal; color: var(--orange); }
+
+  /* =========== 05 CONSULT (text-dense action title) =========== */
+  .s-consult .head {
+    position: absolute; left: 64px; right: 64px; top: 130px;
+    background: var(--mustard);
+    border-radius: 22px;
+    padding: 24px 32px;
+    display: flex; align-items: center; gap: 28px;
+  }
+  .s-consult .head .tag {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800;
+    font-size: 24px; letter-spacing: .12em; text-transform: uppercase;
+    flex-shrink: 0; padding-right: 28px;
+    border-right: 2px solid var(--ink);
+  }
+  .s-consult .head h2 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 34px; line-height: 1.15; text-transform: uppercase; letter-spacing: -.005em;
+  }
+  .s-consult .grid {
+    position: absolute; left: 64px; right: 64px; top: 290px; bottom: 80px;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    gap: 24px;
+  }
+  .s-consult .col {
+    border-radius: 22px; padding: 28px 28px;
+    display: flex; flex-direction: column; gap: 14px; min-height: 0;
+  }
+  .s-consult .col.a { background: var(--paper); }
+  .s-consult .col.b { background: var(--orange); }
+  .s-consult .col.c { background: var(--paper); }
+  .s-consult .col h3 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 28px; text-transform: uppercase; letter-spacing: .02em;
+    border-bottom: 2px solid var(--ink); padding-bottom: 12px;
+  }
+  .s-consult .col .meta {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 32px; line-height: 1.1;
+  }
+  .s-consult .col p { font-size: 20px; line-height: 1.45; }
+  .s-consult .col ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.45; }
+  .s-consult .col ul li { margin-bottom: 8px; }
+  .s-consult .col ul li strong { font-weight: 700; }
+  .s-consult .col .src {
+    margin-top: auto;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 700;
+    font-size: 18px; letter-spacing: .12em; text-transform: uppercase;
+    border-top: 1px dashed rgba(10,10,10,.35); padding-top: 12px; opacity: .75;
+  }
+
+  /* =========== 06 CHART =========== */
+  .s-chart { padding: 0; }
+  /* Bottom bumped from 110 to 150 so the legend can never collide with
+     the absolutely-positioned .footer (which sits at bottom: 36 with
+     ~24px text height). Also: h2 size now caps by viewport height too. */
+  .s-chart .left {
+    position: absolute; left: 64px; top: 200px; bottom: 150px; width: 540px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .s-chart .left h2 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: min(110px, 12vh); line-height: .92; text-transform: uppercase; letter-spacing: -.01em;
+    color: var(--bone);
+  }
+  .s-chart .left h2 em { font-style: normal; color: var(--orange); }
+  .s-chart .left p { font-size: 22px; line-height: 1.5; color: var(--bone); opacity: .85; }
+  .s-chart .left .legend {
+    margin-top: auto; display: flex; flex-direction: column; gap: 10px;
+  }
+  .s-chart .left .legend .li {
+    display: flex; align-items: center; gap: 14px;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 700;
+    font-size: 22px; letter-spacing: .06em; text-transform: uppercase; color: var(--bone);
+  }
+  .s-chart .left .legend .li i { width: 32px; height: 6px; }
+  .s-chart .right {
+    position: absolute; right: 64px; top: 200px; bottom: 130px; left: 680px;
+    background: var(--paper); border-radius: 22px;
+    padding: 32px 32px 28px 80px;
+    display: flex; flex-direction: column; overflow: hidden;
+    color: var(--ink);
+  }
+  .s-chart .right .yhead {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 700;
+    font-size: 18px; letter-spacing: .12em; text-transform: uppercase;
+    margin-bottom: 8px; opacity: .7;
+  }
+  .s-chart .plot { flex: 1; min-height: 0; position: relative;
+    border-left: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+  .s-chart .plot .gline { position: absolute; left: 0; right: 0; border-top: 1px dashed rgba(10,10,10,.18); }
+  .s-chart .plot .yticks {
+    position: absolute; left: -52px; top: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 600;
+    font-size: 18px;
+  }
+  .s-chart .plot svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+  .s-chart .right .xticks { display: flex; justify-content: space-between; padding-top: 10px;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 600;
+    font-size: 18px; letter-spacing: .06em; }
+
+  /* =========== 07 PROCESS DIAGRAM =========== */
+  .s-process .head {
+    position: absolute; left: 64px; right: 64px; top: 130px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 40px;
+  }
+  .s-process .head h2 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 92px; line-height: .92; text-transform: uppercase; letter-spacing: -.01em;
+  }
+  .s-process .head h2 em { font-style: normal; color: var(--magenta); }
+  .s-process .head .sub {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 600;
+    font-size: 22px; letter-spacing: .06em; text-transform: uppercase;
+    max-width: 38ch; line-height: 1.5; opacity: .8; margin-top: 12px;
+  }
+  .s-process .flow {
+    position: absolute; left: 64px; right: 64px; top: 470px; bottom: 200px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px;
+  }
+  .s-process .node {
+    border-radius: 22px; padding: 24px 22px 22px;
+    display: flex; flex-direction: column; gap: 8px; position: relative;
+  }
+  .s-process .node.n1 { background: var(--sienna); color: var(--ink); }
+  .s-process .node.n2 { background: var(--rose); color: var(--bone); }
+  .s-process .node.n3 { background: var(--orange); color: var(--ink); }
+  .s-process .node.n4 { background: var(--teal); color: var(--bone); }
+  .s-process .node.n5 { background: var(--blue); color: var(--bone); }
+  .s-process .node .n {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 64px; line-height: .9;
+  }
+  .s-process .node h3 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 28px; line-height: 1.05; text-transform: uppercase; letter-spacing: .02em;
+  }
+  .s-process .node p { font-size: 18px; line-height: 1.4; }
+  .s-process .node .arr {
+    position: absolute; right: -16px; top: 40%;
+    width: 32px; height: 32px; z-index: 2;
+    color: var(--ink); /* arrows straddle the bone gap, currentColor from bone-text nodes made them vanish */
+  }
+  .s-process .node.n5 .arr { display: none; }
+  .s-process .timeline {
+    position: absolute; left: 64px; right: 64px; bottom: 110px; height: 50px;
+    background: var(--paper); border-radius: 14px;
+    padding: 0 28px; display: flex; align-items: center; justify-content: space-between;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 700;
+    font-size: 20px; letter-spacing: .08em; text-transform: uppercase;
+  }
+
+  /* =========== 08 COMPARISON MATRIX =========== */
+  .s-matrix .head {
+    position: absolute; left: 64px; right: 64px; top: 130px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 40px;
+  }
+  .s-matrix .head h2 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 92px; line-height: .92; text-transform: uppercase; letter-spacing: -.01em;
+  }
+  .s-matrix .head h2 em { font-style: normal; color: var(--teal); }
+  .s-matrix .head .sub {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 600;
+    font-size: 22px; letter-spacing: .06em; text-transform: uppercase;
+    max-width: 38ch; line-height: 1.5; opacity: .8; margin-top: 12px;
+  }
+  .s-matrix .table {
+    position: absolute; left: 64px; right: 64px; top: 460px; bottom: 110px;
+    background: var(--paper); border-radius: 22px;
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    grid-auto-rows: 1fr; overflow: hidden;
+  }
+  .s-matrix .cell {
+    padding: 18px 22px; display: flex; align-items: center;
+    font-size: 22px; line-height: 1.35;
+    border-bottom: 1.5px solid rgba(10,10,10,.35);
+    border-right: 1.5px solid rgba(10,10,10,.35);
+  }
+  .s-matrix .cell:nth-child(4n) { border-right: 0; }
+  .s-matrix .cell.last { border-bottom: 0; }
+  .s-matrix .cell.head-row {
+    background: var(--ink); color: var(--bone);
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 24px; text-transform: uppercase; letter-spacing: .02em;
+  }
+  .s-matrix .cell.row-label {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 26px; text-transform: uppercase; letter-spacing: .01em;
+  }
+  .s-matrix .pill {
+    display: inline-block; border-radius: 999px;
+    padding: 6px 16px; font-weight: 700;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 18px; letter-spacing: .08em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .s-matrix .pill.yes  { background: var(--teal); color: var(--bone); }
+  .s-matrix .pill.part { background: var(--mustard); color: var(--ink); }
+  .s-matrix .pill.no   { background: var(--rose); color: var(--bone); }
+  .s-matrix .pill.note { background: var(--paper); color: var(--ink); border: 1.5px solid var(--ink); }
+
+  /* =========== 09 STATS / NUMBERS =========== */
+  .s-stats .head {
+    position: absolute; left: 64px; right: 64px; top: 130px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 40px;
+  }
+  .s-stats .head h2 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 92px; line-height: .92; text-transform: uppercase; letter-spacing: -.01em;
+    color: var(--bone);
+  }
+  .s-stats .head h2 em { font-style: normal; color: var(--orange); }
+  .s-stats .head .sub {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 600;
+    font-size: 22px; letter-spacing: .06em; text-transform: uppercase;
+    max-width: 36ch; line-height: 1.5; opacity: .85; color: var(--bone); margin-top: 12px;
+  }
+  .s-stats .grid {
+    position: absolute; left: 64px; right: 64px; top: 470px; bottom: 110px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .s-stats .stat {
+    border-radius: 22px; padding: 32px 30px;
+    display: flex; flex-direction: column; gap: 14px;
+    color: var(--ink);
+  }
+  .s-stats .stat.s1 { background: var(--orange); }
+  .s-stats .stat.s2 { background: var(--mustard); }
+  .s-stats .stat.s3 { background: var(--bone); }
+  .s-stats .stat .big {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 160px; line-height: .85; letter-spacing: -.02em;
+  }
+  .s-stats .stat .big small {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800;
+    font-size: 40px; vertical-align: top; margin-left: 6px;
+  }
+  .s-stats .stat h3 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 26px; text-transform: uppercase; letter-spacing: .02em;
+    margin-top: auto;
+  }
+  .s-stats .stat p { font-size: 20px; line-height: 1.4; }
+
+  /* =========== 10 QUOTE =========== */
+  .s-quote { padding: 0; }
+  .s-quote .panel {
+    position: absolute; left: 64px; right: 64px; top: 130px; bottom: 110px;
+    background: var(--rose);
+    border-radius: 26px;
+    padding: 60px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .s-quote .panel .qmark {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 320px; line-height: .8; color: var(--ink); opacity: .55;
+  }
+  .s-quote .panel blockquote {
+    margin: 0;
+    font-family: "Stardos Stencil", serif; font-weight: 400;
+    font-size: 60px; line-height: 1.05;
+    color: var(--bone);
+    letter-spacing: -.005em;
+  }
+  .s-quote .panel .who {
+    margin-top: 32px;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800;
+    font-size: 26px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--bone);
+  }
+  .s-quote .panel .who small {
+    display: block; font-weight: 600; font-size: 22px; opacity: .8; margin-top: 4px;
+  }
+
+  /* =========== 11 CTA =========== */
+  .s-cta { padding: 0; }
+  .s-cta .stage {
+    position: absolute; inset: 0;
+    padding: 130px 64px 100px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  .s-cta .pane {
+    border-radius: 26px; padding: 40px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .s-cta .pane.l { background: var(--teal); color: var(--bone); justify-content: space-between; }
+  .s-cta .pane.r { background: var(--orange); color: var(--ink); }
+  .s-cta .pane.l h2 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 130px; line-height: .9; text-transform: uppercase; letter-spacing: -.015em;
+  }
+  .s-cta .pane.l h2 em { font-style: normal; color: var(--orange); }
+  .s-cta .pane.l p { font-size: 22px; line-height: 1.5; opacity: .9; max-width: 32ch; }
+  .s-cta .pane.r h3 {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 36px; line-height: 1; text-transform: uppercase; letter-spacing: .02em;
+  }
+  .s-cta .pane.r .step { display: grid; grid-template-columns: 60px 1fr; gap: 14px; align-items: start; }
+  .s-cta .pane.r .step .n {
+    font-family: "Stardos Stencil", serif; font-weight: 700;
+    font-size: 56px; line-height: .9;
+  }
+  .s-cta .pane.r .step h4 {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800;
+    font-size: 26px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px;
+  }
+  .s-cta .pane.r .step p { font-size: 20px; line-height: 1.4; }
+
+  /* ---------- entrance motion (transform+opacity only, staggered, reduced-motion safe) ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes slide-rise {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: none; }
+    }
+    section.slide[data-deck-active] > :not(.top):not(.footer) {
+      animation: slide-rise .6s cubic-bezier(.16,1,.3,1) both;
+    }
+    section.slide[data-deck-active] > :not(.top):not(.footer):nth-of-type(3) { animation-delay: .07s; }
+    section.slide[data-deck-active] > :not(.top):not(.footer):nth-of-type(4) { animation-delay: .14s; }
+    section.slide[data-deck-active] > :not(.top):not(.footer):nth-of-type(5) { animation-delay: .21s; }
+  }
+</style>
+</head>
+<body>
+
+<deck-stage>
+
+  <!-- ============ 01 COVER ============ -->
+  <section class="slide s-cover" data-label="01 Cover" data-om-validate="false">
+    <div class="stage">
+      <div>
+        <div class="super">Apache-2.0 · Runs Locally · BYOK · No Sign-up</div>
+      </div>
+      <div>
+        <h1>Open by<br/><em>design.</em></h1>
+        <div class="row">
+          <div class="lockup">
+            <div class="mark"></div>
+            <div class="who">Open Design
+              <small>Open-source · Local · Agent-driven</small>
+            </div>
+          </div>
+          <div class="date">VI · 2026</div>
+        </div>
+      </div>
+    </div>
+    <svg class="shape" viewBox="0 0 100 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M50 0 C 80 0, 100 20, 100 40 C 100 60, 80 60, 50 60 C 20 60, 0 60, 0 80 C 0 100, 20 120, 50 120 C 80 120, 100 100, 100 80" fill="currentColor"/>
+    </svg>
+  </section>
+
+  <!-- ============ 02 AGENDA (organic shapes) ============ -->
+  <section class="slide s-agenda dark" data-label="02 Agenda" data-om-validate="false">
+    <div class="top">
+      <span>Agenda</span>
+      <span class="meta"><span>Open Design</span><span>Overview</span></span>
+    </div>
+    <div class="grid">
+      <div class="item">
+        <!-- figure-8 / peanut -->
+        <svg viewBox="0 0 100 250" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M50 0 C 90 0, 100 30, 100 65 C 100 95, 70 110, 50 125 C 30 140, 0 155, 0 185 C 0 220, 10 250, 50 250 C 90 250, 100 220, 100 185 C 100 155, 70 140, 50 125 C 30 110, 0 95, 0 65 C 0 30, 10 0, 50 0 Z" fill="var(--orange)"/>
+        </svg>
+        <span class="n">01</span>
+        <span class="lab">Why<br/>open</span>
+      </div>
+      <div class="item">
+        <!-- octagon -->
+        <svg viewBox="0 0 100 250" preserveAspectRatio="none" aria-hidden="true">
+          <polygon points="30,0 70,0 100,40 100,210 70,250 30,250 0,210 0,40" fill="var(--teal)"/>
+        </svg>
+        <span class="n">02</span>
+        <span class="lab">The<br/>workflow</span>
+      </div>
+      <div class="item">
+        <!-- hourglass / bowtie -->
+        <svg viewBox="0 0 100 250" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 0 L100 0 L100 30 Q 50 125 100 220 L100 250 L0 250 L0 220 Q 50 125 0 30 Z" fill="var(--blue)"/>
+        </svg>
+        <span class="n">03</span>
+        <span class="lab">The<br/>numbers</span>
+      </div>
+      <div class="item">
+        <!-- pinched X -->
+        <svg viewBox="0 0 100 250" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 0 L100 0 L100 90 Q 70 125 100 160 L100 250 L0 250 L0 160 Q 30 125 0 90 Z" fill="var(--sienna)"/>
+        </svg>
+        <span class="n">04</span>
+        <span class="lab">Get<br/>started</span>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>02 / 11</span></div>
+  </section>
+
+  <!-- ============ 03 PRINCIPLES ============ -->
+  <section class="slide s-princ" data-label="03 Our Principles" data-om-validate="false">
+    <div class="top">
+      <span>Our Principles</span>
+      <span class="meta"><span>Open Design</span><span>Principles</span></span>
+    </div>
+    <div class="row">
+      <div class="card c1">
+        <div class="n">1</div>
+        <h3>Desktop<br/>native</h3>
+        <p>Design happens on the desktop. Local files, Figma exports, and code repos are directly readable in place.</p>
+      </div>
+      <div class="card c2">
+        <div class="n">2</div>
+        <h3>Plug in<br/>agents</h3>
+        <p>Claude Code, Codex, and Cursor on your machine are already powerful. Open Design wires them into design work.</p>
+      </div>
+      <div class="card c3">
+        <div class="n">3</div>
+        <h3>Learns<br/>your taste</h3>
+        <p>Every choice becomes design systems, preferences, and memory, so the next run lands closer to what you want.</p>
+      </div>
+      <div class="card c4">
+        <div class="n">4</div>
+        <h3>Open by<br/>license</h3>
+        <p>Apache-2.0 all the way down. Fork it, self-host it, use it commercially — all allowed.</p>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>03 / 11</span></div>
+  </section>
+
+  <!-- ============ 04 SECTION DIVIDER ============ -->
+  <section class="slide s-sec dark" data-label="04 Section · Why Open" data-om-validate="false">
+    <div class="top">
+      <span>Why open</span>
+      <span class="meta"><span>Section II</span></span>
+    </div>
+    <div class="num">02</div>
+    <div class="label">Why open,<br/>why local</div>
+    <h2>Frontier AI<br/>design, set<br/><em>free.</em></h2>
+    <div class="footer"><span>Open Design</span><span>04 / 11</span></div>
+  </section>
+
+  <!-- ============ 05 CONSULT (text-dense) ============ -->
+  <section class="slide s-consult" data-label="05 The Problem" data-om-validate="false">
+    <div class="top">
+      <span>The Problem</span>
+      <span class="meta"><span>Open Design</span><span>Why open</span></span>
+    </div>
+    <div class="head">
+      <div class="tag">Action title · 05</div>
+      <h2>In April 2026, Claude Design proved an LLM can truly design — but it is closed-source, paid, and cloud-only. Open Design sets that capability free.</h2>
+    </div>
+    <div class="grid">
+      <div class="col a">
+        <h3>What changed</h3>
+        <p><strong>Claude Design was the first proof</strong> that an LLM can produce real design artifacts — not write about design, but design.</p>
+        <ul>
+          <li><strong>Real artifacts</strong> — prototypes, pages, and decks generated end to end, not mockup descriptions.</li>
+          <li><strong>But closed</strong> — closed-source, paid, and locked to a single model vendor.</li>
+          <li><strong>And cloud-only</strong> — no self-hosting, no agent choice, no BYOK.</li>
+        </ul>
+        <div class="src">April 2026 · The proof point</div>
+      </div>
+      <div class="col b">
+        <h3>Why it matters</h3>
+        <div class="meta">Frontier AI design, back on every creator's desk.</div>
+        <p>Design happens on the desktop — local files, Figma exports, and code repos live there, and that context never reaches a cloud-only tool.</p>
+        <p>The coding agents on your machine are already powerful. What is missing is an open workflow that wires them into design work.</p>
+        <div class="src">Open · Local · Agent-native</div>
+      </div>
+      <div class="col c">
+        <h3>What Open Design does</h3>
+        <ul>
+          <li><strong>Runs locally</strong> — agents get full terminal power and direct access to your files, on your machine.</li>
+          <li><strong>Plugs in agents</strong> — Claude Code, Codex, Cursor and more, auto-detected from PATH, zero config.</li>
+          <li><strong>Stays open</strong> — Apache-2.0 license, full-stack BYOK, no sign-up required.</li>
+        </ul>
+        <div class="src">github.com/nexu-io/open-design</div>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>05 / 11</span></div>
+  </section>
+
+  <!-- ============ 06 CHART ============ -->
+  <section class="slide s-chart dark" data-label="06 Ecosystem Growth" data-om-validate="false">
+    <div class="top">
+      <span>Ecosystem, by month</span>
+      <span class="meta"><span>Open source</span><span>Evidence</span></span>
+    </div>
+    <div class="left">
+      <h2>The curve<br/>only goes<br/><em>up.</em></h2>
+      <p>An open ecosystem compounds: 217+ plugins, 129 design systems, and 21 coding agents already plug into Open Design — and every contribution makes the next one easier. Demo data, current totals are real.</p>
+      <div class="legend">
+        <div class="li"><i style="background:var(--bone); opacity:.5"></i> Coding agents (21)</div>
+        <div class="li"><i style="background:var(--mustard)"></i> Design systems (129)</div>
+        <div class="li"><i style="background:var(--orange)"></i> Plugins (217+)</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="yhead">Ecosystem count, by month (demo curve)</div>
+      <div class="plot">
+        <div class="yticks">
+          <span>240</span><span>180</span><span>120</span><span>60</span><span>0</span>
+        </div>
+        <div class="gline" style="top:0%"></div>
+        <div class="gline" style="top:25%"></div>
+        <div class="gline" style="top:50%"></div>
+        <div class="gline" style="top:75%"></div>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline fill="none" stroke="#0a0a0a" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2,1.5"
+            points="0,98 16,96 32,95 48,94 64,93 80,92 100,91" />
+          <polyline fill="none" stroke="#D8A93B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+            points="0,98 16,88 32,77 48,66 64,57 80,50 100,46" />
+          <polyline fill="none" stroke="#EE7A2E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"
+            points="0,98 16,82 32,63 48,45 64,29 80,18 100,10" />
+        </svg>
+      </div>
+      <div class="xticks">
+        <span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>06 / 11</span></div>
+  </section>
+
+  <!-- ============ 07 PROCESS ============ -->
+  <section class="slide s-process" data-label="07 Process" data-om-validate="false">
+    <div class="top">
+      <span>How it works</span>
+      <span class="meta"><span>Open Design</span><span>Workflow</span></span>
+    </div>
+    <div class="head">
+      <h2>From <em>idea</em><br/>to delivery,<br/>in five steps.</h2>
+      <div class="sub">The full product-design workflow runs on your own machine — every run feeds the memory that makes the next one better.</div>
+    </div>
+    <div class="flow">
+      <div class="node n1">
+        <div class="n">1</div>
+        <h3>Start</h3>
+        <p>Describe your goal in one sentence, or start from a template or plugin.</p>
+        <svg class="arr" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n2">
+        <div class="n">2</div>
+        <h3>Direct</h3>
+        <p>Set the visual direction — palette, type, and spacing flow into generation automatically.</p>
+        <svg class="arr" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n3">
+        <div class="n">3</div>
+        <h3>Generate</h3>
+        <p>The agent reads full context and produces real runnable files, previewed in a sandbox.</p>
+        <svg class="arr" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n4">
+        <div class="n">4</div>
+        <h3>Ship</h3>
+        <p>Hand off to engineering, or turn it into a marketing video with HyperFrames.</p>
+        <svg class="arr" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n5">
+        <div class="n">5</div>
+        <h3>Remember</h3>
+        <p>Every choice becomes context for the next run — memory compounds.</p>
+      </div>
+    </div>
+    <div class="timeline">
+      <span>1 · Start</span>
+      <span>2 · Direct</span>
+      <span>3 · Generate</span>
+      <span>4 · Ship</span>
+      <span>5 · Remember</span>
+    </div>
+    <div class="footer"><span>Open Design</span><span>07 / 11</span></div>
+  </section>
+
+  <!-- ============ 08 COMPARISON MATRIX ============ -->
+  <section class="slide s-matrix" data-label="08 Comparison" data-om-validate="false">
+    <div class="top">
+      <span>Side by side</span>
+      <span class="meta"><span>Open Design</span><span>Comparison</span></span>
+    </div>
+    <div class="head">
+      <h2>Where <em>open</em><br/>earns its<br/>keep.</h2>
+      <div class="sub">Scored against the levers that matter for AI design tools: openness, locality, agent choice, and what you pay each month.</div>
+    </div>
+    <div class="table">
+      <div class="cell head-row">Lever</div>
+      <div class="cell head-row">Open Design</div>
+      <div class="cell head-row">Claude Design</div>
+      <div class="cell head-row">Cloud design tools</div>
+
+      <div class="cell row-label">Open source</div>
+      <div class="cell"><span class="pill yes">Apache-2.0</span></div>
+      <div class="cell"><span class="pill no">Closed</span></div>
+      <div class="cell"><span class="pill no">Closed</span></div>
+
+      <div class="cell row-label">Runs locally</div>
+      <div class="cell"><span class="pill yes">Yes</span></div>
+      <div class="cell"><span class="pill no">Cloud-only</span></div>
+      <div class="cell"><span class="pill no">Cloud-only</span></div>
+
+      <div class="cell row-label">Agent choice + BYOK</div>
+      <div class="cell"><span class="pill yes">21 agents</span></div>
+      <div class="cell"><span class="pill no">One model</span></div>
+      <div class="cell"><span class="pill part">Varies</span></div>
+
+      <div class="cell row-label last">Monthly cost</div>
+      <div class="cell last"><span class="pill yes">~$73 BYOK</span></div>
+      <div class="cell last"><span class="pill no">$500</span></div>
+      <div class="cell last"><span class="pill note">Subscription</span></div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>08 / 11</span></div>
+  </section>
+
+  <!-- ============ 09 STATS ============ -->
+  <section class="slide s-stats dark" data-label="09 In Numbers" data-om-validate="false">
+    <div class="top">
+      <span>In numbers</span>
+      <span class="meta"><span>Open source</span><span>Evidence</span></span>
+    </div>
+    <div class="head">
+      <h2>The case,<br/><em>by the numbers.</em></h2>
+      <div class="sub">An open ecosystem you can count: stars, contributors, and the cost an open stack takes off the table.</div>
+    </div>
+    <div class="grid">
+      <div class="stat s1">
+        <div class="big">60<small>K+</small></div>
+        <h3>GitHub<br/>stars</h3>
+        <p>Open source under Apache-2.0 — fork it, self-host it, use it commercially.</p>
+      </div>
+      <div class="stat s2">
+        <div class="big">300<small>+</small></div>
+        <h3>Contributors<br/>worldwide</h3>
+        <p>217+ plugins and 129 design systems built and maintained by the community.</p>
+      </div>
+      <div class="stat s3">
+        <div class="big">-80<small>%</small></div>
+        <h3>Monthly<br/>cost</h3>
+        <p>$500 down to ~$73 per month with BYOK, compared to Claude Design.</p>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>09 / 11</span></div>
+  </section>
+
+  <!-- ============ 10 QUOTE ============ -->
+  <section class="slide s-quote" data-label="10 Community Voice" data-om-validate="false">
+    <div class="top">
+      <span>Community voice</span>
+      <span class="meta"><span>Open Design</span><span>Evidence</span></span>
+    </div>
+    <div class="panel">
+      <div class="qmark">"</div>
+      <div>
+        <blockquote>File-system semantics plus git-diffable design artifacts — design is finally under version control.</blockquote>
+        <div class="who">Indie developer
+          <small>Open Design community</small>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>10 / 11</span></div>
+  </section>
+
+  <!-- ============ 11 CTA ============ -->
+  <section class="slide s-cta" data-label="11 Next" data-om-validate="false">
+    <div class="top">
+      <span>What's next</span>
+      <span class="meta"><span>Open Design</span><span>Get started</span></span>
+    </div>
+    <div class="stage">
+      <div class="pane l">
+        <div class="super" style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: .14em; text-transform: uppercase; opacity: .8;">Open · Local · Agent-native</div>
+        <h2>Back on<br/>your<br/><em>desk.</em></h2>
+        <p>Frontier AI design, back on every creator's desk. No sign-up, no cloud lock-in — just your machine, your agents, and your keys.</p>
+      </div>
+      <div class="pane r">
+        <h3>How to start today</h3>
+        <div class="step">
+          <div class="n">1</div>
+          <div>
+            <h4>Download Open Design</h4>
+            <p>macOS and Windows builds at github.com/nexu-io/open-design. Apache-2.0, no sign-up.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <div>
+            <h4>Bring your own agent</h4>
+            <p>Claude Code, Codex, or Cursor already on your PATH is auto-detected — zero config, BYOK.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <div>
+            <h4>Star and join in</h4>
+            <p>Star on GitHub, join discord.gg/mHAjSMV6gz, follow x.com/nexudotio — 300+ contributors and counting.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>Open Design</span><span>11 / 11</span></div>
+  </section>
+
+</deck-stage>
+
+</body>
+</html>

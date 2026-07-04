@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Design — Retro Windows Deck</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+
+  :root {
+    --bg-gray: #c0c0c0;
+    --bg-light: #d4d0c8;
+    --blue-navy: #000080;
+    --blue-light: #1084d0;
+    --white: #ffffff;
+    --black: #000000;
+    --text-dark: #222222;
+    --btn-face: #d4d0c8;
+    --btn-highlight: #ffffff;
+    --btn-shadow: #404040;
+    --btn-dark-shadow: #000000;
+    --green-retro: #006400; /* classic DarkGreen; #008000 fails AA as 14px text on btn-face */
+    --yellow-retro: #808000;
+    --cyan-retro: #008080;
+    --desktop-teal: #008080;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    background: var(--desktop-teal);
+    color: var(--text-dark);
+  }
+
+  /* === CRT OVERLAY === */
+  .crt-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.03) 0px,
+        rgba(0,0,0,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+  }
+
+  /* === SLIDE SYSTEM === */
+  .slide {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 32px 44px 32px;
+  }
+
+  /* window-restore entrance: a transition cannot fire across display:none,
+     so use a keyframe animation (transform + opacity only) */
+  @keyframes win-restore {
+    from { opacity: 0; transform: scale(0.985); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .slide.active {
+    display: flex;
+    animation: win-restore 0.26s cubic-bezier(.16,1,.3,1) both;
+  }
+
+  /* === WINDOW CHROME === */
+  .win-window {
+    background: var(--bg-light);
+    border: 2px solid var(--white);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    box-shadow: inset 1px 1px 0 var(--btn-highlight), inset -1px -1px 0 var(--btn-shadow);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    max-height: calc(100vh - 68px);
+  }
+
+  .win-titlebar {
+    /* authentic Win98 active gradient: navy into #1084d0, not navy into near-navy */
+    background: linear-gradient(90deg, var(--blue-navy) 0%, var(--blue-light) 100%);
+    color: var(--white);
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+
+  .win-titlebar.inactive {
+    background: linear-gradient(90deg, #808080 0%, #b5b5b5 100%);
+  }
+
+  .win-title-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .win-icon {
+    /* app-icon chip: navy on white reads washed-out inside the titlebar gradient;
+       invert it so it sits like a period app icon */
+    width: 18px;
+    height: 18px;
+    background: var(--blue-navy);
+    border: 1px solid var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--white);
+    font-weight: bold;
+  }
+
+  .win-buttons {
+    display: flex;
+    gap: 3px;
+  }
+
+  .win-btn {
+    width: 20px;
+    height: 18px;
+    background: var(--bg-light);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-dark);
+    cursor: pointer;
+    line-height: 1;
+    padding-bottom: 2px;
+  }
+
+  .win-btn:active {
+    border: 2px solid var(--btn-dark-shadow);
+    border-right-color: var(--white);
+    border-bottom-color: var(--white);
+  }
+
+  .win-body {
+    padding: 20px 24px 24px 24px;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* === BUTTONS === */
+  .btn-retro {
+    background: var(--btn-face);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    padding: 6px 24px;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-dark);
+    outline: none;
+  }
+
+  .btn-retro:active {
+    border: 2px solid var(--btn-dark-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+  }
+
+  .btn-retro:focus {
+    outline: 1px dotted var(--black);
+    outline-offset: -4px;
+  }
+
+  /* === PANELS & GROUP BOXES === */
+  .group-box {
+    border: 2px solid var(--btn-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    padding: 20px 18px 16px 18px;
+    position: relative;
+    background: var(--bg-light);
+  }
+
+  .group-box-title {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: var(--bg-light);
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--text-dark);
+  }
+
+  .panel-raised {
+    background: var(--bg-light);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    padding: 16px;
+  }
+
+  .panel-sunken {
+    background: var(--white);
+    border: 2px solid var(--btn-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    padding: 12px;
+  }
+
+  /* === PROGRESS BAR === */
+  .progress-bar {
+    width: 100%;
+    height: 24px;
+    background: var(--white);
+    border: 2px solid var(--btn-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    padding: 2px;
+  }
+
+  .progress-fill {
+    /* authentic Win95 progress: segmented navy blocks, not a smooth fill */
+    height: 100%;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--blue-navy) 0px,
+      var(--blue-navy) 9px,
+      var(--white) 9px,
+      var(--white) 11px
+    );
+  }
+
+  /* === TEXT STYLES === */
+  .pixel-font {
+    font-family: 'Press Start 2P', cursive;
+  }
+
+  .text-center { text-align: center; }
+
+  .text-xl { font-size: 32px; font-weight: bold; }
+  .text-lg { font-size: 22px; }
+  .text-md { font-size: 18px; }
+  .text-sm { font-size: 14px; }
+  .text-xs { font-size: 12px; }
+
+  .text-blue { color: var(--blue-navy); }
+  .text-green { color: var(--green-retro); }
+  .text-gray { color: #474747; }
+  .text-yellow-retro { color: #5a5a00; }
+
+  /* === LAYOUT UTILITIES === */
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-center { justify-content: center; }
+  .justify-between { justify-content: space-between; }
+  .gap-1 { gap: 6px; }
+  .gap-2 { gap: 10px; }
+  .gap-3 { gap: 16px; }
+  .gap-4 { gap: 24px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 18px; }
+
+  .w-full { width: 100%; }
+  .h-full { height: 100%; }
+
+  .mt-1 { margin-top: 6px; }
+  .mt-2 { margin-top: 12px; }
+  .mt-3 { margin-top: 20px; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 12px; }
+  .mb-3 { margin-bottom: 20px; }
+
+  .p-1 { padding: 6px; }
+  .p-2 { padding: 10px; }
+
+  .flex-1 { flex: 1; }
+  .flex-2 { flex: 2; }
+  .shrink-0 { flex-shrink: 0; }
+
+  /* === HORIZONTAL RULE === */
+  hr.retro {
+    border: none;
+    border-top: 1px solid var(--btn-shadow);
+    border-bottom: 1px solid var(--btn-highlight);
+    margin: 14px 0;
+    flex-shrink: 0;
+  }
+
+  /* === LIST STYLES === */
+  ul.retro-list {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  ul.retro-list li {
+    padding: 5px 0 5px 22px;
+    position: relative;
+    font-size: 15px;
+  }
+
+  ul.retro-list li::before {
+    content: ">";
+    position: absolute;
+    left: 4px;
+    color: var(--blue-navy);
+    font-weight: bold;
+  }
+
+  /* === CHECKBOX === */
+  .retro-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    padding: 3px 0;
+  }
+
+  .check-box {
+    width: 16px;
+    height: 16px;
+    background: var(--white);
+    border: 2px solid var(--btn-dark-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  /* === RETRO CSS CHARTS (no JS, no CDN) === */
+  .retro-chart {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 200px;
+    width: 100%;
+  }
+
+  .retro-chart-plot {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 14px;
+    padding: 10px 8px 0 8px;
+    background: var(--white);
+    border: 2px solid var(--btn-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 23px,
+      #e4e4e4 23px,
+      #e4e4e4 24px
+    );
+  }
+
+  .retro-bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    flex: 1;
+    max-width: 72px;
+  }
+
+  .retro-bar-value {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+  }
+
+  .retro-bar {
+    width: 100%;
+    background: var(--bg-gray);
+    border: 1px solid var(--black);
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,0.6);
+  }
+
+  .retro-bar.accent {
+    background: var(--blue-navy);
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,0.25);
+  }
+
+  .retro-chart-labels {
+    display: flex;
+    justify-content: space-around;
+    gap: 14px;
+    padding: 4px 8px 0 8px;
+    flex-shrink: 0;
+  }
+
+  .retro-chart-labels span {
+    flex: 1;
+    max-width: 72px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-dark);
+  }
+
+  /* Win95 disk-properties style stacked usage bar */
+  .disk-bar {
+    display: flex;
+    height: 36px;
+    background: var(--white);
+    border: 2px solid var(--btn-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    padding: 2px;
+  }
+
+  .disk-seg {
+    height: 100%;
+    border-right: 1px solid var(--white);
+  }
+
+  .disk-seg:last-child { border-right: none; }
+
+  /* === NAVIGATION DOTS === */
+  .nav-dots {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 12px;
+    height: 12px;
+    background: var(--bg-gray);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-dot.active {
+    background: var(--blue-navy);
+  }
+
+  .nav-dot.active::after {
+    content: "";
+    width: 4px;
+    height: 4px;
+    background: var(--white);
+  }
+
+  .slide-counter {
+    position: fixed;
+    bottom: 10px;
+    right: 16px;
+    font-size: 12px;
+    color: #333333;
+    background: var(--bg-light);
+    padding: 3px 10px;
+    border: 1px solid var(--btn-shadow);
+    z-index: 100;
+  }
+
+  .nav-hint {
+    position: fixed;
+    bottom: 10px;
+    left: 16px;
+    font-size: 18px;
+    color: var(--white);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45); /* desktop-label legibility on teal */
+    z-index: 100;
+    font-family: 'VT323', monospace;
+  }
+
+  /* === TABLE === */
+  table.retro-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  table.retro-table th {
+    background: var(--bg-gray);
+    border: 1px solid var(--btn-shadow);
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  table.retro-table td {
+    border: 1px solid var(--bg-gray);
+    padding: 6px 10px;
+    background: var(--white);
+  }
+
+  table.retro-table tr:nth-child(even) td {
+    background: #f0f0f0;
+  }
+
+  /* === MARQUEE === */
+  /* lives inside .panel-sunken, which already provides the sunken chrome;
+     a second inset border here would double-bevel like a misnested dialog */
+  .marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--white);
+    padding: 3px 0;
+  }
+
+  .marquee-text {
+    display: inline-block;
+    /* negative delay: first frame already shows text mid-pass, so static
+       exports never capture an empty sunken panel */
+    animation: marquee 14s linear -7s infinite;
+    font-size: 14px;
+    color: var(--text-dark);
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* static variant of the ticker, same outer chrome via .panel-sunken, no animation */
+  .ticker-static {
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--white);
+    padding: 3px 8px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-dark);
+  }
+
+  /* === TREE VIEW === */
+  .tree-item {
+    font-size: 14px;
+    padding: 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    /* flatten color emoji folders into period-correct monochrome glyphs */
+    filter: grayscale(1);
+  }
+
+  .tree-icon {
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* === SEPARATOR === */
+  .separator {
+    width: 2px;
+    background: var(--btn-shadow);
+    border-left: 1px solid var(--btn-highlight);
+    margin: 0 12px;
+  }
+
+  /* === SCROLLBAR === */
+  ::-webkit-scrollbar {
+    width: 16px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-gray);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--bg-gray);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+  }
+
+  /* === HOURGLASS === */
+  .hourglass {
+    font-size: 40px;
+  }
+
+  /* big decorative glyphs render as flat period-correct marks, not glossy emoji */
+  .glyph-flat {
+    filter: grayscale(1) contrast(1.15);
+    opacity: 0.85;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .slide { padding: 15px 20px 40px 20px; }
+  }
+
+  /* === REDUCED MOTION === */
+  @media (prefers-reduced-motion: reduce) {
+    .slide.active { animation: none; }
+    .marquee-text { animation: none; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="crt-overlay"></div>
+
+<!-- ======================== SLIDE 1: TITLE / SPLASH ======================== -->
+<div class="slide active" id="slide-0">
+  <div class="win-window" style="max-width: 720px;">
+    <div class="win-titlebar">
+      <div class="win-title-left">
+        <div class="win-icon">O</div>
+        <span>OPENDESIGN.EXE</span>
+      </div>
+      <div class="win-buttons">
+        <div class="win-btn">_</div>
+        <div class="win-btn">[]</div>
+        <div class="win-btn">X</div>
+      </div>
+    </div>
+    <div class="win-body flex flex-col items-center justify-center" style="padding: 40px;">
+      <div class="hourglass glyph-flat mb-3">&#x231B;</div>
+      <h1 class="pixel-font text-blue text-center" style="font-size: 24px; line-height: 1.8; margin-bottom: 28px;">OPEN DESIGN</h1>
+
+      <div class="panel-sunken mb-3" style="width: 100%; max-width: 540px;">
+        <div class="marquee-container">
+          <span class="marquee-text">The open-source, local, agent-driven design platform &bull; Use arrow keys or navigation dots to browse slides</span>
+        </div>
+      </div>
+
+      <p class="text-sm text-gray text-center mb-3">From idea to prototypes, web pages, slides, and HTML video &mdash; on your own machine.</p>
+
+      <div class="progress-bar mb-3" style="max-width: 480px;">
+        <div class="progress-fill" style="width: 100%;"></div>
+      </div>
+
+      <div class="flex gap-2 mt-2">
+        <button class="btn-retro">OK</button>
+        <button class="btn-retro">Cancel</button>
+        <button class="btn-retro">Help</button>
+      </div>
+
+      <hr class="retro" style="width: 100%; margin-top: 28px;">
+      <p class="text-xs text-gray">Apache-2.0 &bull; Runs Locally &bull; BYOK &bull; No Sign-up</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 2: AGENDA ======================== -->
+<div class="slide" id="slide-1">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">A</div><span>AGENDA.TXT</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue" style="font-weight: bold;">Today's Tour of Open Design</p>
+        <p class="text-sm text-gray mb-1">Select an item to navigate. Use keyboard shortcuts for faster access.</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-2 gap-4 flex-1" style="min-height: 0;">
+        <div class="group-box flex flex-col">
+          <span class="group-box-title">Primary Items</span>
+          <div class="flex-1 flex flex-col justify-center">
+            <ul class="retro-list">
+              <li>Why Open Design</li>
+              <li>Growth by the Numbers</li>
+              <li>Core Capabilities</li>
+              <li>Plugin Ecosystem by Artifact Type</li>
+              <li>Community Metrics Dashboard</li>
+            </ul>
+          </div>
+        </div>
+        <div class="group-box flex flex-col">
+          <span class="group-box-title">Secondary Items</span>
+          <div class="flex-1 flex flex-col justify-center">
+            <ul class="retro-list">
+              <li>21+ Coding Agents, Zero Config</li>
+              <li>From Idea to Delivery in 5 Steps</li>
+              <li>BYOK &amp; Local-First Data</li>
+              <li>Download &amp; Star on GitHub</li>
+              <li>Open Discussion &amp; Q&amp;A Session</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-raised mt-3 shrink-0 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray">Status:</span>
+          <span class="text-sm text-green" style="font-weight: bold;">READY</span>
+        </div>
+        <div class="flex items-center gap-5">
+          <div class="retro-check"><div class="check-box">x</div><span>Notify participants</span></div>
+          <div class="retro-check"><div class="check-box"></div><span>Record session</span></div>
+        </div>
+      </div>
+
+      <div class="mt-3 panel-sunken shrink-0">
+        <div class="flex justify-between text-sm text-gray">
+          <span>Estimated duration: 45 minutes</span>
+          <span>Last updated: 05/01/2026</span>
+          <span>Items: 10 total</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 3: EXECUTIVE SUMMARY ======================== -->
+<div class="slide" id="slide-2">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">R</div><span>README.DOC</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="panel-raised mb-3 shrink-0" style="background: var(--white); padding: 18px;">
+        <p class="text-xl text-blue" style="font-size: 24px;">Why Open Design</p>
+      </div>
+
+      <div class="flex-1 flex flex-col gap-4" style="min-height: 0;">
+        <p class="text-md" style="line-height: 1.7;">
+          In April 2026, Claude Design proved for the first time that an LLM can truly design &mdash; not write about design, but produce real design artifacts. Yet it is closed-source, paid, and cloud-only. Open Design sets that capability free: frontier AI design, back on every creator's desk.
+        </p>
+
+        <div class="grid-2 gap-4 flex-1" style="min-height: 0;">
+          <div class="group-box flex flex-col">
+            <span class="group-box-title">The Problem</span>
+            <div class="flex-1 flex flex-col justify-center">
+              <p class="text-md" style="line-height: 1.7;">
+                Closed-source and cloud-only means locked to one model, with no agent choice, no self-hosting, and no BYOK. Your files, your repos, and your design taste live on someone else's servers &mdash; on someone else's terms.
+              </p>
+            </div>
+          </div>
+          <div class="group-box flex flex-col">
+            <span class="group-box-title">The Open Answer</span>
+            <div class="flex-1 flex flex-col justify-center">
+              <p class="text-md" style="line-height: 1.7;">
+                Desktop-native, so design happens where your files are. It plugs in the agents you already run &mdash; Claude Code, Codex, Cursor &mdash; instead of rebuilding them. And it learns your taste: every choice becomes design systems, preferences, and memory.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 mt-4 shrink-0">
+        <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">Project</p><p class="text-md" style="font-weight: bold;">Open Design</p></div>
+        <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">License</p><p class="text-md" style="font-weight: bold;">Apache-2.0</p></div>
+        <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">Runs On</p><p class="text-md" style="font-weight: bold;">Your Machine</p></div>
+        <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">Sign-up</p><p class="text-md text-green" style="font-weight: bold;">Not Required</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 4: BAR CHART ======================== -->
+<div class="slide" id="slide-3">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">D</div><span>DATAVIEW.CSV</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0 flex justify-between items-center mb-1">
+        <p class="text-lg text-blue" style="font-weight: bold;">Growth by the Numbers</p>
+        <div class="flex gap-2"><button class="btn-retro text-sm">Export</button><button class="btn-retro text-sm">Print</button></div>
+      </div>
+      <hr class="retro">
+
+      <div class="grid-2 gap-5 flex-1 mt-2" style="min-height: 0;">
+        <div class="panel-raised flex flex-col" style="min-height: 0;">
+          <p class="text-sm shrink-0" style="font-weight: bold; margin-bottom: 8px;">GitHub Stars (K, illustrative)</p>
+          <div class="retro-chart flex-1" style="min-height: 0;">
+            <div class="retro-chart-plot">
+              <div class="retro-bar-col"><span class="retro-bar-value">12</span><div class="retro-bar" style="height: 20%;"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">26</span><div class="retro-bar" style="height: 43%;"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">44</span><div class="retro-bar" style="height: 73%;"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">60</span><div class="retro-bar accent" style="height: 100%;"></div></div>
+            </div>
+            <div class="retro-chart-labels"><span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box">
+            <span class="group-box-title">Highlights</span>
+            <ul class="retro-list">
+              <li>60K+ GitHub Stars under Apache-2.0</li>
+              <li>300+ contributors and counting</li>
+              <li>217+ plugins in the ecosystem</li>
+            </ul>
+          </div>
+          <div class="panel-sunken flex-1" style="overflow: auto;">
+            <table class="retro-table">
+              <tr><th>Metric</th><th>Count</th><th>Note</th></tr>
+              <tr><td>GitHub Stars</td><td>60K+</td><td class="text-green" style="font-weight: bold;">Apache-2.0</td></tr>
+              <tr><td>Contributors</td><td>300+</td><td class="text-green" style="font-weight: bold;">community</td></tr>
+              <tr><td>Plugins</td><td>217+</td><td class="text-green" style="font-weight: bold;">open</td></tr>
+              <tr><td>Design Systems</td><td>129</td><td class="text-green" style="font-weight: bold;">importable</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-raised mt-3 shrink-0">
+        <div class="flex justify-between text-sm text-gray">
+          <span>Data source: GitHub stargazers</span>
+          <span>Chart: illustrative trajectory</span>
+          <span>Latest: 60K+ stars</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 5: TWO COLUMN FEATURES ======================== -->
+<div class="slide" id="slide-4">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">F</div><span>FEATURES.INI</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue" style="font-weight: bold;">Core Capabilities</p>
+        <p class="text-sm text-gray mb-1">What ships in the open-source, local, agent-driven design platform.</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-2 gap-5 flex-1 mt-2" style="min-height: 0;">
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box flex-1 flex flex-col">
+            <span class="group-box-title">Core Modules</span>
+            <div class="flex-1 flex flex-col justify-around">
+              <div>
+                <div class="retro-check mb-1"><div class="check-box">x</div><span class="text-sm">Desktop-First Client</span></div>
+                <div class="progress-bar" style="height: 16px;"><div class="progress-fill" style="width: 100%;"></div></div>
+              </div>
+              <div>
+                <div class="retro-check mb-1"><div class="check-box">x</div><span class="text-sm">21 Coding Agents, Zero Config</span></div>
+                <div class="progress-bar" style="height: 16px;"><div class="progress-fill" style="width: 92%;"></div></div>
+              </div>
+              <div>
+                <div class="retro-check mb-1"><div class="check-box">x</div><span class="text-sm">HTML Video Pipeline (HyperFrames)</span></div>
+                <div class="progress-bar" style="height: 16px;"><div class="progress-fill" style="width: 88%;"></div></div>
+              </div>
+              <div>
+                <div class="retro-check mb-1"><div class="check-box"></div><span class="text-sm">Self-Evolving Design Memory</span></div>
+                <div class="progress-bar" style="height: 16px;"><div class="progress-fill" style="width: 65%;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-raised shrink-0">
+            <p class="text-sm text-gray mb-1">Overall Completion</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 86%;"></div></div>
+            <p class="text-lg text-right mt-1" style="font-size: 20px; font-weight: bold;">86%</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box flex-1 flex flex-col">
+            <span class="group-box-title">Module Details</span>
+            <div class="flex-1 flex flex-col justify-around">
+              <div class="panel-sunken"><p class="text-sm" style="line-height: 1.6;"><strong>Desktop-first:</strong> Local files, Figma exports, and code repos readable in place. Agents get full terminal power.</p></div>
+              <div class="panel-sunken"><p class="text-sm" style="line-height: 1.6;"><strong>Agents:</strong> Auto-detects installed CLIs on PATH. Any OpenAI / Azure / Google-compatible endpoint works via BYOK.</p></div>
+              <div class="panel-sunken"><p class="text-sm" style="line-height: 1.6;"><strong>HyperFrames:</strong> Programmatic HTML-to-MP4 pipeline for marketing shorts and product demos.</p></div>
+              <div class="panel-sunken"><p class="text-sm" style="line-height: 1.6;"><strong>Memory:</strong> Every choice becomes design systems, preferences, and memory, so the next generation lands closer.</p></div>
+            </div>
+          </div>
+          <div class="flex gap-3 shrink-0">
+            <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">Agents</p><p class="text-lg" style="font-size: 22px; font-weight: bold; color: var(--blue-navy);">21</p></div>
+            <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">Design Systems</p><p class="text-lg" style="font-size: 22px; font-weight: bold; color: var(--blue-navy);">129</p></div>
+            <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">Plugins</p><p class="text-lg" style="font-size: 22px; font-weight: bold; color: var(--blue-navy);">217+</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 6: PIE CHART ======================== -->
+<div class="slide" id="slide-5">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">G</div><span>GRAPHS.BMP</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue mb-1" style="font-weight: bold;">Plugin Ecosystem by Artifact Type</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-2 gap-5 flex-1 mt-2" style="min-height: 0;">
+        <div class="panel-raised flex flex-col gap-3" style="min-height: 0;">
+          <div class="retro-chart flex-1" style="min-height: 0;">
+            <div class="retro-chart-plot">
+              <div class="retro-bar-col"><span class="retro-bar-value">42%</span><div class="retro-bar accent" style="height: 100%;"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">28%</span><div class="retro-bar" style="height: 67%; background: var(--green-retro); box-shadow: inset 1px 1px 0 rgba(255,255,255,0.25);"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">18%</span><div class="retro-bar" style="height: 43%; background: var(--cyan-retro); box-shadow: inset 1px 1px 0 rgba(255,255,255,0.25);"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">12%</span><div class="retro-bar" style="height: 29%; background: var(--yellow-retro); box-shadow: inset 1px 1px 0 rgba(255,255,255,0.25);"></div></div>
+            </div>
+            <div class="retro-chart-labels"><span>Prototypes</span><span>Slides &amp; Decks</span><span>Posters &amp; Images</span><span>Dashboards &amp; Video</span></div>
+          </div>
+          <div class="disk-bar shrink-0" style="height: 28px;">
+            <div class="disk-seg" style="width: 42%; background: var(--blue-navy);"></div>
+            <div class="disk-seg" style="width: 28%; background: var(--green-retro);"></div>
+            <div class="disk-seg" style="width: 18%; background: var(--cyan-retro);"></div>
+            <div class="disk-seg" style="width: 12%; background: var(--yellow-retro);"></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box">
+            <span class="group-box-title">Artifact Breakdown (illustrative)</span>
+            <div class="flex justify-between items-center p-2 mb-1" style="background: rgba(0,0,128,0.06);">
+              <span class="text-md"><span style="color: var(--blue-navy);">&#9632;</span> Prototypes</span>
+              <span class="text-md" style="font-weight: bold;">42%</span>
+            </div>
+            <div class="flex justify-between items-center p-2 mb-1">
+              <span class="text-md"><span style="color: var(--green-retro);">&#9632;</span> Slides &amp; Decks</span>
+              <span class="text-md" style="font-weight: bold;">28%</span>
+            </div>
+            <div class="flex justify-between items-center p-2 mb-1" style="background: rgba(0,0,128,0.06);">
+              <span class="text-md"><span style="color: var(--cyan-retro);">&#9632;</span> Posters &amp; Images</span>
+              <span class="text-md" style="font-weight: bold;">18%</span>
+            </div>
+            <div class="flex justify-between items-center p-2">
+              <span class="text-md"><span style="color: var(--yellow-retro);">&#9632;</span> Dashboards &amp; Video</span>
+              <span class="text-md" style="font-weight: bold;">12%</span>
+            </div>
+          </div>
+          <div class="panel-raised flex-1 flex flex-col justify-center">
+            <p class="text-md" style="font-weight: bold; margin-bottom: 8px;">Key Insight</p>
+            <p class="text-sm" style="line-height: 1.6;">217+ plugins span every artifact type &mdash; prototypes, slides, posters, dashboards, and HTML-to-MP4 video via HyperFrames. Pair them with any of 129 design systems imported from GitHub, Figma, or local files.</p>
+          </div>
+          <div class="panel-sunken shrink-0">
+            <p class="text-sm text-gray">Total Plugins: <strong>217+</strong> &bull; Design Systems: <strong>129</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 7: METRICS DASHBOARD ======================== -->
+<div class="slide" id="slide-6">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">M</div><span>METRICS.LOG</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue mb-1" style="font-weight: bold;">Open Design by the Numbers</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-4 gap-4 shrink-0 mt-2">
+        <div class="group-box text-center">
+          <span class="group-box-title">GitHub Stars</span>
+          <p class="text-xl" style="font-size: 30px; margin: 10px 0; color: var(--blue-navy);">60K+</p>
+          <p class="text-sm text-green" style="font-weight: bold;">&#9650; growing</p>
+          <p class="text-xs text-gray mt-1">Apache-2.0 open source</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">Contributors</span>
+          <p class="text-xl" style="font-size: 30px; margin: 10px 0; color: var(--blue-navy);">300+</p>
+          <p class="text-sm text-green" style="font-weight: bold;">&#9650; community</p>
+          <p class="text-xs text-gray mt-1">and counting</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">Plugins</span>
+          <p class="text-xl" style="font-size: 30px; margin: 10px 0; color: var(--blue-navy);">217+</p>
+          <p class="text-sm text-green" style="font-weight: bold;">&#9650; ecosystem</p>
+          <p class="text-xs text-gray mt-1">every artifact type</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">Design Systems</span>
+          <p class="text-xl" style="font-size: 30px; margin: 10px 0; color: var(--blue-navy);">129</p>
+          <p class="text-sm text-green" style="font-weight: bold;">&#9650; importable</p>
+          <p class="text-xs text-gray mt-1">GitHub / Figma / local</p>
+        </div>
+      </div>
+
+      <div class="grid-2 gap-5 flex-1 mt-4" style="min-height: 0;">
+        <div class="panel-raised flex flex-col" style="min-height: 0;">
+          <p class="text-sm shrink-0" style="font-weight: bold; margin-bottom: 10px;">GitHub Stars Trend (illustrative)</p>
+          <div class="retro-chart flex-1" style="min-height: 120px;">
+            <div class="retro-chart-plot">
+              <div class="retro-bar-col"><span class="retro-bar-value">22</span><div class="retro-bar" style="height: 37%;"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">30</span><div class="retro-bar" style="height: 50%;"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">38</span><div class="retro-bar" style="height: 63%;"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">46</span><div class="retro-bar" style="height: 77%;"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">53</span><div class="retro-bar" style="height: 88%;"></div></div>
+              <div class="retro-bar-col"><span class="retro-bar-value">60</span><div class="retro-bar accent" style="height: 100%;"></div></div>
+            </div>
+            <div class="retro-chart-labels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box flex-1">
+            <span class="group-box-title">Platform Facts</span>
+            <div class="flex-1 flex flex-col justify-around" style="min-height: 0;">
+              <div class="flex justify-between text-sm"><span>Coding Agents</span><span style="font-weight: bold;">21</span></div>
+              <div class="flex justify-between text-sm"><span>License</span><span class="text-green" style="font-weight: bold;">Apache-2.0</span></div>
+              <div class="flex justify-between text-sm"><span>Media Providers (BYOK)</span><span style="font-weight: bold;">14</span></div>
+              <div class="flex justify-between text-sm"><span>Cost vs Claude Design</span><span style="font-weight: bold;">-80%</span></div>
+              <div class="flex justify-between text-sm"><span>Monthly bill</span><span style="font-weight: bold;">$500 &rarr; ~$73</span></div>
+            </div>
+          </div>
+          <div class="panel-sunken shrink-0 flex items-center justify-between">
+            <span class="text-sm text-gray">All data stays in local .od/ storage &mdash; API keys never leave your machine</span>
+            <span class="text-sm text-green" style="font-weight: bold;">&#9679; LOCAL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 8: ORG STRUCTURE ======================== -->
+<div class="slide" id="slide-7">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">E</div><span>EXPLORER.EXE</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue mb-1" style="font-weight: bold;">Agent Ecosystem: Plug In, Don't Rebuild</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-2 gap-5 flex-1 mt-2" style="min-height: 0;">
+        <div class="panel-sunken flex flex-col" style="background: var(--white); min-height: 0;">
+          <p class="text-sm text-gray mb-2 shrink-0">C:\OPENDESIGN\AGENTS</p>
+          <div class="flex-1 flex flex-col justify-around" style="overflow: auto;">
+            <div>
+              <div class="tree-item"><span class="tree-icon">-</span>&#128193; <strong>Coding Agents</strong></div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Claude Code</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Codex CLI</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">-</span>&#128193; Cursor Agent</div>
+              <div class="tree-item" style="padding-left: 44px;"><span class="tree-icon">&nbsp;</span>&#128196; auto-detected</div>
+              <div class="tree-item" style="padding-left: 44px;"><span class="tree-icon">&nbsp;</span>&#128196; zero config</div>
+            </div>
+            <div>
+              <div class="tree-item"><span class="tree-icon">-</span>&#128193; <strong>More Agents</strong></div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; OpenClaw</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Hermes Agent</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Deepseek TUI</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Gemini CLI</div>
+            </div>
+            <div>
+              <div class="tree-item"><span class="tree-icon">-</span>&#128193; <strong>BYOK Providers</strong></div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Anthropic</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; OpenAI / Azure</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Google</div>
+            </div>
+            <div>
+              <div class="tree-item"><span class="tree-icon">-</span>&#128193; <strong>And Beyond</strong></div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Copilot CLI</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Kimi &amp; Kiro CLI</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; Mistral Vibe</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box flex-1 flex flex-col" style="min-height: 0;">
+            <span class="group-box-title">Ecosystem Inventory</span>
+            <div class="flex-1" style="overflow: auto;">
+              <table class="retro-table">
+                <tr><th>Category</th><th>Count</th><th>Config</th></tr>
+                <tr><td>Coding Agents</td><td>21</td><td>zero</td></tr>
+                <tr><td>Media Providers</td><td>14</td><td>BYOK</td></tr>
+                <tr><td>Design Systems</td><td>129</td><td>import</td></tr>
+                <tr><td>Plugins</td><td>217+</td><td>open</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="panel-raised flex-1 flex flex-col justify-center">
+            <p class="text-sm" style="font-weight: bold; margin-bottom: 10px;">How It Works</p>
+            <p class="text-sm" style="line-height: 1.6; margin-bottom: 10px;">Open Design auto-detects installed CLIs on your PATH &mdash; zero config. Any OpenAI / Azure / Google-compatible endpoint can be wired in through BYOK.</p>
+            <div class="flex gap-2">
+              <span class="text-xs panel-sunken p-1">Claude Code</span>
+              <span class="text-xs panel-sunken p-1">Codex CLI</span>
+              <span class="text-xs panel-sunken p-1">Cursor Agent</span>
+            </div>
+          </div>
+          <div class="panel-sunken shrink-0 flex items-center justify-between">
+            <span class="text-sm text-gray">Coding agents supported</span>
+            <span class="text-lg text-blue" style="font-weight: bold;">21+ and growing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 9: TIMELINE ======================== -->
+<div class="slide" id="slide-8">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">T</div><span>TIMELINE.PRJ</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue mb-1" style="font-weight: bold;">From Idea to Delivery in 5 Steps</p>
+        <hr class="retro">
+      </div>
+
+      <div class="flex gap-3 shrink-0 mt-2" style="align-items: stretch;">
+        <div class="win-window flex-1" style="max-width: none;">
+          <div class="win-titlebar inactive"><span style="font-size: 12px;">STEP 1</span></div>
+          <div class="p-2">
+            <div class="retro-check mb-1"><div class="check-box">x</div><strong> Pick a start</strong></div>
+            <ul class="retro-list">
+              <li>One-sentence goal</li>
+              <li>Or pick a template</li>
+              <li>Or one of 217+ plugins</li>
+            </ul>
+          </div>
+        </div>
+        <div class="win-window flex-1" style="max-width: none;">
+          <div class="win-titlebar inactive"><span style="font-size: 12px;">STEP 2</span></div>
+          <div class="p-2">
+            <div class="retro-check mb-1"><div class="check-box">x</div><strong> Set direction</strong></div>
+            <ul class="retro-list">
+              <li>Pick a visual direction</li>
+              <li>Palette &amp; type flow in</li>
+              <li>Spacing auto-applied</li>
+            </ul>
+          </div>
+        </div>
+        <div class="win-window flex-1" style="max-width: none;">
+          <div class="win-titlebar"><span style="font-size: 12px;">STEP 3</span></div>
+          <div class="p-2">
+            <div class="retro-check mb-1"><div class="check-box"></div><strong> Generate</strong></div>
+            <ul class="retro-list">
+              <li>Agent reads full context</li>
+              <li>Real runnable files</li>
+              <li>Sandbox preview &amp; edit</li>
+            </ul>
+          </div>
+        </div>
+        <div class="win-window flex-1" style="max-width: none;">
+          <div class="win-titlebar inactive"><span style="font-size: 12px;">STEP 4</span></div>
+          <div class="p-2">
+            <div class="retro-check mb-1"><div class="check-box"></div><strong> Ship or film</strong></div>
+            <ul class="retro-list">
+              <li>Hand off to engineering</li>
+              <li>Or HyperFrames video</li>
+              <li>HTML straight to MP4</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-raised mt-4 shrink-0">
+        <p class="text-sm" style="font-weight: bold; margin-bottom: 10px;">Step 5: Memory compounds &mdash; every choice becomes context for the next run</p>
+        <div class="flex gap-4 items-center">
+          <div class="flex-1"><div class="progress-bar"><div class="progress-fill" style="width: 55%;"></div></div></div>
+          <div style="text-align: right;"><p class="text-md" style="font-weight: bold;">Learning</p><p class="text-xs text-gray">with every run</p></div>
+        </div>
+      </div>
+
+      <div class="grid-3 gap-4 flex-1 mt-4" style="align-content: start;">
+        <div class="group-box text-center">
+          <span class="group-box-title">License</span>
+          <p class="text-lg text-yellow-retro" style="font-weight: bold; margin-top: 6px;">APACHE-2.0</p>
+          <p class="text-xs text-gray">fork &amp; self-host</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">Runs</span>
+          <p class="text-lg text-green" style="font-weight: bold; margin-top: 6px;">LOCALLY</p>
+          <p class="text-xs text-gray">your machine, your data</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">Sign-up</span>
+          <p class="text-lg text-blue" style="font-weight: bold; margin-top: 6px;">NONE</p>
+          <p class="text-xs text-gray">BYOK from day one</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 10: CLOSING ======================== -->
+<div class="slide" id="slide-9">
+  <div class="win-window" style="max-width: 680px;">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">?</div><span>SHUTDOWN.EXE</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body flex flex-col items-center justify-center" style="padding: 40px;">
+      <div class="glyph-flat" style="font-size: 52px; margin-bottom: 20px;">&#x1F4A4;</div>
+      <h2 class="pixel-font text-blue text-center" style="font-size: 20px; margin-bottom: 20px; line-height: 1.8;">OPEN. LOCAL. AGENT-NATIVE.</h2>
+      <p class="text-md text-center mb-3" style="line-height: 1.7;">
+        Frontier AI design, back on every creator's desk.<br>
+        Download Open Design (macOS / Windows) &mdash; or star us on GitHub.
+      </p>
+
+      <div class="panel-sunken mb-3" style="width: 100%; max-width: 520px;">
+        <div class="ticker-static">
+          <span>github.com/nexu-io/open-design &bull; discord.gg/mHAjSMV6gz &bull; x.com/nexudotio</span>
+        </div>
+      </div>
+
+      <div class="flex gap-4 mb-3 items-center">
+        <div class="text-center"><p class="text-xs text-gray mb-1">GitHub</p><p class="text-sm" style="font-weight: bold;">nexu-io/open-design</p></div>
+        <div class="separator"></div>
+        <div class="text-center"><p class="text-xs text-gray mb-1">Discord</p><p class="text-sm" style="font-weight: bold;">discord.gg/mHAjSMV6gz</p></div>
+        <div class="separator"></div>
+        <div class="text-center"><p class="text-xs text-gray mb-1">X</p><p class="text-sm" style="font-weight: bold;">x.com/nexudotio</p></div>
+      </div>
+
+      <div class="flex gap-2 mt-2">
+        <a class="btn-retro" href="https://open-design.ai/" target="_blank" rel="noreferrer noopener" style="text-decoration:none;color:inherit;">Download Open Design</a>
+        <a class="btn-retro" href="https://github.com/nexu-io/open-design" target="_blank" rel="noreferrer noopener" style="text-decoration:none;color:inherit;">Star on GitHub</a>
+        <a class="btn-retro" href="https://discord.gg/mHAjSMV6gz" target="_blank" rel="noreferrer noopener" style="text-decoration:none;color:inherit;">Join Discord</a>
+      </div>
+
+      <hr class="retro" style="width: 100%; margin-top: 28px;">
+      <p class="text-xs text-gray">Open Design &bull; Apache-2.0 &bull; Fork, self-host, and commercial use all allowed</p>
+    </div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav-dots" id="navDots"></div>
+<div class="slide-counter" id="slideCounter">1 / 10</div>
+<div class="nav-hint">&lt;-- ARROW KEYS to navigate --&gt;</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+let currentSlide = 0;
+
+function showSlide(index) {
+  slides.forEach((s, i) => {
+    s.classList.toggle('active', i === index);
+  });
+  updateNavDots();
+  updateCounter();
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) {
+    currentSlide++;
+    showSlide(currentSlide);
+  }
+}
+
+function prevSlide() {
+  if (currentSlide > 0) {
+    currentSlide--;
+    showSlide(currentSlide);
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+    e.preventDefault();
+    nextSlide();
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    prevSlide();
+  } else if (e.key === 'Home') {
+    e.preventDefault();
+    currentSlide = 0;
+    showSlide(currentSlide);
+  } else if (e.key === 'End') {
+    e.preventDefault();
+    currentSlide = totalSlides - 1;
+    showSlide(currentSlide);
+  }
+});
+
+const dotsContainer = document.getElementById('navDots');
+for (let i = 0; i < totalSlides; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => { currentSlide = i; showSlide(i); });
+  dotsContainer.appendChild(dot);
+}
+
+function updateNavDots() {
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === currentSlide);
+  });
+}
+
+function updateCounter() {
+  document.getElementById('slideCounter').textContent = (currentSlide + 1) + ' / ' + totalSlides;
+}
+
+showSlide(0);
+</script>
+</body>
+</html>

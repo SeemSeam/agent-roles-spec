@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Open Design · Growth Weekly W24</title>
+<style>/* weekly-report :: ops ledger restyle */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+/* ============ tokens: one accent (forest emerald), warm off-white paper ============ */
+:root{
+  --paper:#f6f5f1;
+  --paper-2:#edece6;
+  --ink:#181a17;
+  --ink-2:#4e524c;
+  --ink-3:#666b63;
+  --line:rgba(24,26,23,.13);
+  --line-strong:rgba(24,26,23,.32);
+  --accent:#136f47;
+  --down:#a83430;
+  --font-display:'Archivo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-body:'Archivo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'IBM Plex Mono',SFMono-Regular,Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);
+  font-family:var(--font-body);font-weight:400;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:inherit;text-decoration:none}
+code,kbd,pre,samp{font-family:var(--font-mono)}
+
+/* ============ deck (static preview: slides stacked, print-paginated) ============ */
+.deck{width:100vw}
+.slide{position:relative;width:100vw;height:100vh;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:84px 96px;border-bottom:1px solid var(--line)}
+.center{align-items:center;justify-content:center}
+.tc{text-align:center}
+
+/* ============ type scale ============ */
+.h1{font-family:var(--font-display);font-weight:700;letter-spacing:-.032em;line-height:1.02;
+  font-size:clamp(56px,6.4vw,84px);margin:0}
+.h2{font-family:var(--font-display);font-weight:650;letter-spacing:-.025em;line-height:1.06;
+  font-size:clamp(36px,3.8vw,50px);margin:0}
+.h1,.h2{text-wrap:balance}
+h4{font-family:var(--font-display);font-weight:600;letter-spacing:-.01em;font-size:18px;line-height:1.3;margin:0}
+.lede{font-size:19px;line-height:1.6;color:var(--ink-2);font-weight:400;max-width:58ch;margin:0}
+.kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--accent);font-weight:500;margin:0 0 18px}
+.dim{color:var(--ink-2)}
+.mono{font-family:var(--font-mono)}
+.mt-s{margin-top:8px}.mt-m{margin-top:18px}.mt-l{margin-top:40px}
+.row{display:flex;gap:24px;align-items:baseline}
+.grid{display:grid}
+.pill{font-family:var(--font-mono);font-size:12px;color:var(--ink-2);letter-spacing:.03em}
+
+/* ============ entrance motion: transform+opacity only, ease-out, staggered ============ */
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.slide>*{animation:rise .65s var(--ease) both}
+.slide>*:nth-child(2){animation-delay:.06s}
+.slide>*:nth-child(3){animation-delay:.12s}
+.slide>*:nth-child(4){animation-delay:.18s}
+@media (prefers-reduced-motion:reduce){.slide>*{animation:none}}
+
+/* ============ S1 cover ============ */
+.cover-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:72px;
+  padding-bottom:18px;border-bottom:1px solid var(--line-strong)}
+.logo{font-family:var(--font-display);font-weight:700;font-size:18px;letter-spacing:-.01em;
+  display:inline-flex;align-items:center;gap:10px}
+.logo::before{content:"";width:11px;height:11px;background:var(--accent);flex:none}
+.week-chip{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.03em;color:var(--ink-2)}
+.deck-footer{position:absolute;left:96px;right:96px;bottom:44px;
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--font-mono);font-size:11.5px;letter-spacing:.04em;color:var(--ink-3)}
+.slide-number::before{content:attr(data-current)}
+.slide-number::after{content:" / " attr(data-total)}
+.cover .h1 span{color:var(--accent)}
+
+/* ============ S2 KPI board: hairline grid, no shadow cards ============ */
+.g4{grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line-strong)}
+.kpi{padding:30px 32px 28px 0;border-bottom:1px solid var(--line)}
+.kpi:not(:nth-child(4n+1)){border-left:1px solid var(--line);padding-left:32px}
+.kpi .label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.kpi .value{font-family:var(--font-display);font-weight:650;font-size:clamp(34px,3vw,44px);
+  letter-spacing:-.03em;line-height:1;margin-top:14px;font-variant-numeric:tabular-nums}
+.kpi.hero .value{color:var(--accent)}
+.kpi .delta{display:block;font-family:var(--font-mono);font-size:12px;margin-top:12px;color:var(--ink-3)}
+.kpi .delta.up{color:var(--accent)}
+.kpi .delta.down{color:var(--down)}
+.kpi .delta.flat{color:var(--ink-3)}
+
+/* ============ S3 shipped: ledger rows ============ */
+.ship-list{border-top:1px solid var(--line-strong)}
+.ship-item{display:flex;gap:22px;padding:17px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.ship-item .tag{flex:none;width:64px;font-family:var(--font-mono);font-size:11px;font-weight:600;
+  letter-spacing:.08em;color:var(--ink-3)}
+.ship-item .tag.feat{color:var(--accent)}
+.ship-item .tag.fix,.ship-item .tag.exp,.ship-item .tag.infra{color:var(--ink-2)}
+.ship-item b{font-weight:600;color:var(--ink);font-size:16px;letter-spacing:-.005em}
+.ship-item p{margin:0}
+.ship-item span.owner{margin-left:auto;flex:none;color:var(--ink-3);font-size:12px;font-family:var(--font-mono)}
+
+/* ============ S4 chart: flat bars, accent only on the current week ============ */
+.chart{border-top:1px solid var(--line-strong);padding-top:26px}
+.chart-bars{display:flex;align-items:flex-end;gap:12px;height:240px;margin-top:44px;
+  border-bottom:1px solid var(--line-strong)}
+.chart-bars .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
+.chart-bars .col .b{width:100%;background:var(--ink);min-height:6px;position:relative}
+.chart-bars .col:last-child .b{background:var(--accent)}
+.chart-bars .col:last-child .b::after{color:var(--accent);font-weight:600}
+.chart-bars .col .b::after{content:attr(data-v);position:absolute;top:-26px;left:0;right:0;text-align:center;
+  font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--ink)}
+.chart-bars .col .lbl{position:absolute;top:100%;left:0;right:0;text-align:center;margin-top:10px;
+  font-family:var(--font-mono);font-size:11px;color:var(--ink-3)}
+.chart>.dim{padding-top:18px}
+
+/* ============ S5 blockers: ruled rows, red tick ============ */
+.blocker-list{border-top:1px solid var(--line-strong)}
+.blocker{position:relative;padding:22px 0 20px 26px;border-bottom:1px solid var(--line);margin:0}
+.blocker::before{content:"";position:absolute;left:0;top:30px;width:12px;height:2px;background:var(--down)}
+.blocker h4{margin-bottom:6px}
+.blocker p{font-size:14px;color:var(--ink-2);margin:0;max-width:64ch}
+.blocker .meta{font-family:var(--font-mono);font-size:11px;letter-spacing:.03em;color:var(--ink-3);margin-top:8px}
+
+/* ============ S6 next week: owner/task ledger ============ */
+.next-list{border-top:1px solid var(--line-strong)}
+.next-row{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:16px 0;
+  border-bottom:1px solid var(--line);align-items:baseline}
+.next-row .owner{font-family:var(--font-mono);font-size:12.5px;color:var(--accent)}
+.next-row .task{color:var(--ink);font-size:16px}
+.next-row .task b{font-weight:600;letter-spacing:-.005em}
+.next-row .task span{display:block;color:var(--ink-3);font-size:12.5px;font-family:var(--font-mono);margin-top:3px}
+
+/* ============ S7 thanks: the single inverted page ============ */
+.slide.thanks{background:var(--ink);color:var(--paper);border-bottom:none}
+.thanks .kicker{color:var(--paper);opacity:.55}
+.thanks .h1{font-size:clamp(64px,7.6vw,104px)}
+.thanks .lede{color:rgba(246,245,241,.72);max-width:72ch;text-wrap:balance}
+.thanks .week-chip{color:rgba(246,245,241,.78);border-bottom:1px solid rgba(246,245,241,.3);padding-bottom:5px}
+
+/* ============ print ============ */
+@media print{
+  .slide{page-break-after:always;border-bottom:none}
+  .slide,.chart-bars .col .b{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (max-width:820px){
+  .slide{padding:52px 28px;height:auto;min-height:100vh}
+  .deck-footer{left:28px;right:28px}
+  .g4{grid-template-columns:1fr 1fr}
+  .kpi:not(:nth-child(4n+1)){border-left:none;padding-left:0}
+  .kpi:nth-child(2n){border-left:1px solid var(--line);padding-left:24px}
+  .ship-item{flex-wrap:wrap}
+  .next-row{grid-template-columns:1fr}
+}
+</style></head>
+<body class="tpl-weekly-report">
+<div class="deck">
+
+  <!-- 1. Cover -->
+  <section class="slide cover" data-title="Cover">
+    <div class="cover-head">
+      <div class="logo">Open Design</div>
+      <div class="week-chip">W24 · 2026-06-08 → 2026-06-14</div>
+    </div>
+    <p class="kicker">GROWTH WEEKLY</p>
+    <h1 class="h1 mt-s">This week: GitHub Stars<br>crossed <span>60K+</span>.</h1>
+    <p class="lede mt-m">The open-source, local, agent-driven design platform — 300+ contributors, 217+ plugins, 21 coding agents. Apache-2.0.</p>
+    <div class="deck-footer"><span>github.com/nexu-io/open-design</span><span class="slide-number" data-current="1" data-total="7"></span></div>
+  </section>
+
+  <!-- 2. KPI -->
+  <section class="slide" data-title="KPIs">
+    <p class="kicker">HIGHLIGHTS · KPIs</p>
+    <h2 class="h2">Core metrics this week</h2>
+    <div class="grid g4 mt-l">
+      <div class="kpi good hero"><div class="label">GitHub Stars</div><div class="value">60K+</div><div class="delta up">▲ milestone reached</div></div>
+      <div class="kpi good"><div class="label">Contributors</div><div class="value">300+</div><div class="delta up">▲ growing</div></div>
+      <div class="kpi good"><div class="label">Plugins</div><div class="value">217+</div><div class="delta up">▲ community-built</div></div>
+      <div class="kpi"><div class="label">Design systems</div><div class="value">129</div><div class="delta flat">— GitHub / Figma / local</div></div>
+      <div class="kpi good"><div class="label">Coding agents</div><div class="value">21</div><div class="delta up">▲ zero config</div></div>
+      <div class="kpi"><div class="label">Media providers</div><div class="value">14</div><div class="delta flat">— full-stack BYOK</div></div>
+      <div class="kpi good"><div class="label">Cost vs Claude Design</div><div class="value">-80%</div><div class="delta up">▲ $500 → ~$73 / mo</div></div>
+      <div class="kpi"><div class="label">License</div><div class="value">Apache-2.0</div><div class="delta flat">— fork · self-host · commercial</div></div>
+    </div>
+  </section>
+
+  <!-- 3. Shipped -->
+  <section class="slide" data-title="Shipped">
+    <p class="kicker">SHIPPED THIS WEEK · 6 items</p>
+    <h2 class="h2">Shipped</h2>
+    <div class="ship-list mt-l" style="max-width:980px">
+      <div class="ship-item"><span class="tag feat">FEAT</span><div><b>HyperFrames HTML→MP4 pipeline</b><p class="dim" style="font-size:13px;margin:2px 0 0">Turn any artifact into a marketing short or product demo — programmatic video, end to end.</p></div><span class="owner">@video</span></div>
+      <div class="ship-item"><span class="tag feat">FEAT</span><div><b>21 coding agents, zero config</b><p class="dim" style="font-size:13px;margin:2px 0 0">Auto-detected from PATH: Claude Code, Codex, Cursor and more, wired into the full design workflow.</p></div><span class="owner">@agents</span></div>
+      <div class="ship-item"><span class="tag exp">EXP</span><div><b>Self-evolving design memory</b><p class="dim" style="font-size:13px;margin:2px 0 0">Every choice becomes design systems, preferences, and memory — the next generation lands closer.</p></div><span class="owner">@core</span></div>
+      <div class="ship-item"><span class="tag fix">FIX</span><div><b>Design tokens stay consistent</b><p class="dim" style="font-size:13px;margin:2px 0 0">Markdown design systems stop token drift — brand consistency is finally enforceable.</p></div><span class="owner">@design</span></div>
+      <div class="ship-item"><span class="tag infra">INFRA</span><div><b>Local-first data</b><p class="dim" style="font-size:13px;margin:2px 0 0">Everything lives in local .od/ SQLite. API keys never leave your machine — BYOK across providers.</p></div><span class="owner">@daemon</span></div>
+      <div class="ship-item"><span class="tag feat">FEAT</span><div><b>Plugin ecosystem at 217+</b><p class="dim" style="font-size:13px;margin:2px 0 0">Prototypes, slides, posters, dashboards, weekly reports, OKRs — all community-extendable.</p></div><span class="owner">@plugins</span></div>
+    </div>
+  </section>
+
+  <!-- 4. Metrics chart -->
+  <section class="slide" data-title="Metrics">
+    <p class="kicker">METRIC DEEP-DIVE</p>
+    <h2 class="h2">GitHub Stars, last 8 weeks</h2>
+    <div class="chart mt-l">
+      <div class="row" style="justify-content:space-between"><h4>GitHub Stars · cumulative (demo data)</h4><span class="pill">milestone: 60K+</span></div>
+      <div class="chart-bars">
+        <div class="col"><div class="b" data-v="38K" style="height:56%"></div><div class="lbl">W17</div></div>
+        <div class="col"><div class="b" data-v="41K" style="height:60%"></div><div class="lbl">W18</div></div>
+        <div class="col"><div class="b" data-v="44K" style="height:65%"></div><div class="lbl">W19</div></div>
+        <div class="col"><div class="b" data-v="47K" style="height:69%"></div><div class="lbl">W20</div></div>
+        <div class="col"><div class="b" data-v="50K" style="height:73%"></div><div class="lbl">W21</div></div>
+        <div class="col"><div class="b" data-v="53K" style="height:78%"></div><div class="lbl">W22</div></div>
+        <div class="col"><div class="b" data-v="56K" style="height:82%"></div><div class="lbl">W23</div></div>
+        <div class="col"><div class="b" data-v="60K+" style="height:88%"></div><div class="lbl">W24</div></div>
+      </div>
+      <p class="dim mt-m" style="font-size:13px;margin-top:36px">Illustrative weekly trajectory toward the 60K+ milestone — landed alongside 300+ contributors and 217+ community plugins, all under Apache-2.0.</p>
+    </div>
+  </section>
+
+  <!-- 5. Blockers -->
+  <section class="slide" data-title="Blockers">
+    <p class="kicker">NEEDS ATTENTION · 3 items</p>
+    <h2 class="h2">Needs attention</h2>
+    <div class="blocker-list mt-l" style="max-width:900px">
+      <div class="blocker">
+        <h4>Plugin review queue keeps growing</h4>
+        <p>217+ plugins and counting — community submissions are outpacing review capacity. Triage rotation proposed.</p>
+        <div class="meta">owner: @plugins · ongoing · help wanted</div>
+      </div>
+      <div class="blocker">
+        <h4>Docs lag behind 21 supported agents</h4>
+        <p>Agent adapter docs need a refresh so every auto-detected CLI ships with a quickstart and a BYOK example.</p>
+        <div class="meta">owner: @docs · target: next week</div>
+      </div>
+      <div class="blocker">
+        <h4>Windows native is still best-effort</h4>
+        <p>macOS, Linux, and WSL2 are the primary supported paths. Windows native needs more community testing and issue reports.</p>
+        <div class="meta">owner: @desktop · help wanted · file an issue</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Next week -->
+  <section class="slide" data-title="Next Week">
+    <p class="kicker">NEXT WEEK · W25 plan</p>
+    <h2 class="h2">Next week</h2>
+    <div class="next-list mt-l" style="max-width:960px">
+      <div class="next-row"><div class="owner">@video</div><div class="task"><b>HyperFrames: more HTML→MP4 demo templates</b><span>ship it, or film it</span></div></div>
+      <div class="next-row"><div class="owner">@agents</div><div class="task"><b>BYOK: broaden OpenAI / Azure / Google-compatible endpoint coverage</b><span>14 media providers and counting</span></div></div>
+      <div class="next-row"><div class="owner">@design</div><div class="task"><b>Design system imports: GitHub / Figma / local polish</b><span>129 systems in the catalog</span></div></div>
+      <div class="next-row"><div class="owner">@docs</div><div class="task"><b>Quickstarts for all 21 auto-detected coding agents</b><span>clears this week's attention item</span></div></div>
+      <div class="next-row"><div class="owner">everyone</div><div class="task"><b>Welcome new contributors — 300+ and growing</b><span>good-first-issues triaged · Discord office hours</span></div></div>
+    </div>
+  </section>
+
+  <!-- 7. Thanks -->
+  <section class="slide thanks center tc" data-title="Thanks">
+    <div>
+      <p class="kicker">OPEN · LOCAL · AGENT-NATIVE</p>
+      <h1 class="h1">Frontier AI design,<br>back on your desk.</h1>
+      <p class="lede" style="margin:24px auto 0">Download Open Design for macOS / Windows — or star us on GitHub.</p>
+      <div class="row mt-l" style="justify-content:center;gap:40px">
+        <span class="week-chip">github.com/nexu-io/open-design</span>
+        <span class="week-chip">discord.gg/mHAjSMV6gz · x.com/nexudotio</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body></html>

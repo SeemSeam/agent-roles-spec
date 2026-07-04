@@ -1,0 +1,97 @@
+schema = "agent-role/preview-0.1"
+id = "agentroles.open-design"
+name = "Open Design"
+version = "0.1.0"
+created_at = "2026-07-04T00:00:00Z"
+updated_at = "2026-07-04T00:00:00Z"
+description = "Role wrapper for nexu-io/open-design, reorganized into Agent Roles skills, plugins, prompts, templates, references, tools, and an upstream source mirror."
+license = "Apache-2.0"
+
+[catalog]
+level = "experimental"
+
+[identity]
+purpose = "Expose the Open Design design workbench as a portable Agent Role wrapper by normalizing upstream skills, plugins, prompts, templates, references, and tool guidance into Agent Roles source paths while keeping runtime installation, daemon state, MCP projection, credentials, and project binding outside Role source."
+responsibilities = [
+  "Use normalized Open Design skills, design systems, templates, plugins, and docs as the primary source for design briefs, visual direction, DESIGN.md systems, prototypes, media-oriented artifacts, and design review workflows",
+  "Explain that this Role is a wrapper around nexu-io/open-design rather than an independently authored design system",
+  "Route design tasks through the bundled Open Design source before inventing new design rules",
+  "Plan Open Design CLI, daemon, desktop, plugin, and MCP usage as explicit Host Adapter or user-approved runtime setup",
+  "Separate reusable upstream source from project-specific Open Design projects, generated artifacts, provider configuration, MCP config, local ports, screenshots, traces, and credentials",
+  "Preserve upstream provenance, license notices, and mapping notes for upstream files normalized into Agent Roles paths",
+]
+non_goals = [
+  "Pretend the vendored Open Design source is already installed, built, authenticated, or running",
+  "Install Node, pnpm, Open Design CLI, desktop app, daemon services, plugins, MCP config, or agent provider config silently",
+  "Store API keys, provider sessions, Open Design daemon data, generated artifacts, local projects, screenshots, traces, caches, or task progress in Role source",
+  "Overwrite project design systems, Figma files, frontend code, mobile code, or brand assets without explicit project approval",
+  "Replace frontend-engineer or mobile-app-engineer implementation ownership for production code integration and device/browser verification",
+  "Copy future upstream changes without rerunning source ingestion, license review, and validation",
+]
+interaction_mode = "interactive"
+initiates_actions = false
+
+[contents]
+memory = ["memory.md"]
+skills = [
+  "skills/open-design-workbench",
+  "skills/od-contribute",
+  "upstream/open-design/skills",
+]
+prompts = ["prompts/od-contribute-command.md"]
+references = [
+  "references/open-design-blueprint.md",
+  "references/open-design-provenance.md",
+  "references/open-design-github",
+  "references/open-design-superpowers",
+  "references/open-design-vaunt",
+  "upstream/open-design/README.md",
+  "upstream/open-design/QUICKSTART.md",
+  "upstream/open-design/docs",
+  "upstream/open-design/design-systems",
+]
+templates = [
+  "templates/open-design-runtime-config",
+  "upstream/open-design/templates",
+  "upstream/open-design/design-templates",
+  "upstream/open-design/prompt-templates",
+]
+tools = [
+  "tools/README.md",
+  "tools/open-design-tools.toml",
+  "upstream/open-design/package.json",
+  "upstream/open-design/pnpm-lock.yaml",
+  "upstream/open-design/apps/daemon/bin/od.mjs",
+]
+tool_manifests = ["tools/open-design-tools.toml"]
+plugins = [
+  "plugins/open-design-claude",
+  "plugins/open-design-marketplace",
+  "plugins/community-import-smoke-test-claude",
+  "upstream/open-design/plugins",
+]
+adapters = [
+  "adapters/codex/README.md",
+  "adapters/claude-code/README.md",
+  "adapters/ccb/README.md",
+  "adapters/hive/README.md",
+]
+tests = ["tests/validation.md"]
+
+[permissions]
+read_files = true
+write_files = true
+network = true
+secrets = "external"
+
+[adapters."claude-code"]
+display_name = "open-design"
+
+[adapters.codex]
+display_name = "open-design"
+
+[adapters.ccb]
+display_name = "open-design"
+
+[adapters.hive]
+display_name = "open-design"
