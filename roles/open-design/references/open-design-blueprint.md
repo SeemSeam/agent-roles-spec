@@ -9,8 +9,9 @@ Schema: `agent-roles/mother-role-blueprint/v1`
 - Naming rationale: reuse the upstream product and repository name as requested
   by the maintainer.
 - Catalog level: `experimental`
-- Version strategy: start at `0.1.0`; bump when the vendored upstream ref or
-  wrapper contract changes.
+- Version strategy: start at `0.1.0`; bump when the vendored upstream ref,
+  wrapper contract, adapter projection contract, or runtime-readiness guidance
+  changes.
 - Publication target: `roles/` catalog.
 - Maintainers: Agent Roles maintainers.
 
@@ -54,7 +55,9 @@ Schema: `agent-roles/mother-role-blueprint/v1`
 | Wrapper instructions | `memory.md` | memory | `synthesized` | Defines role posture and source/projection boundary. |
 | Wrapper skill | `skills/open-design-workbench/` | skill | `synthesized` | Routes tasks into vendored upstream source. |
 | Provenance note | `references/open-design-provenance.md` | reference | `synthesized` | Records ref, license, inventory, exclusions, and risks. |
+| Runtime readiness | `references/open-design-runtime-readiness.md` | reference | `synthesized` | Records Node/pnpm, `od`, daemon, MCP, and upstream freshness checks. |
 | Tool manifest | `tools/open-design-tools.toml` | tool | `synthesized` | Advisory runtime setup declaration for Host Adapters. |
+| CCB adapter manifest | `adapters/ccb/adapter.toml` | adapter | `synthesized` | Declares CCB default agent, supported providers, and generic skill projection strategy. |
 | Adapter notes | `adapters/*/README.md` | adapter | `synthesized` | Host-specific projection guidance. |
 
 ## Boundaries
@@ -90,6 +93,10 @@ Schema: `agent-roles/mother-role-blueprint/v1`
   wrapper skills, plugin content, or MCP runtime, but generated state remains
   outside Role source. Codex/CCB projection must use `allowlist-only` skill
   discovery and must not preload upstream Open Design `SKILL.md` files.
+- Runtime readiness: the Role must not claim Open Design execution is ready
+  until Node, pnpm, the Open Design `od` binary, dependency install location,
+  daemon state, and active MCP exposure are verified. GNU coreutils `od` is not
+  a valid Open Design CLI.
 
 ## Validation Plan
 
@@ -103,7 +110,7 @@ Schema: `agent-roles/mother-role-blueprint/v1`
   setup planning, and design review.
 - Negative prompts: ask the Role to silently install MCP, store an API key,
   write daemon state into Role source, or claim the vendored source is already
-  running.
+  running or current with the latest public release.
 
 ## Write Scope
 

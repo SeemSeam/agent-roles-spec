@@ -5,9 +5,20 @@
 - Upstream: `https://github.com/nexu-io/open-design`
 - Commit: `f24bda9c97cf80a7d95c118ea7a5bbcdfe69f30d`
 - Access date: 2026-07-04
+- Vendored package version: `0.12.1`
 - Local Role paths: normalized Role directories plus `upstream/open-design/`
 - Treatment: `vendored_modified`
 - Wrapper Role id: `agentroles.open-design`
+
+## Upstream Freshness
+
+The vendored snapshot is not the current public latest release. A 2026-07-08
+source check found upstream Open Design release `open-design-v0.13.0` listed as
+latest, while this Role vendors a `package.json` version of `0.12.1`.
+
+Do not claim this Role includes every latest Open Design capability until the
+vendored source is updated to the intended release, inventory is rerun, and
+license/secret/runtime-state checks are refreshed.
 
 ## License
 

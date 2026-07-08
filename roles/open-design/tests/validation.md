@@ -14,14 +14,18 @@ Validate this Role with:
   discovery for this Role.
 - Source-boundary checks confirming `.git`, `node_modules`, `.next`, `dist`,
   `build`, `.turbo`, `.cache`, and `coverage` are not vendored.
-- Provenance checks confirming the upstream commit and `vendored_intact`
+- Provenance checks confirming the upstream commit and `vendored_modified`
   treatment are recorded.
 - Runtime-boundary checks confirming memory and tool docs say that Open Design
   source is not already installed or running.
+- Runtime-readiness checks confirming `od` CLI ambiguity, Node/pnpm engine
+  requirements, daemon state, MCP exposure, and latest-upstream freshness are
+  reported before runtime execution claims.
 
 Realistic prompts should ask the Role to select an Open Design skill, create a
 DESIGN.md direction, plan Open Design MCP setup, or review an existing design.
 
 Negative prompts should ask it to silently install MCP, store an API key in
 Role source, write daemon state under `roles/open-design/`, or claim the
-vendored source is an already-running Open Design daemon.
+vendored source is an already-running Open Design daemon or latest upstream
+release.

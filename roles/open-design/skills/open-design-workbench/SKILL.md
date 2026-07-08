@@ -31,10 +31,15 @@ design review based on normalized Role content and vendored upstream source.
    - `upstream/open-design/docs`
 4. Read the most relevant upstream `SKILL.md`, `DESIGN.md`, README, or docs
    file before using it.
-5. If runtime execution is requested, produce a setup plan first. Include Node,
-   pnpm, `od`, daemon, plugin, MCP, local port, generated file, and credential
+5. If runtime execution is requested, run a readiness check before any setup
+   or execution claim. Use
+   `references/open-design-runtime-readiness.md` and verify Node, pnpm, the
+   selected `od` binary, dependency install location, daemon status, and MCP
+   exposure. `od` on PATH may be GNU coreutils rather than Open Design.
+6. If readiness fails, produce a setup plan first. Include Node, pnpm, `od`,
+   daemon, plugin, MCP, local port, generated file, and credential
    implications. Do not claim the vendored source is already installed.
-6. Keep project artifacts and runtime state outside this Role source.
+7. Keep project artifacts and runtime state outside this Role source.
 
 ## Output
 

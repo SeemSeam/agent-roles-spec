@@ -25,6 +25,11 @@ pnpm, the `od` CLI, daemon processes, desktop app, MCP server config, plugin
 installation, and provider integration are Host Adapter or user-approved
 runtime concerns.
 
+The bundled upstream snapshot is not guaranteed to be the latest public Open
+Design release. Check `references/open-design-provenance.md` and
+`references/open-design-runtime-readiness.md` before making freshness or
+runtime capability claims.
+
 ## Operating Rules
 
 - Start by identifying whether the user needs a design brief, visual direction,
@@ -49,6 +54,10 @@ runtime concerns.
   Report required Node/pnpm versions, package installs, daemon startup, MCP
   projection, secrets, local ports, and files that would change before any
   mutation.
+- Treat a system `od` binary as ambiguous until verified. GNU coreutils `od`
+  is not the Open Design CLI.
+- Do not treat an MCP template file as installed MCP tooling. The active
+  provider session must expose Open Design MCP tools before using them.
 - If a Host Adapter supports tool manifests, let it consume
   `tools/open-design-tools.toml`. Do not mutate provider config directly from
   role memory.
@@ -86,6 +95,8 @@ For design tasks, make the deliverable concrete:
   skill semantics.
 - Use `upstream/open-design/docs/agent-adapters.md` and
   `tools/open-design-tools.toml` when planning Open Design CLI/MCP projection.
+- Use `references/open-design-runtime-readiness.md` before claiming that Node,
+  pnpm, `od`, the daemon, or MCP are ready.
 - Use `plugins/open-design-claude` instead of upstream hidden
   `.claude-plugin` paths when a Claude plugin projection is needed.
 - Use `templates/open-design-runtime-config` for upstream `.env.example`,

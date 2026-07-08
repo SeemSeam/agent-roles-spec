@@ -28,7 +28,7 @@ def test_open_design_role_loads_with_expected_inventory() -> None:
 
     assert role.id == "agentroles.open-design"
     assert role.name == "Open Design"
-    assert role.version == "0.1.0"
+    assert role.version == "0.1.1"
     assert role.catalog_level == "experimental"
     assert "Role wrapper" in role.description
     assert "Agent Roles" in role.description
@@ -50,6 +50,7 @@ def test_open_design_role_loads_with_expected_inventory() -> None:
     assert "upstream/open-design/skills" not in contents["skills"]
     assert contents["prompts"] == ["prompts/od-contribute-command.md"]
     assert contents["tool_manifests"] == ["tools/open-design-tools.toml"]
+    assert "references/open-design-runtime-readiness.md" in contents["references"]
     assert "plugins/open-design-claude" in contents["plugins"]
     assert "plugins/open-design-marketplace" in contents["plugins"]
     assert "upstream/open-design/plugins" in contents["plugins"]
@@ -66,13 +67,14 @@ def test_open_design_role_loads_with_expected_inventory() -> None:
     assert permissions["network"] is True
     assert permissions["secrets"] == "external"
 
+    adapters = role.table("adapters")
     assert role.adapter("codex")["display_name"] == "open-design"
     assert role.adapter("claude-code")["display_name"] == "open-design"
-    assert role.adapter("ccb")["display_name"] == "open-design"
+    assert adapters["ccb"]["display_name"] == "open-design"
     assert role.adapter("hive")["display_name"] == "open-design"
 
     for adapter_name in ("codex", "ccb"):
-        projection = role.adapter(adapter_name)["projection"]
+        projection = adapters[adapter_name]["projection"]
         assert projection["skill_discovery"] == "allowlist-only"
         assert projection["skill_allowlist"] == [
             "skills/open-design-workbench",
@@ -108,10 +110,12 @@ def test_open_design_wrapper_and_upstream_source_exist() -> None:
         "references/open-design-superpowers/plans/2026-05-10-linux-client-parity.md",
         "references/open-design-blueprint.md",
         "references/open-design-provenance.md",
+        "references/open-design-runtime-readiness.md",
         "tools/README.md",
         "tools/open-design-tools.toml",
         "adapters/codex/README.md",
         "adapters/claude-code/README.md",
+        "adapters/ccb/adapter.toml",
         "adapters/ccb/README.md",
         "adapters/hive/README.md",
         "tests/validation.md",
@@ -177,14 +181,34 @@ def test_open_design_tool_manifest_and_boundaries() -> None:
     memory = ROLE_ROOT.joinpath("memory.md").read_text(encoding="utf-8")
     tools = ROLE_ROOT.joinpath("tools/README.md").read_text(encoding="utf-8")
     provenance = ROLE_ROOT.joinpath("references/open-design-provenance.md").read_text(encoding="utf-8")
+    readiness = ROLE_ROOT.joinpath("references/open-design-runtime-readiness.md").read_text(encoding="utf-8")
 
     assert "not the same as an installed runtime" in memory
     assert "Host Adapter or user-approved" in memory
     assert "runtime concerns" in memory
+    assert "GNU coreutils `od`" in memory
     assert "not an installed runtime" in tools
+    assert "GNU coreutils `od`" in tools
     assert "f24bda9c97cf80a7d95c118ea7a5bbcdfe69f30d" in provenance
+    assert "Vendored package version: `0.12.1`" in provenance
+    assert "open-design-v0.13.0" in provenance
     assert "Treatment: `vendored_modified`" in provenance
     assert ".claude/skills/od-contribute" in provenance
+    assert "Vendored `package.json` version: `0.12.1`" in readiness
+    assert "GNU coreutils `od`" in readiness
+    assert "A template such as `plugins/open-design-claude/mcp.json` is not" in readiness
+
+
+def test_open_design_ccb_adapter_projects_only_generic_wrapper_skills() -> None:
+    adapter = read_toml(ROLE_ROOT / "adapters/ccb/adapter.toml")
+
+    assert adapter["schema"] == "agent-role-adapter/ccb-preview-0.1"
+    assert adapter["host"] == "ccb"
+    assert adapter["default_agent_name"] == "open-design"
+    assert adapter["recommended_provider"] == "codex"
+    assert adapter["supported_providers"] == ["codex", "claude"]
+    assert adapter["skill_projection"]["strategy"] == "copy-generic-skills"
+    assert "Upstream Open Design SKILL.md files remain on-disk references" in adapter["skill_projection"]["description"]
 
 
 def test_open_design_source_boundary_excludes_runtime_dependency_and_hidden_entrypoints() -> None:
@@ -219,7 +243,7 @@ def test_open_design_installs_and_resolves_from_catalog(tmp_path: Path, monkeypa
     install = _run_json(["install", "agentroles.open-design"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
     assert install["role_id"] == "agentroles.open-design"
-    assert install["version"] == "0.1.0"
+    assert install["version"] == "0.1.1"
     assert install["catalog_level"] == "experimental"
 
     resolved = _run_json(["resolve", "agentroles.open-design"], tmp_path, monkeypatch, capsys)
@@ -235,7 +259,7 @@ def test_open_design_list_discovers_role_from_clean_store(tmp_path: Path, monkey
 
     assert "agentroles.open-design" in rows
     row = rows["agentroles.open-design"]
-    assert row["version"] == "0.1.0"
+    assert row["version"] == "0.1.1"
     assert row["catalog_level"] == "experimental"
     assert row["status"] == "available"
     assert row["update_reason"] == "not_installed"

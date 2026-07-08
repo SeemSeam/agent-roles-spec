@@ -61,6 +61,8 @@ is installed, authenticated, built, or running.
 - `references/open-design-blueprint.md`: source-ingest blueprint.
 - `references/open-design-provenance.md`: upstream ref, license, inventory,
   copy treatment, and risk notes.
+- `references/open-design-runtime-readiness.md`: runtime readiness checks for
+  Node, pnpm, the `od` CLI, daemon state, and MCP exposure.
 - `tools/open-design-tools.toml`: advisory tool manifest for Open Design CLI,
   daemon, plugin, and MCP runtime planning.
 - `adapters/`: host notes for Codex, Claude Code, CCB, and Hive.
@@ -88,3 +90,15 @@ are limited to:
 The upstream Open Design skill library remains available on disk for
 `open-design-workbench` to search and load by exact path when a task needs a
 specific upstream workflow.
+
+## Runtime Readiness
+
+This Role does not install or select the Open Design runtime. Before claiming
+runtime availability, check Node and pnpm against upstream `package.json`,
+verify that `od` is the Open Design CLI rather than GNU coreutils, confirm that
+dependencies are installed outside Role source, and confirm that the daemon or
+MCP tools are actually available in the current provider session.
+
+The vendored snapshot currently records upstream package version `0.12.1`.
+Public Open Design releases may be newer; refresh the vendored source and
+rerun source ingestion before claiming latest upstream coverage.

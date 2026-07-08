@@ -46,8 +46,10 @@ notes = "Requires explicit host or user approval for Node, pnpm, package install
 checks = [
   "Node version satisfies upstream package.json engines",
   "pnpm version satisfies upstream package.json packageManager",
+  "od on PATH is Open Design CLI, not GNU coreutils od",
   "dependencies are installed in a runtime store outside Role source when execution is requested",
   "od CLI is available or can be launched from an approved runtime checkout",
+  "Open Design daemon or desktop process is running before daemon-backed operations",
 ]
 
 [[tools]]
@@ -65,7 +67,9 @@ notes = "Use upstream guidance such as od mcp install <agent> only through adapt
 [tools.doctor]
 checks = [
   "Open Design runtime is installed outside Role source",
+  "Open Design daemon is reachable when MCP tools need daemon-backed state",
   "MCP config target is provider-approved",
+  "active provider session exposes Open Design MCP tools before use",
   "credentials and daemon data are stored outside Role source",
 ]
 

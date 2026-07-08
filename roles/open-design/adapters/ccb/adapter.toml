@@ -1,0 +1,13 @@
+schema = "agent-role-adapter/ccb-preview-0.1"
+host = "ccb"
+
+default_agent_name = "open-design"
+recommended_provider = "codex"
+supported_providers = ["codex", "claude"]
+recommended_workspace_mode = "inplace"
+permission_default = "manual"
+memory_merge_strategy = "append_after_project_memory"
+
+[skill_projection]
+strategy = "copy-generic-skills"
+description = "CCB should project only the Role generic skills declared in role.toml contents.skills into the bound provider home. Upstream Open Design SKILL.md files remain on-disk references."
