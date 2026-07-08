@@ -44,7 +44,7 @@ Schema: `agent-roles/mother-role-blueprint/v1`
 
 | Source | Role path | Type | Treatment | Notes |
 | --- | --- | --- | --- | --- |
-| `nexu-io/open-design` ordinary source | `upstream/open-design/` | reference/skill/tool/plugin/template/source | `vendored_modified` | Upstream mirror excluding `.git`, local dependency/build/cache dirs, and hidden host paths that are normalized below. |
+| `nexu-io/open-design` ordinary source | `upstream/open-design/` | reference/tool/plugin/template/source | `vendored_modified` | Upstream mirror excluding `.git`, local dependency/build/cache dirs, and hidden host paths that are normalized below. Upstream `SKILL.md` files are reference-library files, not startup skills. |
 | `.claude/skills/od-contribute` | `skills/od-contribute/` | skill | `vendored_modified` | Converted from hidden Claude skill path to Agent Roles skill path. |
 | `.claude/commands/od-contribute.md` | `prompts/od-contribute-command.md` | prompt | `vendored_modified` | Converted from hidden Claude command path to Role prompt. |
 | `.claude-plugin/marketplace.json` | `plugins/open-design-marketplace/marketplace.json` | plugin/reference | `vendored_modified` | Converted from hidden marketplace path. |
@@ -87,8 +87,9 @@ Schema: `agent-roles/mother-role-blueprint/v1`
   model providers, plugins, and MCP.
 - Secrets: external only.
 - Adapter notes: Codex, Claude Code, CCB, and Hive may project Open Design
-  skills, plugin content, or MCP runtime, but generated state remains outside
-  Role source.
+  wrapper skills, plugin content, or MCP runtime, but generated state remains
+  outside Role source. Codex/CCB projection must use `allowlist-only` skill
+  discovery and must not preload upstream Open Design `SKILL.md` files.
 
 ## Validation Plan
 

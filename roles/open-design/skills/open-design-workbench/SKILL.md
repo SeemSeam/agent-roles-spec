@@ -14,7 +14,10 @@ design review based on normalized Role content and vendored upstream source.
 
 1. Identify the requested Open Design surface: skill, design system, template,
    plugin, docs, CLI/MCP setup, or design artifact.
-2. Search the vendored source before inventing a workflow:
+2. Keep startup skill exposure narrow. This wrapper skill and
+   `skills/od-contribute` are the only Open Design skills that should be
+   projected as active provider skills by default.
+3. Search the vendored source before inventing a workflow:
    - `skills`
    - `plugins`
    - `prompts`
@@ -26,12 +29,12 @@ design review based on normalized Role content and vendored upstream source.
    - `upstream/open-design/templates`
    - `upstream/open-design/plugins`
    - `upstream/open-design/docs`
-3. Read the most relevant upstream `SKILL.md`, `DESIGN.md`, README, or docs
+4. Read the most relevant upstream `SKILL.md`, `DESIGN.md`, README, or docs
    file before using it.
-4. If runtime execution is requested, produce a setup plan first. Include Node,
+5. If runtime execution is requested, produce a setup plan first. Include Node,
    pnpm, `od`, daemon, plugin, MCP, local port, generated file, and credential
    implications. Do not claim the vendored source is already installed.
-5. Keep project artifacts and runtime state outside this Role source.
+6. Keep project artifacts and runtime state outside this Role source.
 
 ## Output
 

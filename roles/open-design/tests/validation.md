@@ -7,6 +7,11 @@ Validate this Role with:
   permissions, and adapter display names.
 - Catalog list/install/resolve coverage with a clean `AGENT_ROLES_STORE`.
 - Content checks confirming wrapper files and key upstream source paths exist.
+- Startup-skill checks confirming `contents.skills` exposes only
+  `skills/open-design-workbench` and `skills/od-contribute`, while upstream
+  Open Design `SKILL.md` files stay as on-disk reference material.
+- Adapter projection checks confirming Codex and CCB use allowlist-only skill
+  discovery for this Role.
 - Source-boundary checks confirming `.git`, `node_modules`, `.next`, `dist`,
   `build`, `.turbo`, `.cache`, and `coverage` are not vendored.
 - Provenance checks confirming the upstream commit and `vendored_intact`

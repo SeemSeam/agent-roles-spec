@@ -59,6 +59,16 @@ hidden or ignored paths are normalized into Agent Roles source directories:
 non-hidden paths. Wrapper metadata, memory, skills, tools, adapters, tests, and
 provenance files are authored outside that mirror.
 
+Upstream Open Design contains hundreds of `SKILL.md` files. They are retained
+as source/reference material but are intentionally not declared from
+`contents.skills`. Active startup skill projection is limited to:
+
+- `skills/open-design-workbench`
+- `skills/od-contribute`
+
+Adapters should load upstream `SKILL.md` files only by explicit path after the
+wrapper skill selects the relevant source for a task.
+
 Excluded from the vendored copy:
 
 - `.git`

@@ -36,7 +36,6 @@ memory = ["memory.md"]
 skills = [
   "skills/open-design-workbench",
   "skills/od-contribute",
-  "upstream/open-design/skills",
 ]
 prompts = ["prompts/od-contribute-command.md"]
 references = [
@@ -47,6 +46,7 @@ references = [
   "references/open-design-vaunt",
   "upstream/open-design/README.md",
   "upstream/open-design/QUICKSTART.md",
+  "upstream/open-design/skills",
   "upstream/open-design/docs",
   "upstream/open-design/design-systems",
 ]
@@ -90,8 +90,34 @@ display_name = "open-design"
 [adapters.codex]
 display_name = "open-design"
 
+[adapters.codex.projection]
+skill_discovery = "allowlist-only"
+skill_allowlist = [
+  "skills/open-design-workbench",
+  "skills/od-contribute",
+]
+reference_skill_roots = [
+  "upstream/open-design/skills",
+  "upstream/open-design/design-templates",
+  "upstream/open-design/plugins",
+]
+notes = "Do not project upstream Open Design SKILL.md files as startup skills. Keep them on disk as a searchable reference library and load specific files only after open-design-workbench selects them."
+
 [adapters.ccb]
 display_name = "open-design"
+
+[adapters.ccb.projection]
+skill_discovery = "allowlist-only"
+skill_allowlist = [
+  "skills/open-design-workbench",
+  "skills/od-contribute",
+]
+reference_skill_roots = [
+  "upstream/open-design/skills",
+  "upstream/open-design/design-templates",
+  "upstream/open-design/plugins",
+]
+notes = "When projecting this Role into Codex-backed CCB agents, expose only wrapper skills at startup and keep upstream SKILL.md files as on-disk references."
 
 [adapters.hive]
 display_name = "open-design"

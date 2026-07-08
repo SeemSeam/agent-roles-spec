@@ -43,6 +43,10 @@ is installed, authenticated, built, or running.
   and upstream Open Design source.
 - `skills/od-contribute`: normalized upstream Open Design contribution skill
   from `.claude/skills/od-contribute`.
+- `upstream/open-design/skills`, `upstream/open-design/design-templates`, and
+  `upstream/open-design/plugins`: full upstream skill library kept as on-disk
+  reference material. These paths are intentionally not declared as active
+  startup skills.
 - `plugins/`: normalized Open Design Claude plugin, marketplace, and smoke-test
   plugin metadata from upstream hidden plugin paths.
 - `prompts/`: normalized upstream Claude command prompt.
@@ -71,3 +75,16 @@ Generated Open Design projects, artifacts, daemon data, plugin install state,
 MCP config, provider homes, and secrets must stay outside this Role.
 
 The canonical Role id is `agentroles.open-design`.
+
+## Skill Projection Boundary
+
+Open Design carries hundreds of upstream `SKILL.md` files. Host Adapters must
+not project all of them into provider startup context. Active startup skills
+are limited to:
+
+- `skills/open-design-workbench`
+- `skills/od-contribute`
+
+The upstream Open Design skill library remains available on disk for
+`open-design-workbench` to search and load by exact path when a task needs a
+specific upstream workflow.

@@ -46,8 +46,8 @@ def test_open_design_role_loads_with_expected_inventory() -> None:
     assert contents["skills"] == [
         "skills/open-design-workbench",
         "skills/od-contribute",
-        "upstream/open-design/skills",
     ]
+    assert "upstream/open-design/skills" not in contents["skills"]
     assert contents["prompts"] == ["prompts/od-contribute-command.md"]
     assert contents["tool_manifests"] == ["tools/open-design-tools.toml"]
     assert "plugins/open-design-claude" in contents["plugins"]
@@ -55,6 +55,7 @@ def test_open_design_role_loads_with_expected_inventory() -> None:
     assert "upstream/open-design/plugins" in contents["plugins"]
     assert "references/open-design-github" in contents["references"]
     assert "references/open-design-vaunt" in contents["references"]
+    assert "upstream/open-design/skills" in contents["references"]
     assert "upstream/open-design/design-systems" in contents["references"]
     assert "templates/open-design-runtime-config" in contents["templates"]
     assert "upstream/open-design/design-templates" in contents["templates"]
@@ -69,6 +70,17 @@ def test_open_design_role_loads_with_expected_inventory() -> None:
     assert role.adapter("claude-code")["display_name"] == "open-design"
     assert role.adapter("ccb")["display_name"] == "open-design"
     assert role.adapter("hive")["display_name"] == "open-design"
+
+    for adapter_name in ("codex", "ccb"):
+        projection = role.adapter(adapter_name)["projection"]
+        assert projection["skill_discovery"] == "allowlist-only"
+        assert projection["skill_allowlist"] == [
+            "skills/open-design-workbench",
+            "skills/od-contribute",
+        ]
+        assert "upstream/open-design/skills" in projection["reference_skill_roots"]
+        assert "upstream/open-design/design-templates" in projection["reference_skill_roots"]
+        assert "upstream/open-design/plugins" in projection["reference_skill_roots"]
 
 
 def test_open_design_wrapper_and_upstream_source_exist() -> None:
@@ -130,6 +142,27 @@ def test_open_design_wrapper_and_upstream_source_exist() -> None:
 
     assert len(list((ROLE_ROOT / "upstream/open-design/skills").glob("*/SKILL.md"))) >= 150
     assert len(list((ROLE_ROOT / "upstream/open-design/design-systems").glob("*/DESIGN.md"))) >= 140
+
+
+def test_open_design_startup_skills_are_narrow_even_with_full_upstream_source() -> None:
+    role = load_role(ROLE_ROOT)
+    contents = role.table("contents")
+    active_skill_paths = contents["skills"]
+
+    assert active_skill_paths == [
+        "skills/open-design-workbench",
+        "skills/od-contribute",
+    ]
+
+    all_skill_files = list(ROLE_ROOT.rglob("SKILL.md"))
+    upstream_skill_files = list((ROLE_ROOT / "upstream/open-design").rglob("SKILL.md"))
+    assert len(all_skill_files) >= 500
+    assert len(upstream_skill_files) >= 500
+    assert len(active_skill_paths) == 2
+    assert all(
+        not item.startswith("upstream/open-design/")
+        for item in active_skill_paths
+    )
 
 
 def test_open_design_tool_manifest_and_boundaries() -> None:

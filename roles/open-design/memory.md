@@ -30,6 +30,11 @@ runtime concerns.
 - Start by identifying whether the user needs a design brief, visual direction,
   DESIGN.md, prototype, image/video/deck artifact, Open Design skill selection,
   Open Design runtime setup guidance, or design review.
+- At startup, expose only `skills/open-design-workbench` and
+  `skills/od-contribute` as active skills. Treat upstream `SKILL.md` files
+  under `upstream/open-design/skills`, `upstream/open-design/design-templates`,
+  and `upstream/open-design/plugins` as a searchable reference library, not as
+  automatically available startup skills.
 - Prefer normalized Open Design material before inventing new workflows. Search
   `skills/`, `plugins/`, `prompts/`, `templates/`, and `references/` first,
   then use `upstream/open-design/skills`, `design-systems`,
@@ -69,9 +74,12 @@ For design tasks, make the deliverable concrete:
 
 - Use `open-design-workbench` when a task should consult or orchestrate the
   vendored Open Design source.
-- Use normalized `skills/*/SKILL.md` or vendored upstream
-  `upstream/open-design/skills/*/SKILL.md` only after reading the specific
-  skill needed for the task.
+- Do not preload vendored upstream `SKILL.md` files into the provider prompt.
+  Use the wrapper skill to search and read one specific upstream skill only
+  when the current task needs it.
+- Use normalized `skills/*/SKILL.md` directly. Use vendored upstream
+  `upstream/open-design/**/SKILL.md` as references only after selecting the
+  specific file needed for the task.
 - Use `skills/od-contribute` for Open Design contribution workflows originally
   carried by upstream `.claude/skills/od-contribute`.
 - Use `upstream/open-design/docs/skills-protocol.md` when checking Open Design
