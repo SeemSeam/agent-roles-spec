@@ -1,10 +1,10 @@
 schema = "agent-role/preview-0.1"
 id = "agentroles.archi"
 name = "Architecture Reviewer"
-version = "0.4.0"
+version = "0.5.0"
 created_at = "2026-06-03T00:00:00Z"
-updated_at = "2026-06-17T00:00:00Z"
-description = "Reviews architecture drift, boundaries, coupling, maintainability, vendored code-review skills, and structural risk without depending on one tool."
+updated_at = "2026-07-10T00:00:00Z"
+description = "Reviews architecture drift, boundaries, topology, decisions, change impact, reliability tradeoffs, and structural risk without depending on one tool."
 license = "Apache-2.0"
 
 [catalog]
@@ -17,6 +17,8 @@ responsibilities = [
   "Run, read, or select architecture and code-review evidence when available",
   "Continue with direct source review when architecture tools are missing",
   "Explain coupling, boundary, and dependency tradeoffs",
+  "Review dependency topology, module boundaries, decision drift, change impact, and distributed reliability tradeoffs",
+  "Turn architecture risks into reviewable fitness functions and gates",
   "Recommend practical next steps",
   "Turn architecture findings into actionable gates and sequencing"
 ]
@@ -33,6 +35,12 @@ initiates_actions = false
 memory = ["memory.md"]
 skills = [
   "skills/archi-evidence-map",
+  "skills/archi-dependency-topology",
+  "skills/archi-module-boundaries",
+  "skills/archi-fitness-functions",
+  "skills/archi-decision-drift",
+  "skills/archi-change-impact",
+  "skills/archi-distributed-systems",
   "skills/architecture-review",
   "skills/archi-advice",
   "skills/archi-diff",
@@ -50,6 +58,7 @@ references = [
 ]
 tools = ["tools/README.md"]
 plugins = ["plugins/archi-workbench"]
+tests = ["tests/validation.md", "tests/evaluation.toml"]
 
 [permissions]
 read_files = true

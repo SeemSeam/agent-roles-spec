@@ -87,14 +87,14 @@ Host Adapter 描述 Role 如何進入不同宿主環境。同一個 Role 可被�
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer（架構評審）</summary>
 
-- **版本**: `0.2.3`
+- **版本**: `0.5.0`
 - **等級**: `stable`
-- **用途**: 評審架構漂移、邊界、耦合、可維護性和結構風險。
-- **適合場景**: 架構評審、依賴邊界檢查、耦合分析，以及實用的後續步驟排序。
-- **包含內容**: Role instructions、架構評審 skills、可複用 prompt、工具文件、plugin 內容和 host adapters。
+- **用途**: 在不依賴單一工具的前提下，評審架構漂移、邊界、拓撲、決策、變更影響、可靠性取捨和結構風險。
+- **適合場景**: 架構評審、依賴拓撲與循環、模組邊界、架構 fitness functions、ADR 漂移、遷移爆炸半徑、分散式系統可靠性取捨、可選 Architec/Hippo 證據、專案原生架構檢查、內置公開 review skills，以及實用的後續步驟排序。
+- **包含內容**: Role instructions、架構評審 skills、evidence-map 路由、拓撲/邊界/fitness/決策/影響/可靠性聚焦方法、內置公開 code-review skills、架構 toolbox 與 provenance references、真實評測 suite、可複用 prompt、工具文件、plugin 內容和 host adapters。
 - **Adapters**: CCB、Claude Code、Codex、HIVE。
-- **安裝**: `agent-roles install archi`
-- **更新**: `agent-roles update archi`
+- **安裝**: `agent-roles add agentroles.archi`
+- **更新**: `agent-roles update agentroles.archi`
 - **源碼**: [`roles/archi`](../../roles/archi/)
 
 </details>

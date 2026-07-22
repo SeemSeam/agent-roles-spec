@@ -23,9 +23,10 @@ in `role.toml` so `agent-roles list` can display their maturity.
 ## Current Roles
 
 - [archi](archi/) (`agentroles.archi`, `stable`): architecture review role with memory,
-  tool-independent evidence selection, optional Architec/Hippo and
-  project-native checks, vendored public code-review skills, prompts, plugin
-  content, and CCB adapter metadata.
+  tool-independent evidence selection, focused topology, boundary, fitness,
+  decision-drift, change-impact, and distributed-reliability methods, optional
+  Architec/Hippo and project-native checks, vendored public code-review skills,
+  prompts, evaluation suite, plugin content, and CCB adapter metadata.
 - [ccb-self](ccb-self/) (`agentroles.ccb_self`, `preview`): CCB runtime
   maintenance and expert-reference role with bounded self-diagnosis, recovery,
   config, message-chain, source/manual, command, release, and test-evidence

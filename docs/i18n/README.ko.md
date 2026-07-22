@@ -85,14 +85,14 @@ Host Adapter는 Role이 특정 host 환경에 어떻게 진입하는지 기술�
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Version**: `0.2.3`
+- **Version**: `0.5.0`
 - **수준**: `stable`
-- **Purpose**: 아키텍처 drift, 경계, coupling, maintainability, 구조적 위험을 review합니다.
-- **Best for**: 아키텍처 리뷰, dependency boundary 점검, coupling 분석, 실용적인 다음 단계 정리.
-- **Contents**: Role instructions, 아키텍처 review skills, 재사용 가능한 prompt, tool documentation, plugin content, host adapters.
+- **Purpose**: 하나의 tool에 의존하지 않고 아키텍처 drift, 경계, dependency topology, 의사결정, 변경 영향, reliability tradeoff를 review합니다.
+- **Best for**: dependency cycle/direction, module boundary, fitness functions, ADR drift, migration blast radius, distributed-system reliability.
+- **Contents**: Role instructions, topology, boundary, fitness, decision, impact, reliability focused skills, optional evidence routes, evaluation suite, prompt, tool documentation, plugin content, host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Install**: `agent-roles install archi`
-- **Update**: `agent-roles update archi`
+- **Install**: `agent-roles add agentroles.archi`
+- **Update**: `agent-roles update agentroles.archi`
 - **Source**: [`roles/archi`](../../roles/archi/)
 
 </details>

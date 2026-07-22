@@ -8,9 +8,8 @@ This adapter projects `agentroles.archi` into a CCB-managed agent.
   through `.ccb/ccb.config`.
 - The visible CCB target should be the project-local agent name, usually
   `archi`; the stable Role id is `agentroles.archi`.
-- `ccb.archi` is only a legacy input alias. Prefer `agentroles.archi` in new
-  commands and explain that CCB normalizes the old alias to the canonical Role
-  id.
+- Use `agentroles.archi` in new commands. Do not rely on catalog aliases for
+  CCB mounting or role selection.
 - CCB can install and check the global npm package `@seemseam/archi`, which
   provides the `archi` CLI. Prefer `archi` for Architec route checks when the
   user asks for tool evidence, but do not make review success depend on it.

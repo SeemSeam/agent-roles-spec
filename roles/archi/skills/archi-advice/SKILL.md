@@ -19,10 +19,12 @@ plan.
    deepening opportunities or compare interface shapes.
 5. Use vendored `receiving-code-review` when advice is based on external
    review feedback that needs verification before action.
-6. Read the human summary before raw structured output when tool artifacts
+6. Use focused method skills when advice depends on topology, boundaries,
+   fitness functions, decision drift, change impact, or distributed systems.
+7. Read the human summary before raw structured output when tool artifacts
    exist.
-7. Inspect relevant source files directly before recommending changes.
-8. Convert findings into phased work.
+8. Inspect relevant source files directly before recommending changes.
+9. Convert findings into phased work.
 
 ## Output
 

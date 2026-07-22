@@ -85,14 +85,14 @@ diinstal melalui `agent-roles` dan dapat menyediakan adapter khusus host.
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Versi**: `0.2.3`
+- **Versi**: `0.5.0`
 - **Level**: `stable`
-- **Tujuan**: Meninjau drift arsitektur, batas, coupling, maintainability, dan risiko struktural.
-- **Cocok untuk**: review arsitektur, pemeriksaan batas dependensi, analisis coupling, dan urutan langkah berikutnya yang praktis.
-- **Isi**: instruksi Role, skills review arsitektur, prompt reusable, dokumentasi tool, konten plugin, dan host adapters.
+- **Tujuan**: Meninjau drift arsitektur, batas, topologi dependensi, keputusan, dampak perubahan, dan tradeoff reliabilitas tanpa bergantung pada satu tool.
+- **Cocok untuk**: siklus dan arah dependensi, batas modul, fitness functions, drift ADR, blast radius migrasi, dan reliabilitas sistem terdistribusi.
+- **Isi**: instruksi Role, skills terfokus untuk topologi, batas, fitness, keputusan, dampak, dan reliabilitas, jalur evidence opsional, evaluation suite, prompt, dokumentasi tool, plugin, dan host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Instal**: `agent-roles install archi`
-- **Update**: `agent-roles update archi`
+- **Instal**: `agent-roles add agentroles.archi`
+- **Update**: `agent-roles update agentroles.archi`
 - **Sumber**: [`roles/archi`](../../roles/archi/)
 
 </details>

@@ -85,14 +85,14 @@ Host Adapter बताता है कि कोई Role किसी specific 
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **संस्करण**: `0.2.3`
+- **संस्करण**: `0.5.0`
 - **स्तर**: `stable`
-- **उद्देश्य**: Architecture drift, boundaries, coupling, maintainability और structural risk की review करता है।
-- **सबसे उपयुक्त**: architecture reviews, dependency-boundary checks, coupling analysis और practical next-step sequencing.
-- **सामग्री**: Role instructions, architecture review skills, reusable prompt, tool documentation, plugin content और host adapters.
+- **उद्देश्य**: किसी एक tool पर निर्भर हुए बिना architecture drift, boundaries, dependency topology, decisions, change impact और reliability tradeoffs की review करता है।
+- **सबसे उपयुक्त**: dependency cycles/direction, module boundaries, fitness functions, ADR drift, migration blast radius और distributed-system reliability.
+- **सामग्री**: topology, boundaries, fitness, decisions, impact और reliability के focused skills, optional evidence routes, evaluation suite, Role instructions, prompt, tool documentation, plugin content और host adapters.
 - **एडेप्टर**: CCB, Claude Code, Codex, HIVE.
-- **इंस्टॉल**: `agent-roles install archi`
-- **अपडेट**: `agent-roles update archi`
+- **इंस्टॉल**: `agent-roles add agentroles.archi`
+- **अपडेट**: `agent-roles update agentroles.archi`
 - **स्रोत**: [`roles/archi`](../../roles/archi/)
 
 </details>

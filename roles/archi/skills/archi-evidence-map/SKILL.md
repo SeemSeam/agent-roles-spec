@@ -31,7 +31,8 @@ of that reference and the vendored provenance reference.
    - existing CI/static-analysis configuration;
    - generated `.architec/` and `.hippocampus/` artifacts;
    - dependency or architecture-test configs such as
-     `.dependency-cruiser.*`, `codeql.yml`, `semgrep.yml`, or ArchUnit tests.
+    `.dependency-cruiser.*`, `codeql.yml`, `semgrep.yml`, ArchUnit tests,
+    ADRs, module maps, C4 diagrams, service maps, or SLO/runbook evidence.
 3. Select the lightest evidence set:
    - direct source review for small diffs or missing tools;
    - project-native tests and type/lint checks for behavior and contract risk;
@@ -40,6 +41,10 @@ of that reference and the vendored provenance reference.
      boundaries and circular dependencies;
    - ArchUnit or similar architecture tests for Java/JVM projects;
    - Semgrep or CodeQL for security, data-flow, and policy evidence;
+   - ADRs, decision logs, and git history for decision drift;
+   - module maps, domain docs, code owners, and public APIs for boundary
+     review;
+   - C4 diagrams, traces, runbooks, and SLOs for distributed-system review;
    - vendored `code-review-and-quality` for broad code-review coverage;
    - vendored `improve-codebase-architecture` for deep-module, interface,
      seam, adapter, leverage, and locality analysis;
@@ -55,6 +60,12 @@ of that reference and the vendored provenance reference.
    - full baseline -> `archi-full`;
    - specific refactor/objective -> `archi-goal`;
    - roadmap or sequencing -> `archi-advice`.
+   - dependency direction, cycles, or graph shape -> `archi-dependency-topology`;
+   - module, layer, domain, or DDD leakage -> `archi-module-boundaries`;
+   - executable architecture gates -> `archi-fitness-functions`;
+   - ADRs, assumptions, or decision consistency -> `archi-decision-drift`;
+   - migration, blast radius, or rollback -> `archi-change-impact`;
+   - service/dataflow/reliability tradeoffs -> `archi-distributed-systems`.
 
 ## Output
 
