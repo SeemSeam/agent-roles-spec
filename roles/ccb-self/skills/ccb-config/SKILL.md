@@ -31,6 +31,8 @@ Allowed:
   provider/model/base URL/profile/env-var references after provider/API
   failure.
 - Run `ccb config validate` after every edit.
+- Review protected project command fields and record external exact-value
+  approval with `ccb config approve-commands` only after explicit approval.
 - Run `ccb reload --dry-run` before reload materialization.
 - Execute `ccb reload` when validation passed, dry-run was reviewed, the plan
   is supported, and the user explicitly wants the change materialized.
@@ -50,6 +52,28 @@ Forbidden:
 - Do not infer pane health from config.
 - Do not read, print, store, search for, scrape, borrow, or use API keys.
 
+## Project Command Trust Gate
+
+The protected fields are `tool_windows.<name>.command` and
+`agents.<name>.provider_command_template`.
+
+Before startup or reload can execute either field:
+
+1. Show the exact field and command value to the user without executing it.
+2. Check that it matches the user's intended local tool or Provider launch.
+3. With explicit approval intent, run:
+
+```bash
+ccb config approve-commands
+```
+
+4. Verify CCB accepted the external receipt, then continue with normal
+   validation/reload gates.
+
+Safe mode does not bypass this gate. Neither do script mode, validation,
+project ownership, or a previous receipt for a different value. Never edit the
+receipt store directly.
+
 ## Required Workflow
 
 1. Resolve config source and target. Project config `.ccb/ccb.config` is the
@@ -65,32 +89,34 @@ Forbidden:
    `cp .ccb/ccb.config .ccb/ccb.config.bak.$(date +%s)`. Restore only from the
    backup created for this edit.
 5. Make the smallest disk edit that satisfies the user request.
-6. Run:
+6. If a protected command field exists or changed, complete the Project Command
+   Trust Gate before any execution path.
+7. Run:
 
 ```bash
 ccb config validate
 ```
 
-7. If validation fails, report the full validation error, do not run reload,
+8. If validation fails, report the full validation error, do not run reload,
    and do not claim recovery is complete. Restore the previous config when a
    reliable pre-edit copy exists; otherwise stop and ask for the user's
    preferred correction or rollback.
-8. If the user wants the change materialized and validation passed, run:
+9. If the user wants the change materialized and validation passed, run:
 
 ```bash
 ccb reload --dry-run
 ```
 
-9. Classify dry-run output:
+10. Classify dry-run output:
    - no change
    - reloadable presentation/config change
    - role asset/tool materialization change
    - topology/provider/startup change with affected agents
    - blocked or unsupported reload
-10. Execute `ccb reload` only when gates pass and materialization intent is
+11. Execute `ccb reload` only when gates pass and materialization intent is
    explicit.
-11. Re-check the mounted daemon graph after reload.
-12. Report affected agents and hand post-reload runtime refresh decisions to
+12. Re-check the mounted daemon graph after reload.
+13. Report affected agents and hand post-reload runtime refresh decisions to
     `ccb-self-recover`.
 
 ## Affected-Agent Rules

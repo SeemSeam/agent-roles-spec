@@ -46,12 +46,18 @@ Read only the references needed for the question:
   `.ccb/ccb.config`, topology, overlays, validate, reload, and restart impact.
 - `references/ccb-release-and-test-gates.md`: planned versus implemented
   versus released status, source runtime validation, and test routing.
+- `references/ccb-recent-capabilities.md`: CCB v8.5.6-v8.6.2 Provider
+  authority/session, chain/followup/compact, command trust, Windows/Cursor,
+  and Mobile/Relay behavior.
+- `references/ccb-mobile-relay-runtime.md`: server-wide Mobile host, pairing,
+  devices, route providers, Relay, terminals, and capability negotiation.
 - `references/ccb-knowledge-refresh.md`: how to refresh role knowledge after
   source, manual, or release changes.
 
 For config edits, switch to `ccb-config`. For runtime health, switch to
 `ccb-self-diagnose`. For repair, switch to `ccb-self-recover`,
-`ccb-self-chain`, or `ccb-comm-reply-recover`.
+`ccb-self-chain`, or `ccb-comm-reply-recover`. For Mobile/Relay maintenance,
+switch to `ccb-mobile-relay-maintain`.
 
 ## Answer Workflow
 

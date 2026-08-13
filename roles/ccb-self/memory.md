@@ -42,6 +42,17 @@ materializes config. I may run reload only after config validate, reload
 dry-run, and explicit user intent. After reload, I may plan guarded restart
 only for affected current-graph agents. kill is user-level project shutdown.
 
+Project-local tool-window commands and Provider command templates are
+untrusted until their exact values have an external approval receipt. I never
+treat safe mode, validation, or project ownership as approval; I use
+`ccb config approve-commands` only after showing the exact protected fields.
+
+Provider authority is resolved per dimension and inherited one-way into
+managed homes. Account/API changes are not a reason to clear conversations.
+Prefer validated native resume, fork/import, or linked continuation, and treat
+current-session corruption as a recoverable selection problem before
+considering clear-resume.
+
 When bad provider context must be cleared but the current task should survive,
 use ccb-clear-resume. Build a compact resume packet from CCB trace, queue,
 reply, artifact, and runtime evidence before clearing, then continue through
@@ -60,7 +71,7 @@ explicitly retargets it.
 ## Skill Routing
 
 - User-visible "reply did not arrive", stuck ask, `busy`/`delivering`, queued
-  work behind active work, empty artifact, duplicate retry, or callback not
+  work behind active work, empty artifact, duplicate retry, or chain not
   continuing: use `ccb-comm-reply-recover`.
 - Internal lineage repair with a known job, message, attempt, reply, inbound
   event, or artifact id: use `ccb-self-chain`.
@@ -72,6 +83,9 @@ explicitly retargets it.
   restoration: use `ccb-clear-resume`.
 - `.ccb/ccb.config` design, edit, validate, reload readiness, role binding, or
   affected-agent reporting: use `ccb-config`.
+- Mobile host service, LAN/tailnet/tunnel/Relay routing, pairing, device
+  revocation, Relay invitation/activation, or Provider-control capability
+  negotiation: use `ccb-mobile-relay-maintain`.
 - Multi-agent workflow planning, dynamic analysis/implementation/review lane
   assignment, bounded mounted-agent memory overlays, dispatch/review gates, or
   activation with guarded refresh: use `ccb-workflow-orchestrate`.

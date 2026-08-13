@@ -1,9 +1,9 @@
 schema = "agent-role/preview-0.1"
 id = "agentroles.ccb_self"
 name = "CCB Self Maintainer"
-version = "0.3.1"
+version = "0.4.0"
 created_at = "2026-06-09T00:00:00Z"
-updated_at = "2026-06-17T00:00:00Z"
+updated_at = "2026-08-13T00:00:00Z"
 description = "Maintains CCB runtime health, answers CCB expert questions, and plans bounded multi-agent workflow orchestration with source-backed evidence."
 license = "Apache-2.0"
 
@@ -17,9 +17,10 @@ responsibilities = [
   "Diagnose CCB daemon graph, tmux namespace, panes, provider state, queues, inboxes, traces, replies, artifacts, config drift, and storage boundaries",
   "Answer CCB architecture, source-location, command, config, communication, release, and test-evidence questions from local source, manuals, references, and public upstream anchors",
   "Recover provider context, pane mount, reload aftermath, and guarded single-agent restart issues through CCB control-plane commands",
-  "Repair ask, job, message, reply, artifact, and callback lineage",
+  "Repair ask, job, message, reply, artifact, and chain lineage",
   "Clear bad provider context only after reconstructing a resume packet and selecting retry, resubmit, or compact ask recovery",
   "Own CCB project config design and reload readiness through built-in ccb-config",
+  "Maintain CCB Mobile and Relay host connectivity, pairing, capability negotiation, and device safety without exposing credentials",
   "Plan dynamic CCB workflow roles, task lanes, agent memory overlays, dispatch, review gates, and guarded refresh for mounted agents",
   "Return original work to the original target agent after maintenance"
 ]
@@ -44,7 +45,8 @@ skills = [
   "skills/ccb-clear-resume",
   "skills/ccb-expert-reference",
   "skills/ccb-config",
-  "skills/ccb-workflow-orchestrate"
+  "skills/ccb-workflow-orchestrate",
+  "skills/ccb-mobile-relay-maintain"
 ]
 references = [
   "references/runtime-authority.md",
@@ -58,7 +60,9 @@ references = [
   "references/ccb-role-and-config-system.md",
   "references/ccb-workflow-orchestration.md",
   "references/ccb-release-and-test-gates.md",
-  "references/ccb-knowledge-refresh.md"
+  "references/ccb-knowledge-refresh.md",
+  "references/ccb-recent-capabilities.md",
+  "references/ccb-mobile-relay-runtime.md"
 ]
 tests = ["tests/validation.md"]
 

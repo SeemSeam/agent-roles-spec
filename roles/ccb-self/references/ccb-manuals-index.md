@@ -23,7 +23,7 @@ available.
 - state, storage, authority, provider runtime, completion, and session
   isolation;
 - communication internals, ask, dispatcher, message bureau, mailbox,
-  callbacks, reply delivery, retry, resubmit, cancel, and artifacts;
+  chains, reply delivery, retry, resubmit, cancel, followup, and artifacts;
 - config loader, role loading, CLI diagnostics, extension, tests, source maps,
   reliability, and glossary.
 

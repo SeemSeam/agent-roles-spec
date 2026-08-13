@@ -122,6 +122,11 @@ references should be treated as historical planning language until migrated.
 
 ## Last Landed
 
+- 2026-08-13: Updated `agentroles.ccb_self` to `0.4.0` against CCB v8.6.2,
+  replacing user-facing callback guidance with chain/followup/compact semantics,
+  adding exact-value project-command approval and Provider session-continuity
+  boundaries, and adding Mobile/Relay maintenance with Windows/Cursor capability
+  evidence rules.
 - 2026-06-09: Formalized the Role source / Project Binding / runtime state
   boundary in `specs/`, updated `roles/archi`, `reference_roles/archi`, starter
   templates, and conformance notes to avoid project state, path-level tool
@@ -174,6 +179,10 @@ references should be treated as historical planning language until migrated.
 
 ## Last Verification
 
+- `agentroles.ccb_self` `0.4.0` verification passed on 2026-08-13: all nine
+  Role skills passed Skill Creator validation; the focused Role suite passed
+  6 tests; the full repository suite passed 74 tests; manifest paths, TOML,
+  Python compilation, local-path/secret scans, and `git diff --check` passed.
 - `python -m pytest -q` passed for the initial package-manager CLI tests on
   2026-06-04.
 - `python -m compileall -q agent_roles` passed on 2026-06-04.

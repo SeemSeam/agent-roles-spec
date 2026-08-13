@@ -39,12 +39,17 @@ CLI ask
 Key distinction: dispatcher queue state and mailbox/message-bureau state are
 related but not identical. Use `ccb trace <id>` for lineage authority.
 
-## Callback
+## Chain Continuation
 
-`--callback` creates a persisted callback edge from parent to child work. The
+`--chain` creates a persisted chain edge from parent to child work. The
 child reply is not simply returned synchronously; completion records the child
-reply and submits a continuation to the parent agent. Callback repair must
-inspect callback edge state, message lineage, queue, and inbox progress.
+reply and submits a continuation to the parent agent. Chain repair must inspect
+edge state, message lineage, queue, and inbox progress. Some source/storage
+internals retain `callback` compatibility names; user-facing guidance uses
+`chain`.
+
+`ccb followup` is separate: it attempts to inject a correction into one exact
+active turn. Only an `injected` response changes that turn.
 
 ## Provider And Pane Runtime
 
@@ -54,6 +59,22 @@ state, but they do not define configured-agent authority by themselves.
 
 Use text capture before screenshots. Screenshots are fallback visual evidence
 for CCB-owned panes/windows only.
+
+Provider configuration is inherited per dimension and one-way into managed
+homes. Conversation identity remains stable across authority generations;
+prefer validated resume/fork/import or linked continuation over clearing.
+
+On native Windows, Herdr namespaces and platform-owned process/registry/TCP
+evidence replace tmux-specific assumptions. Cursor visible-pane execution also
+requires transcript anchors, stable-idle checks, and terminal evidence.
+
+## Mobile Host And Relay
+
+The Mobile host is a server-wide managed service that discovers running CCB
+projects and serves independent host/project terminals. Its service generation,
+listen ownership, pairing store, route state, and negotiated capabilities are
+authority/evidence distinct from any one project Pane. Relay invitations,
+credentials, and device secrets remain private host state.
 
 ## Reload And Restart
 

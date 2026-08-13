@@ -42,7 +42,7 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
 
     assert role.id == "agentroles.ccb_self"
     assert role.name == "CCB Self Maintainer"
-    assert role.version == "0.3.1"
+    assert role.version == "0.4.0"
     assert role.catalog_level == "preview"
     assert role.default_agent_name == "ccb_self"
     assert role.providers == ("codex", "claude")
@@ -58,6 +58,7 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
         "skills/ccb-expert-reference",
         "skills/ccb-config",
         "skills/ccb-workflow-orchestrate",
+        "skills/ccb-mobile-relay-maintain",
     }
     assert contents["references"] == [
         "references/runtime-authority.md",
@@ -72,6 +73,8 @@ def test_ccb_self_role_loads_with_ccb_adapter_metadata() -> None:
         "references/ccb-workflow-orchestration.md",
         "references/ccb-release-and-test-gates.md",
         "references/ccb-knowledge-refresh.md",
+        "references/ccb-recent-capabilities.md",
+        "references/ccb-mobile-relay-runtime.md",
     ]
     assert contents["tests"] == ["tests/validation.md"]
 
@@ -85,7 +88,7 @@ def test_ccb_self_installs_and_aliases_resolve_from_catalog(tmp_path: Path, monk
     install = _run_json(["install", "ccb-self"], tmp_path, monkeypatch, capsys)
     assert install["role_status"] == "installed"
     assert install["role_id"] == "agentroles.ccb_self"
-    assert install["version"] == "0.3.1"
+    assert install["version"] == "0.4.0"
     assert install["catalog_level"] == "preview"
 
     resolved = _run_json(["resolve", "ccb_self"], tmp_path, monkeypatch, capsys)
@@ -171,6 +174,10 @@ def test_ccb_self_review_followups_are_encoded() -> None:
     refresh = ROLE_ROOT.joinpath("references/ccb-knowledge-refresh.md").read_text(
         encoding="utf-8"
     )
+    config = ROLE_ROOT.joinpath("skills/ccb-config/SKILL.md").read_text(encoding="utf-8")
+    mobile = ROLE_ROOT.joinpath("skills/ccb-mobile-relay-maintain/SKILL.md").read_text(
+        encoding="utf-8"
+    )
 
     assert "## Skill Routing" in memory
     assert "ccb-comm-reply-recover" in memory
@@ -185,9 +192,14 @@ def test_ccb_self_review_followups_are_encoded() -> None:
     assert "ccb repair retry <job_id|attempt_id>" in clear_resume
     assert "ccb repair resubmit <message_id>" in clear_resume
     assert "command ask --compact <agent>" in clear_resume
-    assert "ccb ask --callback <agent>" in orchestrate
+    assert "ccb ask --chain <agent>" in orchestrate
     assert "mounted-agent orchestration overlays" in orchestrate
     assert "Do not edit Role source memory" in orchestrate
     assert "Manager-owned worker calls" in orchestration_ref
     assert "OpenAI Agents SDK orchestration docs" in orchestration_ref
     assert "role version increments" in refresh
+    assert "ccb config approve-commands" in config
+    assert "Safe mode does not bypass" in config
+    assert "ccb mobile devices" in mobile
+    assert "ccb relay host activate" in mobile
+    assert "capability" in mobile

@@ -1,6 +1,6 @@
 ---
 name: ccb-comm-reply-recover
-description: Diagnose and recover CCB communication and reply delivery stalls. Use when a user reports a missing CCB_REPLY, stuck ask, agent stuck busy/delivering, queued work behind an active job, cancelled/incomplete reply, empty artifact, callback not continuing, duplicate retry after success, or a CCB mailbox/communication backend that appears stuck.
+description: Diagnose and recover CCB communication and reply delivery stalls. Use when a user reports a missing CCB_REPLY, stuck ask, agent stuck busy/delivering, queued work behind an active job, cancelled/incomplete reply, empty artifact, chain not continuing, rejected active-turn followup, duplicate retry after success, or a CCB mailbox/communication backend that appears stuck.
 ---
 
 # CCB Comm Reply Recover
@@ -25,7 +25,7 @@ authority files.
    - `ccb queue --detail all` when neither id nor agent is clear.
 2. Trace lineage first:
    - `ccb trace <id>`
-   - record message, attempt, reply, event, callback, and job states.
+   - record message, attempt, reply, event, chain, and job states.
    - read the full artifact file before acting when a request or reply is
      artifact-backed.
 3. Inspect mailbox head-of-line state:
@@ -63,8 +63,10 @@ authority files.
 - `duplicate_retry_after_success`: a later retry or resubmission of the same
   work is still queued/running after another attempt already completed and the
   user received the needed reply.
-- `callback_or_ack_stalled`: a reply exists and is acceptable, but callback or
+- `chain_or_ack_stalled`: a reply exists and is acceptable, but chain or
   inbox progress did not advance.
+- `followup_not_injected`: `ccb followup` returned `rejected`, `too_late`, or
+  `terminal`; the active request was not corrected.
 
 ## Repair Rules
 
@@ -79,6 +81,9 @@ authority files.
   already accepted and progress state is wrong.
 - Cancel `duplicate_retry_after_success` jobs rather than letting an agent run
   the same review or repair twice.
+- Treat only `followup_status: injected` as success. For any other terminal
+  status, cancel and resubmit the complete corrected request when still needed;
+  do not queue the correction as unrelated work.
 - Hand off to `ccb-self-recover` for `ccb restart <agent>` only after chain
   repair clears or cancels active work and the target remains stale, dead, or
   unusable. Restart is not the first repair for a communication stall.

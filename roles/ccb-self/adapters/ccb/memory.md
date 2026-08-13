@@ -39,3 +39,9 @@ ccb ask ccb_self "diagnose CCB"
   tmux commands.
 - Do not store provider API keys, credentials, auth state, project progress, or
   generated provider-state content in Role source.
+- Treat project command fields as untrusted until `ccb config
+  approve-commands` records an external exact-value approval. Safe mode and
+  validation do not bypass this boundary.
+- Treat the Mobile host as server-wide managed state and Relay credentials as
+  private host state. Report capability mismatch and host-update guidance
+  without exposing invitations, credentials, or raw Provider responses.

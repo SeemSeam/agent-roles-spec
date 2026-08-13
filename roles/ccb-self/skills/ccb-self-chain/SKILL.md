@@ -1,6 +1,6 @@
 ---
 name: ccb-self-chain
-description: Internal CCB lineage repair for retry/resubmit/ack decisions when a job/message/attempt/reply/inbound-event/artifact id is already in hand. Prefer ccb-comm-reply-recover for user-visible "reply did not arrive", stuck busy/delivering, queued-behind-active, empty artifact, duplicate retry, or callback-stalled incidents because it includes mailbox and pane cross-checks.
+description: Internal CCB lineage repair for retry/resubmit/ack decisions when a job/message/attempt/reply/inbound-event/artifact id is already in hand. Prefer ccb-comm-reply-recover for user-visible "reply did not arrive", stuck busy/delivering, queued-behind-active, empty artifact, duplicate retry, or chain-stalled incidents because it includes mailbox and pane cross-checks.
 ---
 
 # CCB Self Chain
@@ -12,7 +12,7 @@ pane as the first repair for a lineage problem.
 
 1. Identify the lineage id: `job_id`, `message_id`, `attempt_id`, `reply_id`,
    inbound event id, or artifact path.
-2. Run `ccb trace <id>` and record message, attempt, reply, event, callback,
+2. Run `ccb trace <id>` and record message, attempt, reply, event, chain,
    and job state.
 3. Inspect observer state as supplementary evidence:
    - `ccb queue --detail <agent|all>`

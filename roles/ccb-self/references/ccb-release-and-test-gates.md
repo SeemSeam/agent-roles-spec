@@ -45,9 +45,16 @@ the change crosses contracts or shared behavior.
 - Role Pack behavior: search `test/` for `rolepacks`, `roles add`,
   `roles install`, `projection`, or `agentroles`.
 - Communication: search `test/` for `ask`, `trace`, `queue`, `inbox`,
-  `callback`, `repair`, `retry`, `resubmit`, `ack`, or `message_bureau`.
+  `chain`, `followup`, `callback`, `repair`, `retry`, `resubmit`, `ack`, or
+  `message_bureau`.
 - Restart/reload: search `test/` for `restart`, `reload`, `busy`, or
   `project_restart`.
+- Project command trust: search for `project_command_trust`,
+  `approve-commands`, `tool_windows`, and `provider_command_template`.
+- Mobile/Relay: search for `mobile_host`, `relay`, `pairing`, `device`,
+  `provider_settings`, and `capability`.
+- Native Windows: search for `herdr`, `windows`, `registry`, process liveness,
+  and endpoint markers; do not substitute Linux-only evidence.
 
 ## Release Answers
 
@@ -58,3 +65,6 @@ When answering "is this in release X":
 3. Check whether the relevant tests passed.
 4. Say if the evidence only proves local implementation.
 5. Give the exact command or file path the user can use to verify.
+
+The current public baseline for this Role revision is CCB v8.6.2. When a newer
+release exists, use `ccb-knowledge-refresh.md` before claiming current behavior.

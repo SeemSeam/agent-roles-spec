@@ -13,6 +13,18 @@ Use this reference for private `agentroles.ccb_self` config work.
 
 ## Validation And Reload
 
+Protected project command fields require a separate external exact-value
+receipt:
+
+```bash
+ccb config approve-commands
+```
+
+The protected fields are `tool_windows.<name>.command` and
+`agents.<name>.provider_command_template`. A changed value requires reapproval.
+Safe mode, script mode, validation, and project ownership do not bypass this
+gate. Never edit the receipt store directly.
+
 Every edit requires:
 
 ```bash
@@ -41,9 +53,9 @@ entry_window = "main"
 main = "main:codex"
 ops = "agentroles.ccb_self:codex"
 
-[tool_windows.neovim]
-command = "ccb-nvim"
-label = "neovim"
+[tool_windows.editor]
+command = "nvim"
+label = "editor"
 ```
 
 Rules:

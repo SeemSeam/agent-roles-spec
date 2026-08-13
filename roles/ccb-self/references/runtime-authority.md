@@ -37,6 +37,11 @@ Residue can explain confusion, but it must not become restart authority.
 
 - `repair`: job/message/reply lineage.
 - `clear`: provider-native context clearing.
+- `compact`: guarded Provider-native context compaction, not clear.
 - `restart`: guarded single-agent runtime replacement.
 - `reload`: materialize config into daemon graph.
 - `kill`: user-level project shutdown.
+
+Server-wide Mobile host authority comes from its managed service record,
+generation, endpoint ownership, pairing store, and activated route/Relay host
+state. Project panes and stale registry entries are only evidence or residue.

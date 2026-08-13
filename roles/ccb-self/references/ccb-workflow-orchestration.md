@@ -41,7 +41,7 @@ Prefer the smallest pattern that satisfies the task:
 | Pattern | Use when | CCB shape |
 | --- | --- | --- |
 | Skill chain | One mounted agent can complete the task with loaded skills. | Keep work with the current agent; no memory overlay. |
-| Manager-owned worker calls | `ccb_self` must synthesize, dedupe, or enforce review gates. | `ccb_self` sends bounded `ccb ask --callback` tasks and owns final synthesis. |
+| Manager-owned worker calls | `ccb_self` must synthesize, dedupe, or enforce review gates. | `ccb_self` sends bounded `ccb ask --chain` tasks only for exact result dependencies and owns final synthesis. |
 | Parallel consult | Independent analysis, options, or risk review can run concurrently. | Send compact briefs to multiple specialists; synthesize and dedupe. |
 | Handoff | One specialist should own a branch or continue the user conversation. | Explicitly transfer ownership and return route; do not keep duplicate owners. |
 | Pipeline | Work needs phase separation. | Analysis -> implementation -> review -> synthesis with gates between phases. |
@@ -58,7 +58,7 @@ Every lane needs:
 - forbidden changes;
 - output contract;
 - validation evidence;
-- callback or silence policy;
+- chain or silence policy;
 - stop/ask conditions.
 
 Avoid vague assignments such as "help with this". Prefer concise contracts:
@@ -70,7 +70,7 @@ Task: Review the diff for behavior regressions and missing tests.
 Inputs: git diff, touched files, test output.
 Must not: edit files.
 Output: findings first, severity, file/line, impact, fix.
-Return: callback to ccb_self.
+Return: chain continuation to ccb_self.
 ```
 
 ## Mounted-Agent Memory Overlay
@@ -127,6 +127,11 @@ ccb restart <agent>
 ```
 
 Never use raw tmux mutation as a substitute for CCB restart.
+
+For autonomous CCB loops, prefer script-owned `ccb loop runner --auto` plus
+PlanTask/topology/capacity state over hand-written memory overlays. `ccb_self`
+may diagnose or repair the runtime lane, but the frontdesk/planner/orchestrator
+Roles and script-owned artifacts remain business/workflow authority.
 
 ## Deduplication
 

@@ -13,7 +13,8 @@ read-only tmux evidence. Do not mutate runtime state from this skill.
 Keep these categories separate in every diagnosis:
 
 - Authority: current mounted daemon service graph, lifecycle, lease, current
-  configured-agent runtime records, and loaded config.
+  configured-agent runtime records, loaded config, and separately the current
+  server-wide Mobile host generation when Mobile/Relay is in scope.
 - Evidence: `ccb ping`, `ccb doctor`, `ccb ps`, `ccb queue`, `ccb pend`,
   `ccb trace`, `ccb fault list`, `ccb doctor logs <agent>`, reply/artifact
   records, tmux pane metadata/text capture, provider session files, pid files,
@@ -52,8 +53,10 @@ graph, not disk config, tmux panes, or `.ccb/agents/*` residue.
 6. Classify the failure domain and hand off:
    - daemon lifecycle, namespace, pane, provider context, config drift, or
      storage boundary -> `ccb-self-recover`
-   - job/message/reply/artifact/callback lineage -> `ccb-self-chain`
+   - job/message/reply/artifact/chain lineage -> `ccb-self-chain`
    - config design/edit/reload readiness -> built-in `ccb-config`
+   - Mobile host, route, pairing/device, Relay, or capability negotiation ->
+     `ccb-mobile-relay-maintain`
 
 ## Failure Domains
 
@@ -66,13 +69,16 @@ Use the smallest domain that explains the evidence:
 - Provider context/API: auth, quota/rate limit, model mismatch, endpoint/base
   URL, network, provider outage, or corrupted conversation context. Do not read
   secrets.
-- Message chain: queued ask, missing reply, incomplete reply, pending callback,
+- Message chain: queued ask, missing reply, incomplete reply, pending chain,
   artifact-backed reply not read, or retry/resubmit/ack decision.
 - Config drift: disk config differs from loaded daemon graph, dry-run reload
   blocked, role binding missing, or changed startup inputs need post-reload
   runtime refresh.
 - Storage boundary: provider state or runtime files live in the wrong root, or
   project/runtime relocation rules are violated.
+- Mobile/Relay: server-wide host unhealthy, endpoint not CCB-owned, pairing
+  expired, device unauthorized, project discovery stale, route unavailable,
+  or Provider controls absent because host capability is too old.
 
 ## Reporting
 

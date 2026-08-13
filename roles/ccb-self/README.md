@@ -6,7 +6,8 @@ support.
 It helps users and other agents diagnose CCB health, tmux evidence, provider
 context faults, context-clear task recovery, `.ccb/ccb.config` drift,
 interrupted message chains, source architecture, command/config behavior,
-release status, CCB manuals, and bounded multi-agent workflow orchestration.
+Mobile/Relay host state, release status, CCB manuals, and bounded multi-agent
+workflow orchestration.
 It is an auxiliary maintenance operator: it can perform bounded CCB maintenance
 and orchestration setup when the user asks for it, but it does not own business
 tasks and does not replace CCB daemon authority.
@@ -27,9 +28,16 @@ becoming daemon authority or a business-task owner.
   single-agent restart issues through CCB control-plane commands.
 - Reconstruct task state before clearing bad provider context, then recover the
   interrupted work through retry, resubmit, or compact ask handoff.
-- Repair ask/job/message/reply/artifact/callback lineage.
+- Repair ask/job/message/reply/artifact/chain lineage.
 - Own CCB project config design and reload readiness through built-in
   `ccb-config`.
+- Enforce external exact-value approval for project command fields instead of
+  treating `.ccb/ccb.config` as trusted executable input.
+- Maintain the server-wide Mobile host and LAN/tailnet/tunnel/Relay routes,
+  pairing, devices, and capability-negotiated Provider controls without
+  exposing credentials.
+- Preserve Provider authority and managed conversation continuity across
+  restart, account changes, and recoverable session-record corruption.
 - Plan dynamic CCB workflow roles, task lanes, mounted-agent memory overlays,
   dispatch contracts, review gates, and guarded refresh for affected agents.
 - Return original business work to the original target agent after
@@ -61,9 +69,11 @@ becoming daemon authority or a business-task owner.
 - `skills/ccb-workflow-orchestrate`: CCB workflow role/task orchestration,
   mounted-agent memory overlays, ask dispatch, review gates, and guarded
   activation planning.
+- `skills/ccb-mobile-relay-maintain`: server-wide Mobile/Relay diagnosis,
+  activation, pairing/device safety, and capability negotiation.
 - `references/`: CCB runtime authority, recovery, tmux, source, manuals,
-  command/config, runtime-flow, workflow-orchestration, release/test, and
-  knowledge-refresh indexes.
+  command/config, runtime-flow, recent-capability, Mobile/Relay,
+  workflow-orchestration, release/test, and knowledge-refresh indexes.
 - `adapters/ccb`: CCB mapping metadata, adapter memory, and read-only doctor
   tool.
 - `tests/`: validation notes.

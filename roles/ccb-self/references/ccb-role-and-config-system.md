@@ -51,6 +51,18 @@ already owns provider selection.
 
 ## Config Validation And Reload
 
+Project command fields are a separate trust boundary. Before startup or reload
+can execute `tool_windows.<name>.command` or
+`agents.<name>.provider_command_template`, the exact current value must have an
+external approval receipt. Review it deliberately with:
+
+```bash
+ccb config approve-commands
+```
+
+Changing a protected value requires reapproval. Safe mode, script mode,
+validation success, and project ownership are not approval.
+
 Every config edit must run:
 
 ```bash

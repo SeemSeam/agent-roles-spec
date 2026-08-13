@@ -1,19 +1,21 @@
 # CCB Self Validation Notes
 
-Date: 2026-06-17
+Date: 2026-08-13
 
 ## Static Role Checks
 
 - `agentroles.ccb_self` loads through the Agent Roles preview manifest loader.
 - CCB adapter metadata declares `default_agent_name = "ccb_self"` and supports
   `codex` plus `claude`.
-- The Role contains eight generic skills:
+- The Role contains nine generic skills:
   `ccb-self-diagnose`, `ccb-self-recover`, `ccb-self-chain`,
   `ccb-comm-reply-recover`, `ccb-clear-resume`, `ccb-expert-reference`,
-  `ccb-config`, and `ccb-workflow-orchestrate`.
+  `ccb-config`, `ccb-workflow-orchestrate`, and
+  `ccb-mobile-relay-maintain`.
 - The Role declares CCB expert references for source, GitHub, talk1 manuals,
-  command/config, runtime flows, role/config system, release/test gates, and
-  knowledge refresh, plus workflow orchestration pattern evidence.
+  command/config, runtime flows, role/config system, release/test gates,
+  recent CCB capabilities, Mobile/Relay runtime, and knowledge refresh, plus
+  workflow orchestration pattern evidence.
 - The Role memory includes symptom-to-skill routing for expert answers,
   config work, diagnosis, recovery, lineage repair, and user-visible reply
   stalls, context-clear task restoration, plus dynamic workflow orchestration.
@@ -69,7 +71,7 @@ After adding `ccb-workflow-orchestrate`:
   - manager-owned orchestration remains visible;
   - memory overlays are bounded mounted-agent runtime instructions, not Role
     source;
-  - `ccb ask --callback` is used when a result is needed;
+  - `ccb ask --chain` is used only when a result is required;
   - `ccb restart <agent>` is guarded, single-agent, and never raw tmux.
 
 ## V0.3.1 Clear-Resume Validation
@@ -87,3 +89,22 @@ After adding `ccb-clear-resume`:
   - resume through `ccb repair retry`, `ccb repair resubmit`, or fresh compact
     `ask`;
   - do not clear active work or duplicate active jobs.
+
+## V0.4.0 CCB v8.6.2 Alignment
+
+This revision must validate that:
+
+- project tool-window commands and Provider command templates require
+  `ccb config approve-commands` exact-value external receipts;
+- safe/script mode and config validation do not bypass command approval;
+- `ccb ask --chain`, exact active-turn `ccb followup`, and `ccb compact` use
+  current released semantics;
+- Provider authority is per-dimension and session continuity is preferred over
+  context clear, including recovery from a corrupt current Codex session;
+- Mobile/Relay maintenance separates server-wide host authority from project
+  Pane evidence, protects invitation/credential/device secrets, and respects
+  capability-negotiated Provider controls;
+- native Windows/Herdr and visible Cursor Pane evidence do not inherit Unix
+  tmux assumptions;
+- all nine Role skills pass Skill Creator validation, the focused Role tests
+  pass, and the full repository suite remains green.

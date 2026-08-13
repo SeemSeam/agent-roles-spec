@@ -23,19 +23,26 @@ restart.
   the user explicitly accepts losing in-flight provider context.
 - Do not duplicate active work. If a valid job is still running, report that
   instead of clearing or resubmitting.
-- If the issue is reply/callback/ack lineage, prefer `ccb repair ...` before
+- If the issue is reply/chain/ack lineage, prefer `ccb repair ...` before
   context clear.
+- Do not clear for an account, model, endpoint, or inherited Provider authority
+  change. Prefer managed restart plus validated resume/fork/import or linked
+  continuation.
 
 ## Decision Tree
 
 1. If the user only asks to clear context and no task recovery is needed, use
    `ccb clear <agent>` after busy checks.
-2. If the user reports missing replies, queued work, callback not continuing, or
+2. If the user reports missing replies, queued work, chain not continuing, or
    incomplete jobs, first trace lineage and classify the communication issue.
 3. If provider context is stale/corrupted and the user wants the task to
    continue, use the clear-resume workflow below.
 4. If the provider process is dead, quota-blocked, or pane-stale after clear is
    not enough, hand off to guarded `ccb restart <agent>` only after busy checks.
+
+Before step 3, distinguish corrupt provider memory from a corrupt current
+session record. Current CCB can select the latest valid owned Codex session;
+that recovery preserves context and should run before clear-resume.
 
 ## Clear-Resume Workflow
 
@@ -73,7 +80,7 @@ Use `ccb doctor logs <agent>` and read-only pane capture only when provider or
 pane evidence is needed. Treat pane text as evidence, not authority.
 
 Stop and report blockers if the agent is unknown, busy, has queued work, pending
-reply delivery, pending callback continuation, or active fault injection that
+reply delivery, pending chain continuation, or active fault injection that
 could affect the target.
 
 ### 3. Build the resume packet before clear
@@ -184,8 +191,12 @@ Report:
   fresh compact `ask`.
 - **Old job terminal incomplete and provider resume unsupported**: clear if
   context is stale, then fresh compact `ask` or `repair resubmit <message_id>`.
-- **Reply exists but callback did not continue**: do not clear first; repair
-  callback/ack lineage.
+- **Reply exists but chain did not continue**: do not clear first; repair
+  chain/ack lineage.
+- **Account or Provider route changed**: do not clear; refresh startup inputs
+  and use capability-gated session continuation.
+- **Current Codex session record is corrupt**: prefer the latest valid owned
+  session before rebuilding work from a compact handoff.
 - **Provider quota exhausted**: clear does not fix quota. Report external
   blocker, retarget, or switch provider/profile through config/reload/restart.
 - **Pane shows old unrelated prompt while CCB says idle**: clear-resume is

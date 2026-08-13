@@ -40,7 +40,7 @@ Before any mutation:
    unchanged.
 
 If the target is unknown, busy, has queued work, has pending reply delivery, or
-has a pending callback continuation, stop and report blockers.
+has a pending chain continuation, stop and report blockers.
 
 ## Provider/API Or Startup-Input Recovery
 
@@ -49,19 +49,24 @@ URL, environment, provider profile, command template, role assets, or startup
 context, use this exact flow:
 
 1. Gather evidence without reading secrets.
-2. Use built-in `ccb-config` to edit `.ccb/ccb.config` only when the fallback
+2. Distinguish per-dimension Provider authority from conversation state. Do not
+   clear for an account/API/route change; preserve the stable CCB conversation
+   and use validated resume, safe fork/import, or linked continuation.
+3. Use built-in `ccb-config` to edit `.ccb/ccb.config` only when the fallback
    provider/model/base URL/profile/env-var reference is already configured or
    explicitly supplied by the user as a safe reference.
-3. Run `ccb config validate`.
-4. Run `ccb reload --dry-run`.
-5. If validation and dry-run pass, and the user intended materialization, run
+4. Run `ccb config validate`.
+5. Complete `ccb config approve-commands` when an exact protected command value
+   needs approval; never bypass the external receipt.
+6. Run `ccb reload --dry-run`.
+7. If validation and dry-run pass, and the user intended materialization, run
    `ccb reload`.
-6. Re-check the current daemon graph and affected agent status.
-7. Decide whether affected running agents still use stale provider process,
+8. Re-check the current daemon graph and affected agent status.
+9. Decide whether affected running agents still use stale provider process,
    environment, model, base URL, role asset, or context state.
-8. If runtime refresh is still needed, restart only one affected current-graph
+10. If runtime refresh is still needed, restart only one affected current-graph
    agent at a time with `ccb restart <agent>`, and only when busy checks pass.
-9. If `ccb restart <agent>` returns `blocked` or `failed`, report the blockers.
+11. If `ccb restart <agent>` returns `blocked` or `failed`, report the blockers.
    Do not emulate restart with tmux commands. The remaining user-level options
    are to continue with unaffected agents or explicitly stop and restart the
    project with `ccb kill` then `ccb`; do not run project shutdown

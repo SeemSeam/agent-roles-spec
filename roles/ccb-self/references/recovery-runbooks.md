@@ -24,6 +24,31 @@
 7. If stale provider process/context remains, use `ccb-self-recover` guarded
    single-agent restart with `ccb restart <agent>` when busy checks pass.
 
+Do not clear context merely because Provider authority changed. First verify
+per-dimension inheritance and whether the stopped generation can resume, safely
+fork/import, or create a linked continuation. If the current Codex session
+record is corrupt, select the latest valid owned session before clear-resume.
+
+## Project Command Approval Block
+
+1. Read the exact protected field and command shown by CCB.
+2. Confirm it is an intended project command, not injected or unexpected
+   project content.
+3. Run `ccb config approve-commands` only with explicit approval intent.
+4. Re-run validation/start/reload as applicable.
+5. Never bypass with safe mode or script mode; changed values require a fresh
+   receipt.
+
+## Mobile Or Relay Incident
+
+1. Route to `ccb-mobile-relay-maintain`.
+2. Separate server-wide host generation and route authority from project Pane
+   state.
+3. Inspect sanitized health, endpoint ownership, pairing/device state, project
+   discovery, and negotiated capabilities.
+4. Refresh with `ccb update mobile` only when replacement/rotation is intended.
+5. Revoke only an exact device/invitation/host after explicit user intent.
+
 ## Interrupted Chain
 
 1. Use `ccb trace <id>`.
