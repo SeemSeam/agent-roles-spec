@@ -94,14 +94,14 @@ through `agent-roles` and may expose host-specific adapters.
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Version**: `0.4.0`
+- **Version**: `0.5.0`
 - **Level**: `stable`
-- **Purpose**: Reviews architecture drift, boundaries, coupling, maintainability, code-review evidence, and structural risk without depending on one tool.
-- **Best for**: architecture reviews, dependency-boundary checks, coupling analysis, optional Architec/Hippo evidence, project-native architecture checks, vendored review skills, and practical next-step sequencing.
-- **Contents**: Role instructions, architecture review skills, evidence-map routing, vendored public code-review skills, architecture toolbox and provenance references, reusable prompts, tool documentation, plugin content, and host adapters.
+- **Purpose**: Reviews architecture drift, boundaries, topology, decisions, change impact, reliability tradeoffs, and structural risk without depending on one tool.
+- **Best for**: architecture reviews, dependency topology and cycles, module boundaries, architecture fitness functions, ADR drift, migration blast radius, distributed-system reliability tradeoffs, optional Architec/Hippo evidence, project-native architecture checks, vendored review skills, and practical next-step sequencing.
+- **Contents**: Role instructions, architecture review skills, evidence-map routing, focused topology/boundary/fitness/decision/impact/reliability methods, vendored public code-review skills, architecture toolbox and provenance references, live evaluation suite, reusable prompts, tool documentation, plugin content, and host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Add**: `agent-roles add archi`
-- **Update**: `agent-roles update archi`
+- **Add**: `agent-roles add agentroles.archi`
+- **Update**: `agent-roles update agentroles.archi`
 - **Source**: [`roles/archi`](roles/archi/)
 
 </details>

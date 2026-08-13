@@ -93,14 +93,14 @@ Host Adapter 描述 Role 如何进入不同宿主环境。同一个 Role 可被�
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer（架构评审）</summary>
 
-- **版本**: `0.4.0`
+- **版本**: `0.5.0`
 - **等级**: `stable`
-- **用途**: 在不依赖单一工具的前提下，评审架构漂移、边界、耦合、可维护性、代码评审证据和结构风险。
-- **适合场景**: 架构评审、依赖边界检查、耦合分析、可选 Architec/Hippo 证据、项目原生架构检查、内置公开 review skills，以及实用的后续步骤排序。
-- **包含内容**: Role instructions、架构评审 skills、evidence-map 路由、内置公开 code-review skills、架构 toolbox 与 provenance references、可复用 prompt、工具文档、plugin 内容和 host adapters。
+- **用途**: 在不依赖单一工具的前提下，评审架构漂移、边界、拓扑、决策、变更影响、可靠性取舍和结构风险。
+- **适合场景**: 架构评审、依赖拓扑与循环、模块边界、架构 fitness functions、ADR 漂移、迁移爆炸半径、分布式系统可靠性取舍、可选 Architec/Hippo 证据、项目原生架构检查、内置公开 review skills，以及实用的后续步骤排序。
+- **包含内容**: Role instructions、架构评审 skills、evidence-map 路由、拓扑/边界/fitness/决策/影响/可靠性聚焦方法、内置公开 code-review skills、架构 toolbox 与 provenance references、真实评测 suite、可复用 prompt、工具文档、plugin 内容和 host adapters。
 - **Adapters**: CCB、Claude Code、Codex、HIVE。
-- **添加**: `agent-roles add archi`
-- **更新**: `agent-roles update archi`
+- **添加**: `agent-roles add agentroles.archi`
+- **更新**: `agent-roles update agentroles.archi`
 - **源码**: [`roles/archi`](../../roles/archi/)
 
 </details>

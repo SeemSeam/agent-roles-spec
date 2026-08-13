@@ -85,14 +85,14 @@ Host Adapter อธิบายว่า Role เข้าไปใน host envi
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **เวอร์ชัน**: `0.2.3`
+- **เวอร์ชัน**: `0.5.0`
 - **ระดับ**: `stable`
-- **วัตถุประสงค์**: review architecture drift, boundaries, coupling, maintainability และ structural risk.
-- **เหมาะสำหรับ**: architecture reviews, dependency-boundary checks, coupling analysis และ practical next-step sequencing.
-- **เนื้อหา**: Role instructions, architecture review skills, reusable prompt, tool documentation, plugin content และ host adapters.
+- **วัตถุประสงค์**: review architecture drift, boundaries, dependency topology, decisions, change impact และ reliability tradeoffs โดยไม่พึ่ง tool เดียว.
+- **เหมาะสำหรับ**: dependency cycles/direction, module boundaries, fitness functions, ADR drift, migration blast radius และ distributed-system reliability.
+- **เนื้อหา**: Role instructions, focused skills สำหรับ topology, boundaries, fitness, decisions, impact และ reliability, optional evidence routes, evaluation suite, prompt, tool documentation, plugin content และ host adapters.
 - **อะแดปเตอร์**: CCB, Claude Code, Codex, HIVE.
-- **ติดตั้ง**: `agent-roles install archi`
-- **อัปเดต**: `agent-roles update archi`
+- **ติดตั้ง**: `agent-roles add agentroles.archi`
+- **อัปเดต**: `agent-roles update agentroles.archi`
 - **แหล่งที่มา**: [`roles/archi`](../../roles/archi/)
 
 </details>

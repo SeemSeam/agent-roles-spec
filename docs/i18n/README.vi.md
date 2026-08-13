@@ -85,14 +85,14 @@ Host Adapter mô tả cách một Role đi vào một host environment cụ th�
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Phiên bản**: `0.2.3`
+- **Phiên bản**: `0.5.0`
 - **Cấp độ**: `stable`
-- **Mục đích**: Review architecture drift, ranh giới, coupling, maintainability và rủi ro cấu trúc.
-- **Phù hợp cho**: review kiến trúc, kiểm tra ranh giới phụ thuộc, phân tích coupling và sắp xếp các bước tiếp theo thực tế.
-- **Nội dung**: Role instructions, architecture review skills, prompt tái sử dụng, tài liệu tool, plugin content và host adapters.
+- **Mục đích**: Review architecture drift, ranh giới, dependency topology, quyết định, ảnh hưởng thay đổi và reliability tradeoffs mà không phụ thuộc một tool duy nhất.
+- **Phù hợp cho**: dependency cycles/direction, ranh giới module, fitness functions, ADR drift, migration blast radius và độ tin cậy của hệ thống phân tán.
+- **Nội dung**: Role instructions, focused skills cho topology, boundary, fitness, decision, impact và reliability, optional evidence routes, evaluation suite, prompt, tài liệu tool, plugin content và host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Cài đặt**: `agent-roles install archi`
-- **Cập nhật**: `agent-roles update archi`
+- **Cài đặt**: `agent-roles add agentroles.archi`
+- **Cập nhật**: `agent-roles update agentroles.archi`
 - **Nguồn**: [`roles/archi`](../../roles/archi/)
 
 </details>

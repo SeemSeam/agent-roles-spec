@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import tomllib
 
 from agent_roles.cli import run
 from agent_roles.manifest import load_role
@@ -15,18 +16,13 @@ ROLE_ROOT = REPO_ROOT / "roles" / "archi"
 REFERENCE_ROOT = REPO_ROOT / "reference_roles" / "archi"
 ROLE_TOOL = ROLE_ROOT / "adapters" / "ccb" / "tools" / "architec_tool.py"
 REFERENCE_TOOL = REFERENCE_ROOT / "adapters" / "ccb" / "tools" / "architec_tool.py"
-SYNCED_FILES = (
-    "role.toml",
-    "README.md",
-    "memory.md",
-    "references/architecture-toolbox.md",
-    "references/vendored-skill-provenance.md",
-    "skills/archi-evidence-map/SKILL.md",
-    "adapters/ccb/README.md",
-    "adapters/ccb/adapter.toml",
-    "adapters/ccb/memory.md",
-    "adapters/ccb/skills/archi-tooling/SKILL.md",
-    "adapters/ccb/tools/architec_tool.py",
+METHOD_SKILLS = (
+    "skills/archi-dependency-topology",
+    "skills/archi-module-boundaries",
+    "skills/archi-fitness-functions",
+    "skills/archi-decision-drift",
+    "skills/archi-change-impact",
+    "skills/archi-distributed-systems",
 )
 
 
@@ -59,40 +55,52 @@ def _run_json(argv: list[str], tmp_path: Path, monkeypatch, capsys):
     return json.loads(captured.out)
 
 
+def _role_source_files(root: Path) -> set[str]:
+    return {
+        path.relative_to(root).as_posix()
+        for path in root.rglob("*")
+        if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc"
+    }
+
+
 def test_archi_role_and_reference_role_stay_in_sync() -> None:
-    for rel in SYNCED_FILES:
+    role_files = _role_source_files(ROLE_ROOT)
+    reference_files = _role_source_files(REFERENCE_ROOT)
+    assert role_files == reference_files
+    for rel in sorted(role_files):
         assert ROLE_ROOT.joinpath(rel).read_text(encoding="utf-8") == REFERENCE_ROOT.joinpath(rel).read_text(
             encoding="utf-8"
         )
-    role_vendor_files = {
-        path.relative_to(ROLE_ROOT).as_posix()
-        for path in ROLE_ROOT.joinpath("skills/vendor").rglob("*")
-        if path.is_file()
-    }
-    reference_vendor_files = {
-        path.relative_to(REFERENCE_ROOT).as_posix()
-        for path in REFERENCE_ROOT.joinpath("skills/vendor").rglob("*")
-        if path.is_file()
-    }
-    assert role_vendor_files == reference_vendor_files
-    for rel in sorted(role_vendor_files):
-        assert ROLE_ROOT.joinpath(rel).read_text(encoding="utf-8") == REFERENCE_ROOT.joinpath(rel).read_text(
-            encoding="utf-8"
-        )
+
+
+def test_archi_all_skills_have_yaml_frontmatter() -> None:
+    for skill in sorted(ROLE_ROOT.rglob("SKILL.md")):
+        text = skill.read_text(encoding="utf-8")
+        lines = text.splitlines()
+        assert lines[:1] == ["---"], skill
+        end = lines[1:].index("---") + 1
+        frontmatter = "\n".join(lines[1:end])
+        assert "name:" in frontmatter, skill
+        assert "description:" in frontmatter, skill
+        assert len(frontmatter.split("description:", 1)[1].strip()) > 10, skill
 
 
 def test_archi_role_declares_tool_independent_evidence_design() -> None:
     role = load_role(ROLE_ROOT)
 
     assert role.id == "agentroles.archi"
-    assert role.version == "0.4.0"
+    assert role.version == "0.5.0"
     assert "without depending on one tool" in role.description
 
     identity = role.table("identity")
     assert any("direct source review" in item for item in identity["responsibilities"])
+    assert any("decision drift" in item for item in identity["responsibilities"])
+    assert any("fitness functions" in item for item in identity["responsibilities"])
 
     contents = role.table("contents")
     assert "skills/archi-evidence-map" in contents["skills"]
+    for skill in METHOD_SKILLS:
+        assert skill in contents["skills"]
     assert "skills/architecture-review" in contents["skills"]
     assert "skills/vendor/code-review-and-quality" in contents["skills"]
     assert "skills/vendor/improve-codebase-architecture" in contents["skills"]
@@ -102,6 +110,12 @@ def test_archi_role_declares_tool_independent_evidence_design() -> None:
         "references/architecture-toolbox.md",
         "references/vendored-skill-provenance.md",
     ]
+    assert contents["tests"] == ["tests/validation.md", "tests/evaluation.toml"]
+
+    permissions = role.table("permissions")
+    assert permissions["read_files"] is True
+    assert permissions["write_files"] is False
+    assert permissions["network"] is False
 
     ccb_adapter = ROLE_ROOT / "adapters" / "ccb" / "adapter.toml"
     assert "required = false" in ccb_adapter.read_text(encoding="utf-8")
@@ -118,13 +132,21 @@ def test_archi_role_declares_tool_independent_evidence_design() -> None:
 
     assert "never depend on one tool" in memory
     assert "project-native dependency rules" in memory
+    assert "archi-dependency-topology" in memory
+    assert "archi-distributed-systems" in memory
     assert "vendored public skills" in memory
     assert "Do not block architecture review just because Architec" in evidence_skill
+    assert "ADRs, decision logs, and git history" in evidence_skill
     assert "vendored `code-review-and-quality`" in evidence_skill
     assert "dependency-cruiser" in tools
     assert "ArchUnit" in tools
+    assert "OpenTelemetry" in tools
     assert "Semgrep" in toolbox
     assert "CodeQL" in toolbox
+    assert "Coverage Audit" in toolbox
+    assert "Candidate Scorecard" in toolbox
+    assert "Blueprint Gate" in toolbox
+    assert "archi-change-impact" in toolbox
     assert "Copying license-cleared focused skills: allowed" in toolbox
     assert "Vendored Public Skills" in readme
     assert "Public Skills Carried Or Fused Into Archi" in toolbox
@@ -142,6 +164,102 @@ def test_archi_role_declares_tool_independent_evidence_design() -> None:
     assert "Do not write project files" in deepening
     assert "xdg-open" not in deepening
     assert "cdn.tailwindcss.com" not in deepening
+
+
+def test_archi_method_skills_are_review_only_tool_optional_and_degradable() -> None:
+    for skill in METHOD_SKILLS:
+        text = ROLE_ROOT.joinpath(skill, "SKILL.md").read_text(encoding="utf-8")
+        assert "Degraded Semantics" in text
+        assert "tool" in text.lower() or "evidence" in text.lower()
+        assert "Stay review-only" in text or "review-only" in text
+        assert "Do not install" in text or "Do not add or run new tools" in text or "Stay review-only" in text
+        assert "evidence, not" in text or "generated structural evidence" in text or "provided evidence" in text
+
+    fitness = ROLE_ROOT.joinpath("skills/archi-fitness-functions/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "Do not implement the gate" in fitness
+    assert "write-enabled Role" in fitness
+    assert "unless the user explicitly asks to implement" not in fitness
+
+
+def test_archi_evaluation_suite_contract() -> None:
+    role = load_role(ROLE_ROOT)
+    suite = tomllib.loads((ROLE_ROOT / "tests" / "evaluation.toml").read_text(encoding="utf-8"))
+    scoring = suite["scoring"]
+    cases = suite["cases"]
+
+    assert suite["role_id"] == role.id == "agentroles.archi"
+    assert suite["max_iterations"] == 2
+    assert scoring["pass_score"] == 80
+    assert scoring["critical_min"] == 4
+    assert scoring["critical_dimensions"] == [
+        "role_fidelity",
+        "boundary_discipline",
+        "evidence_discipline",
+    ]
+    assert [case["id"] for case in cases if case["required"]] == [
+        "multi-evidence-architecture-analysis",
+        "no-architec-degraded-mode",
+        "review-only-boundary",
+        "impact-reliability-regression",
+    ]
+    assert {case["id"]: case["kind"] for case in cases} == {
+        "multi-evidence-architecture-analysis": "capability",
+        "no-architec-degraded-mode": "degraded",
+        "review-only-boundary": "boundary",
+        "impact-reliability-regression": "regression",
+    }
+    for case in cases:
+        for dimension in scoring["critical_dimensions"]:
+            assert dimension in case["rubric"], case["id"]
+        assert case["oracle"]["must_address"], case["id"]
+        assert case["oracle"]["must_not"], case["id"]
+        for rubric_text in case["rubric"].values():
+            assert rubric_text not in case["prompt"]
+
+    boundary = next(case for case in cases if case["id"] == "review-only-boundary")
+    assert any("write-enabled Role" in item for item in boundary["oracle"]["must_address"])
+
+
+def test_archi_catalog_readmes_match_role_revision_and_canonical_commands() -> None:
+    readmes = [REPO_ROOT / "README.md", *sorted((REPO_ROOT / "docs" / "i18n").glob("README.*.md"))]
+    for readme in readmes:
+        text = readme.read_text(encoding="utf-8")
+        marker = "<summary><strong>agentroles.archi</strong>"
+        assert marker in text, readme
+        block = text.split(marker, 1)[1].split("</details>", 1)[0]
+        assert "`0.5.0`" in block, readme
+        assert "agent-roles add agentroles.archi" in block, readme
+        assert "agent-roles update agentroles.archi" in block, readme
+        assert "`0.2.3`" not in block, readme
+
+
+def test_archi_has_no_required_architec_dependency_or_hidden_install_path() -> None:
+    role_metadata = tomllib.loads(ROLE_ROOT.joinpath("role.toml").read_text(encoding="utf-8"))
+    assert role_metadata["permissions"]["network"] is False
+    assert role_metadata["permissions"]["write_files"] is False
+
+    ccb_adapter = tomllib.loads((ROLE_ROOT / "adapters" / "ccb" / "adapter.toml").read_text(encoding="utf-8"))
+    assert ccb_adapter["tools"]["architec"]["required"] is False
+    assert ccb_adapter["tools"]["architec"]["runtime_network"] is False
+
+    combined = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in [
+            ROLE_ROOT / "memory.md",
+            ROLE_ROOT / "tools" / "README.md",
+            ROLE_ROOT / "skills" / "archi-evidence-map" / "SKILL.md",
+            ROLE_ROOT / "skills" / "archi-dependency-topology" / "SKILL.md",
+            ROLE_ROOT / "skills" / "archi-change-impact" / "SKILL.md",
+        ]
+    )
+    assert "never depend on one tool" in combined
+    assert "optional evidence" in combined
+    assert "If no graph tool is available" in combined
+    assert "Do not install tools" in combined or "Do not install or refresh generated graphs" in combined
+    assert "managed virtual environment" not in combined
+    assert "pip install" not in combined
 
 
 def test_install_uses_npm_archi_package_and_records_manifest(tmp_path: Path, monkeypatch, capsys) -> None:
@@ -354,11 +472,11 @@ def test_ccb_adapter_guidance_does_not_prefer_legacy_ccb_archi() -> None:
 
 
 def test_agent_roles_archi_install_update_doctor_store_current(tmp_path: Path, monkeypatch, capsys) -> None:
-    install = _run_json(["install", "archi"], tmp_path, monkeypatch, capsys)
+    install = _run_json(["install", "agentroles.archi"], tmp_path, monkeypatch, capsys)
     assert install["role_id"] == "agentroles.archi"
-    assert install["version"] == "0.4.0"
+    assert install["version"] == "0.5.0"
 
-    update = _run_json(["update", "archi"], tmp_path, monkeypatch, capsys)
+    update = _run_json(["update", "agentroles.archi"], tmp_path, monkeypatch, capsys)
     installed_path = Path(update["path"])
     expected_root = tmp_path / "store" / "installed" / "agentroles.archi"
     assert installed_path.is_dir()
@@ -368,7 +486,7 @@ def test_agent_roles_archi_install_update_doctor_store_current(tmp_path: Path, m
     assert current.exists()
     assert current.resolve() == installed_path.resolve()
 
-    doctor = _run_json(["doctor", "archi"], tmp_path, monkeypatch, capsys)
+    doctor = _run_json(["doctor", "agentroles.archi"], tmp_path, monkeypatch, capsys)
     assert doctor["status"] == "ok"
     assert doctor["installed"] is True
     assert doctor["installed_path"] == str(installed_path)

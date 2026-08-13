@@ -85,14 +85,14 @@ Dies sind die derzeit veröffentlichten Catalog Roles. Jeder Eintrag kann über
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Version**: `0.2.3`
+- **Version**: `0.5.0`
 - **Stufe**: `stable`
-- **Zweck**: Prüft Architekturdrift, Grenzen, Kopplung, Wartbarkeit und strukturelle Risiken.
-- **Geeignet für**: Architekturreviews, Prüfungen von Abhängigkeitsgrenzen, Kopplungsanalyse und praktische nächste Schritte.
-- **Inhalte**: Role-Anweisungen, Architekturreview-Skills, wiederverwendbarer Prompt, Tool-Dokumentation, Plugin-Inhalte und Host-Adapter.
+- **Zweck**: Prüft Architekturdrift, Grenzen, Abhängigkeitstopologie, Entscheidungen, Änderungsauswirkungen und Zuverlässigkeitsabwägungen ohne Abhängigkeit von einem einzelnen Tool.
+- **Geeignet für**: Zyklen und Abhängigkeitsrichtung, Modulgrenzen, Architecture Fitness Functions, ADR-Drift, Migrationsradius und verteilte Zuverlässigkeit.
+- **Inhalte**: Role-Anweisungen, fokussierte Skills für Topologie, Grenzen, Fitness, Entscheidungen, Auswirkungen und Zuverlässigkeit, optionale Evidenzpfade, Evaluation Suite, Prompt, Tool-Dokumentation, Plugin-Inhalte und Host-Adapter.
 - **Adapter**: CCB, Claude Code, Codex, HIVE.
-- **Installation**: `agent-roles install archi`
-- **Aktualisierung**: `agent-roles update archi`
+- **Installation**: `agent-roles add agentroles.archi`
+- **Aktualisierung**: `agent-roles update agentroles.archi`
 - **Quelle**: [`roles/archi`](../../roles/archi/)
 
 </details>

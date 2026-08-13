@@ -20,10 +20,12 @@ Use this skill for change-scoped architecture review.
    coverage beyond architecture-only findings.
 6. Use vendored `requesting-code-review` when the user wants an independent
    review lane or review handoff.
-7. Read `.architec/architec-summary.md` first when present.
-8. Use `.architec/architec-analysis.json` for exact scores, concerns, signals,
+7. Route focused concerns to the relevant method skill: topology, boundaries,
+   change impact, decision drift, fitness functions, or distributed systems.
+8. Read `.architec/architec-summary.md` first when present.
+9. Use `.architec/architec-analysis.json` for exact scores, concerns, signals,
    hotspots, and artifact paths.
-9. Focus on changed-component concerns, boundary pressure, duplication,
+10. Focus on changed-component concerns, boundary pressure, duplication,
    hotspots, and recommendations.
 
 ## Output

@@ -85,14 +85,14 @@ install でき、host 固有の adapter を提供できます。
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Version**: `0.2.3`
+- **Version**: `0.5.0`
 - **レベル**: `stable`
-- **Purpose**: アーキテクチャの drift、境界、結合度、保守性、構造的リスクをレビューします。
-- **Best for**: アーキテクチャレビュー、依存関係境界の確認、結合度分析、実践的な次ステップの整理。
-- **Contents**: Role instructions、アーキテクチャレビュー skills、再利用可能な prompt、tool documentation、plugin content、host adapters。
+- **Purpose**: 単一の tool に依存せず、アーキテクチャ drift、境界、依存関係トポロジー、意思決定、変更影響、信頼性のトレードオフをレビューします。
+- **Best for**: 依存関係の循環と方向、モジュール境界、fitness functions、ADR drift、移行の blast radius、分散システムの信頼性。
+- **Contents**: Role instructions、トポロジー、境界、fitness、意思決定、影響、信頼性に特化した skills、任意の evidence routes、evaluation suite、prompt、tool documentation、plugin content、host adapters。
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Install**: `agent-roles install archi`
-- **Update**: `agent-roles update archi`
+- **Install**: `agent-roles add agentroles.archi`
+- **Update**: `agent-roles update agentroles.archi`
 - **Source**: [`roles/archi`](../../roles/archi/)
 
 </details>

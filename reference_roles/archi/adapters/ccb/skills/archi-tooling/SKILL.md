@@ -55,8 +55,8 @@ Do not print API keys or llmgateway secret values.
 
 ## Interpretation
 
-- `agentroles.archi` is the canonical Role id; `ccb.archi` is a legacy CCB input
-  alias.
+- `agentroles.archi` is the canonical Role id. Do not rely on catalog aliases
+  for CCB mounting or role selection.
 - `archi-tooling` is a projected skill, not an executable command.
 - `archi` from npm `@seemseam/archi` is the preferred CCB adapter route.
 - `ccb-archi` is a legacy wrapper name. Its presence should be reported as

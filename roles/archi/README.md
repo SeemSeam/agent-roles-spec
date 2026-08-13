@@ -8,15 +8,19 @@ runtime internals.
 
 ## Purpose
 
-Review architecture drift, boundaries, coupling, maintainability,
-code-review evidence, and structural risk without depending on one tool.
+Review architecture drift, boundaries, dependency topology, decisions, change
+impact, distributed-system reliability, and structural risk without depending
+on one tool.
 
 ## Responsibilities
 
 - Review diffs for architecture risk.
 - Select appropriate architecture and code-review evidence sources.
 - Continue with direct source review when optional tools are missing.
-- Explain coupling, boundary, and dependency tradeoffs.
+- Explain coupling, boundary, dependency, decision, and reliability tradeoffs.
+- Review dependency topology, module boundaries, decision drift, blast radius,
+  migration reversibility, and distributed-system failure modes.
+- Translate architecture risks into reviewable fitness functions and gates.
 - Recommend practical next steps.
 - Keep findings scoped to architecture and maintainability.
 
@@ -34,7 +38,9 @@ code-review evidence, and structural risk without depending on one tool.
 - `memory.md`: durable role instructions; not project progress or session
   state.
 - `skills/archi-*`: reusable architecture-review skills, including
-  `archi-evidence-map` for tool-independent evidence selection.
+  `archi-evidence-map` for tool-independent evidence selection plus focused
+  methods for topology, boundaries, fitness functions, decision drift, change
+  impact, and distributed-system reliability.
 - `skills/vendor/*`: public/open-source skills carried with provenance and
   license notices for code review, architecture deepening, and review-lane
   workflows.
@@ -46,7 +52,7 @@ code-review evidence, and structural risk without depending on one tool.
 - `tools/`: tool documentation placeholder.
 - `plugins/`: role-contained plugin content example.
 - `adapters/`: host-specific mapping notes and optional adapter assets.
-- `tests/`: validation notes.
+- `tests/`: validation notes and mounted-behavior evaluation suite.
 
 ## Vendored Public Skills
 

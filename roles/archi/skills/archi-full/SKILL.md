@@ -19,13 +19,17 @@ Use this skill for full-project baseline architecture review.
    snapshot is stale, or stale evidence is central to the question.
 5. Read project docs, module maps, dependency rules, and representative source
    paths directly.
-6. Use vendored `improve-codebase-architecture` when the review is looking for
+6. Route focused findings to `archi-dependency-topology`,
+   `archi-module-boundaries`, `archi-fitness-functions`,
+   `archi-decision-drift`, `archi-change-impact`, or
+   `archi-distributed-systems` when the baseline needs that method.
+7. Use vendored `improve-codebase-architecture` when the review is looking for
    deep-module, seam, adapter, leverage, locality, or interface-depth
    opportunities.
-7. Use vendored `code-review-and-quality` when the baseline needs adjacent
+8. Use vendored `code-review-and-quality` when the baseline needs adjacent
    correctness, security, performance, or review-quality coverage.
-8. Read `.architec/architec-summary.md` first when present.
-9. Use `.architec/architec-analysis.json` for exact scores, concerns, signals,
+9. Read `.architec/architec-summary.md` first when present.
+10. Use `.architec/architec-analysis.json` for exact scores, concerns, signals,
    hotspots, and artifact paths.
 
 ## Output

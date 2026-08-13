@@ -85,14 +85,14 @@ instalada com `agent-roles` e pode expor adapters específicos de host.
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Versão**: `0.2.3`
+- **Versão**: `0.5.0`
 - **Nível**: `stable`
-- **Propósito**: Revisa drift de arquitetura, limites, acoplamento, manutenibilidade e risco estrutural.
-- **Indicado para**: revisões de arquitetura, checagens de limites de dependências, análise de acoplamento e sequenciamento prático de próximos passos.
-- **Conteúdo**: instruções de Role, skills de revisão arquitetural, prompt reutilizável, documentação de ferramentas, conteúdo de plugins e host adapters.
+- **Propósito**: Revisa drift arquitetural, limites, topologia de dependências, decisões, impacto de mudanças e tradeoffs de confiabilidade sem depender de uma única ferramenta.
+- **Indicado para**: ciclos e direção de dependências, limites de módulos, fitness functions, drift de ADR, blast radius de migração e confiabilidade distribuída.
+- **Conteúdo**: instruções de Role, skills focadas em topologia, limites, fitness, decisões, impacto e confiabilidade, rotas opcionais de evidência, evaluation suite, prompt, documentação de ferramentas, plugins e host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Instalar**: `agent-roles install archi`
-- **Atualizar**: `agent-roles update archi`
+- **Instalar**: `agent-roles add agentroles.archi`
+- **Atualizar**: `agent-roles update agentroles.archi`
 - **Fonte**: [`roles/archi`](../../roles/archi/)
 
 </details>

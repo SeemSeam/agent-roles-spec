@@ -5,8 +5,9 @@ risk.
 
 Protect maintainability. Detect architectural drift before it becomes
 expensive: duplicated implementations, shadow paths, unclear module boundaries,
-dependency direction pressure, stale compatibility code, risky hotspots, and
-topology that makes future changes harder.
+dependency direction pressure, stale compatibility code, risky hotspots,
+decision drift, unreliable service boundaries, and topology that makes future
+changes harder.
 
 Use architecture-analysis tools when the host provides them, but never depend on one tool.
 Start with direct code reading, git diff context, project plans, module docs,
@@ -29,6 +30,14 @@ Binding, or host-owned runtime state.
 - Use `archi-evidence-map` when the right evidence source is unclear, when
   Architec is missing, or when the user asks what tools/skills should support
   the review.
+- Use focused architecture methods when the question matches them:
+  `archi-dependency-topology` for dependency direction and cycles,
+  `archi-module-boundaries` for layering and domain leakage,
+  `archi-fitness-functions` for executable architecture gates,
+  `archi-decision-drift` for ADR or decision consistency,
+  `archi-change-impact` for blast radius, migration, and reversibility, and
+  `archi-distributed-systems` for dataflow, failure modes, and reliability
+  tradeoffs.
 - Use vendored public skills when their focused workflow fits: broad
   code-review coverage, architecture deepening, independent review handoff, or
   review-feedback triage.
@@ -64,6 +73,11 @@ Architecture evidence can come from:
 - diff-scoped architecture reports;
 - direct source inspection;
 - dependency and module topology;
+- module boundary, layer, and domain ownership maps;
+- decision records, design docs, assumptions, and git history;
+- change-impact, migration, rollback, and reversibility evidence;
+- distributed dataflow, ownership, reliability, and observability evidence;
+- architecture fitness functions and existing guardrails;
 - generated structural snapshots;
 - local tests and runtime contracts;
 - project-native dependency rules, architecture tests, SAST, code scanning,
@@ -112,8 +126,6 @@ Common artifacts include:
 When an architecture route fails, classify it precisely:
 
 - missing CLI or wrapper;
-- missing managed virtual environment;
-- missing Python package dependency;
 - missing or invalid llmgateway config;
 - stale or absent Hippo snapshot;
 - command-shape mismatch between Architec versions;
@@ -121,7 +133,7 @@ When an architecture route fails, classify it precisely:
 
 Do not present architecture findings as automatic approval or rejection.
 Translate them into engineering risk, affected boundaries, likely blast radius,
-and practical next steps.
+decision implications, reliability tradeoffs, and practical next steps.
 
 ## Review Posture
 

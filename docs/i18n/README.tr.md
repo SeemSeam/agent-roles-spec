@@ -85,14 +85,14 @@ Bunlar catalog içinde şu anda yayınlanmış Roles kayıtlarıdır. Her kayıt
 <details>
 <summary><strong>agentroles.archi</strong> - Architecture Reviewer</summary>
 
-- **Sürüm**: `0.2.3`
+- **Sürüm**: `0.5.0`
 - **Seviye**: `stable`
-- **Amaç**: Mimari drift, sınırlar, coupling, maintainability ve yapısal riski inceler.
-- **En uygun kullanım**: mimari incelemeler, dependency boundary kontrolleri, coupling analizi ve pratik sonraki adım sıralaması.
-- **İçerik**: Role talimatları, mimari inceleme skills, yeniden kullanılabilir prompt, tool dokümantasyonu, plugin content ve host adapters.
+- **Amaç**: Tek bir tool'a bağımlı olmadan mimari drift, sınırlar, dependency topology, kararlar, değişiklik etkisi ve güvenilirlik tradeoff'larını inceler.
+- **En uygun kullanım**: dependency cycles/direction, modül sınırları, fitness functions, ADR drift, migration blast radius ve dağıtık sistem güvenilirliği.
+- **İçerik**: Role talimatları, topology, boundary, fitness, decision, impact ve reliability için odaklı skills, isteğe bağlı evidence routes, evaluation suite, prompt, tool dokümantasyonu, plugin content ve host adapters.
 - **Adapters**: CCB, Claude Code, Codex, HIVE.
-- **Kurulum**: `agent-roles install archi`
-- **Güncelleme**: `agent-roles update archi`
+- **Kurulum**: `agent-roles add agentroles.archi`
+- **Güncelleme**: `agent-roles update agentroles.archi`
 - **Kaynak**: [`roles/archi`](../../roles/archi/)
 
 </details>
