@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Quality Review"
+  short_description: "Review code with five independent quality scores"
+  default_prompt: "Use $review-code-quality to review this code change and score five quality dimensions."
