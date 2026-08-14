@@ -122,6 +122,10 @@ references should be treated as historical planning language until migrated.
 
 ## Last Landed
 
+- 2026-08-14: Upgraded `agentroles.code_reviewer` to `0.2.0` as a general
+  read-only reviewer with one `review-code-quality` skill, evidence-backed
+  findings, five independent 1-5 scores, simple verdict overrides, a compact
+  report template, and provider-neutral Host Adapter guidance.
 - 2026-08-13: Updated `agentroles.ccb_self` to `0.4.0` against CCB v8.6.2,
   replacing user-facing callback guidance with chain/followup/compact semantics,
   adding exact-value project-command approval and Provider session-continuity
@@ -179,6 +183,10 @@ references should be treated as historical planning language until migrated.
 
 ## Last Verification
 
+- `agentroles.code_reviewer` `0.2.0` verification passed on 2026-08-14: Skill
+  Creator validation passed; the focused Role suite passed 3 tests; the full
+  repository suite passed 75 tests; manifest paths, Python compilation,
+  secret scanning, local catalog discovery, and `git diff --check` passed.
 - `agentroles.ccb_self` `0.4.0` verification passed on 2026-08-13: all nine
   Role skills passed Skill Creator validation; the focused Role suite passed
   6 tests; the full repository suite passed 74 tests; manifest paths, TOML,

@@ -1,35 +1,45 @@
 # Code Reviewer
 
-`code-reviewer` is an experimental Role for bounded review gates in agentic
-execution loops.
-
-It reviews worker output against the task packet, evidence, tests, and
-implementation boundaries. It is intentionally not an implementation role: it
-reports pass/rework/blocking findings and avoids silently fixing the work it is
-checking.
+`code-reviewer` is a general read-only Role for evidence-backed code review.
+It reports actionable findings and gives five independent scores without
+taking over implementation.
 
 ## Purpose
 
-Check whether a completed worker slice satisfies the assigned task, has
-credible verification, and avoids hidden fallback or scope drift.
+Review a declared diff, commit, pull request, file set, or module for
+correctness, clarity, fallback integrity, maintainability, and verification
+risk.
 
 ## Responsibilities
 
-- Compare worker output against explicit acceptance criteria.
-- Inspect relevant changed files, artifacts, and test evidence when provided.
-- Identify missing tests, regressions, unsupported fallback, broad rewrites,
-  and scope drift.
-- Return a clear status: `pass`, `rework_required`, `blocked`, or `escalate`.
-- Keep the worker/reviewer boundary intact.
+- Report findings with severity, location, impact, and correction direction.
+- Score five dimensions independently from 1 to 5.
+- Detect behavioral regressions, unnecessary complexity, silent fallback,
+  maintainability problems, and weak verification.
+- Separate confirmed defects, uncertain risks, and unrelated historical debt.
+- Return `approve`, `approve_with_comments`, `changes_required`, or `blocked`.
 
 ## Non-Goals
 
-- Implement or patch the worker task during review.
-- Approve merges, releases, security posture, or architecture direction as
-  final authority.
-- Mutate CCB runtime state, provider sessions, tmux panes, or project
-  configuration.
+- Implement, patch, reformat, or commit the reviewed code.
+- Expand the review into unrelated cleanup or broad redesign.
+- Treat personal style preferences as defects.
+- Let an average or total score hide a serious finding.
+- Claim final merge, release, security, or architecture authority.
+
+## Scorecard
+
+Each dimension receives an integer score from 1 to 5:
+
+1. Correctness
+2. Simplicity and readability
+3. Error handling and fallback integrity
+4. Design and maintainability
+5. Tests and risk control
+
+The total is shown as supporting context out of 25. Any critical or major
+finding, or any dimension scored 1 or 2, requires changes regardless of the
+total.
 
 The canonical Role id is `agentroles.code_reviewer`. Suggested aliases are
 `code-reviewer`, `code_reviewer`, `reviewer`, and `checker`.
-

@@ -64,9 +64,9 @@ in `role.toml` so `agent-roles list` can display their maturity.
   escalation boundaries for review, architecture, frontend, mobile, security,
   release, and Role-spec work.
 - [code-reviewer](code-reviewer/) (`agentroles.code_reviewer`,
-  `experimental`): bounded review-gate role for checking worker output against
-  task intent, test evidence, fallback discipline, and implementation
-  boundaries without taking over implementation.
+  `experimental`): general read-only review role with evidence-backed findings
+  and five independent scores for correctness, simplicity, fallback integrity,
+  maintainability, and tests and risk control.
 - [ccb-orchestrator](ccb-orchestrator/) (`agentroles.ccb_orchestrator`,
   `experimental`): CCB loop dispatcher role for requesting configured dynamic
   capacity, sending bounded worker/reviewer asks, aggregating loop evidence,

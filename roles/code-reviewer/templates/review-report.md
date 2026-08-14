@@ -1,16 +1,25 @@
 # Review Report
 
-status: pass|rework_required|blocked|escalate
+verdict: approve|approve_with_comments|changes_required|blocked
 
-findings:
-- `<severity>` `<file-or-artifact>`: `<issue or evidence>`
+## Findings
 
-test_plan:
-- `<command or check>`
+- `<critical|major|minor>` `<file:line or artifact>`: `<observed problem>`
+  - impact: `<why it matters>`
+  - correction: `<practical direction>`
 
-fallback_audit:
-- `<no fallback used | fallback accepted with evidence | fallback requires rework>`
+Use `None` when no actionable finding is present.
 
-residual_risk:
-- `<remaining risk or none>`
+## Scores
 
+- Correctness: `<1-5>/5` - `<one-line reason>`
+- Simplicity and readability: `<1-5>/5` - `<one-line reason>`
+- Error handling and fallback integrity: `<1-5>/5` - `<one-line reason>`
+- Design and maintainability: `<1-5>/5` - `<one-line reason>`
+- Tests and risk control: `<1-5>/5` - `<one-line reason>`
+
+Total: `<5-25>/25`
+
+## Verification Gaps
+
+- `<missing evidence or none>`
